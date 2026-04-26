@@ -1,0 +1,19 @@
+[build]
+  publish = "."
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "no-referrer"
+    X-Frame-Options = "DENY"
+
+[[headers]]
+  for = "/WhatsApp Chat - +66 91 824 1010/*.opus"
+  [headers.values]
+    Content-Type = "audio/ogg"
+
+[[headers]]
+  for = "/WhatsApp Chat - +66 91 824 1010/*.webp"
+  [headers.values]
+    Content-Type = "image/webp"

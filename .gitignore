@@ -1,0 +1,11 @@
+.DS_Store
+**/.DS_Store
+__pycache__/
+*.pyc
+.netlify/
+.idea/
+.vscode/
+
+# Backups of pre-compressed media (kept locally only)
+*.original.mp4
+*.original.mov

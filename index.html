@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WhatsApp архив</title>
+<style>
+
+:root {
+  --bg: #efeae2;
+  --header: #008069;
+  --header-2: #015e4f;
+  --bubble-in: #ffffff;
+  --bubble-out: #d9fdd3;
+  --text: #111b21;
+  --muted: #667781;
+}
+* { box-sizing: border-box; }
+html, body {
+  margin: 0; padding: 0; background: var(--bg); color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Segoe UI",
+               Roboto, "Noto Sans Thai", "Apple Color Emoji", sans-serif;
+  font-size: 14.5px;
+}
+body {
+  background-image:
+    radial-gradient(rgba(0,0,0,0.025) 1px, transparent 1px),
+    radial-gradient(rgba(0,0,0,0.025) 1px, transparent 1px);
+  background-size: 22px 22px, 22px 22px;
+  background-position: 0 0, 11px 11px;
+}
+
+/* ========== Hub (index.html) ========== */
+.hub {
+  max-width: 720px; margin: 0 auto; padding: 28px 18px 60px;
+}
+.hub-header { text-align: center; padding: 18px 0 22px; }
+.hub-header h1 {
+  margin: 0 0 6px; color: var(--header);
+  font-size: 26px; font-weight: 700; letter-spacing: -0.3px;
+}
+.hub-header p { margin: 0; color: var(--muted); font-size: 14px; }
+.chat-cards { display: flex; flex-direction: column; gap: 12px; }
+.chat-card {
+  display: flex; align-items: center; gap: 14px;
+  background: #fff; padding: 16px; border-radius: 14px;
+  text-decoration: none; color: inherit;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+.chat-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.1);
+}
+.card-icon {
+  flex: 0 0 56px; height: 56px; width: 56px;
+  background: #d9fdd3; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 28px;
+}
+.card-body { flex: 1 1 auto; min-width: 0; }
+.card-title {
+  font-size: 16px; font-weight: 600;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.card-sub {
+  color: var(--muted); font-size: 13px; margin-top: 3px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.card-meta {
+  display: flex; gap: 6px; margin-top: 6px;
+  color: #54656f; font-size: 12.5px;
+}
+.card-range { color: #8a929b; font-size: 12px; margin-top: 2px; }
+.card-arrow { color: var(--header); font-size: 22px; flex: 0 0 auto; }
+
+/* ========== Chat page ========== */
+.chat-header {
+  position: sticky; top: 0; z-index: 20;
+  background: var(--header); color: #fff;
+  padding: 12px 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+.header-row {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; flex-wrap: wrap;
+}
+.title-block { min-width: 0; flex: 1 1 auto; }
+.back-link {
+  display: inline-block; color: #cbeee5;
+  text-decoration: none; font-size: 12.5px; margin-bottom: 2px;
+}
+.back-link:hover { color: #fff; }
+.title { font-weight: 600; font-size: 16px; line-height: 1.2; }
+.sub { font-size: 12.5px; opacity: 0.85; margin-top: 2px; }
+.controls { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.controls input[type=date],
+.controls button {
+  background: rgba(255,255,255,0.18);
+  color: #fff; border: 0;
+  padding: 8px 12px; border-radius: 8px;
+  font-size: 14px; font-family: inherit;
+  cursor: pointer; min-height: 38px;
+  -webkit-tap-highlight-color: transparent;
+}
+.controls input[type=date] { color-scheme: dark; }
+.controls button:hover,
+.controls input[type=date]:hover { background: rgba(255,255,255,0.28); }
+.controls button.primary { background: #fff; color: var(--header); font-weight: 600; }
+.controls button.primary:hover { background: #f0f0f0; }
+.controls button[hidden] { display: none; }
+.icon-btn { padding: 8px 10px !important; font-size: 16px; }
+
+#dates-panel {
+  position: fixed;
+  top: 78px; left: 0; right: 0;
+  background: #fff;
+  max-height: calc(100vh - 100px);
+  overflow-y: auto;
+  z-index: 18;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+  padding: 14px 16px 18px;
+  border-bottom: 1px solid #e3e3e3;
+}
+#dates-panel[hidden] { display: none; }
+.panel-hint { color: #54656f; font-size: 12.5px; margin: 0 0 10px; }
+.month-block { margin-bottom: 14px; }
+.month-block:last-child { margin-bottom: 0; }
+.month-title {
+  font-weight: 600; color: var(--header);
+  font-size: 13px; margin: 4px 0 8px;
+  text-transform: uppercase; letter-spacing: 0.4px;
+}
+.day-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.day-chip {
+  background: #f0f2f5; border: 0; padding: 7px 11px;
+  border-radius: 16px; font-size: 13px; cursor: pointer;
+  text-decoration: none; color: inherit;
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: inherit; min-height: 32px;
+}
+.day-chip:hover { background: #d9fdd3; }
+.day-chip.active { background: var(--header); color: #fff; }
+.day-chip .count {
+  font-size: 11px; background: rgba(0,0,0,0.08);
+  padding: 1px 6px; border-radius: 10px;
+}
+.day-chip.active .count { background: rgba(255,255,255,0.25); }
+
+#backdrop {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.35);
+  z-index: 17;
+}
+#backdrop[hidden] { display: none; }
+
+.chat { max-width: 960px; margin: 0 auto; padding: 18px 14px 80px; }
+.date-divider { text-align: center; margin: 22px 0 14px; scroll-margin-top: 80px; }
+.date-divider span {
+  background: #ffffffd4; color: #54656f; font-size: 12.3px;
+  padding: 5px 12px; border-radius: 8px;
+  box-shadow: 0 1px 1px rgba(0,0,0,0.08);
+}
+.system-msg {
+  text-align: center; margin: 14px auto; max-width: 580px;
+  background: #fdf4c5; color: #54656f; font-size: 12.5px;
+  padding: 8px 14px; border-radius: 8px;
+  box-shadow: 0 1px 1px rgba(0,0,0,0.06);
+}
+.msg { display: flex; margin: 3px 0; }
+.msg-left { justify-content: flex-start; }
+.msg-right { justify-content: flex-end; }
+.bubble {
+  position: relative;
+  max-width: min(78%, 620px);
+  padding: 7px 10px 7px 11px; border-radius: 8px;
+  box-shadow: 0 1px 0.5px rgba(0,0,0,0.13);
+  word-wrap: break-word; overflow-wrap: anywhere;
+}
+.msg-left .bubble { background: var(--bubble-in); border-top-left-radius: 0; }
+.msg-right .bubble { background: var(--bubble-out); border-top-right-radius: 0; }
+.sender {
+  font-size: 12.7px; font-weight: 600; margin-bottom: 3px;
+}
+.text { white-space: pre-wrap; line-height: 1.4; }
+.text a { color: #027eb5; }
+.time {
+  font-size: 11px; color: var(--muted);
+  text-align: right; margin-top: 3px; user-select: none;
+}
+.attachment { margin: 4px 0; }
+.attachment + .attachment { margin-top: 6px; }
+.photo, .video {
+  max-width: 100%; max-height: 380px;
+  border-radius: 6px; display: block;
+}
+.video { width: 340px; max-width: 100%; background: #000; }
+.sticker { max-width: 160px; max-height: 160px; display: block; }
+.audio { width: 100%; min-width: 240px; max-width: 340px; display: block; }
+.file {
+  display: flex; align-items: center; gap: 10px;
+  background: rgba(0,0,0,0.06); padding: 10px 12px; border-radius: 8px;
+  text-decoration: none; color: inherit;
+  max-width: 360px;
+}
+.file:hover { background: rgba(0,0,0,0.1); }
+.file-icon { font-size: 22px; flex: 0 0 auto; }
+.file-name { word-break: break-all; font-size: 13.5px; }
+
+.empty-state {
+  text-align: center; color: var(--muted); padding: 40px 20px;
+  font-size: 14px;
+}
+.empty-state[hidden] { display: none; }
+
+@media (max-width: 700px) {
+  .chat-header { padding: 10px 12px; }
+  .title { font-size: 15px; }
+  .sub { font-size: 12px; }
+  .controls { gap: 6px; }
+  .controls input[type=date],
+  .controls button { padding: 7px 10px; font-size: 13.5px; min-height: 36px; }
+  .chat { padding: 12px 8px 80px; }
+  .bubble { max-width: 92%; padding: 6px 9px; }
+  .photo { max-height: 320px; }
+  .video { width: 100%; }
+
+  .hub { padding: 18px 14px 60px; }
+  .hub-header h1 { font-size: 22px; }
+  .chat-card { padding: 14px; gap: 12px; }
+  .card-icon { flex-basis: 48px; height: 48px; width: 48px; font-size: 24px; }
+  .card-title { font-size: 15px; }
+
+  #dates-panel {
+    top: auto; bottom: 0;
+    left: 0; right: 0;
+    border-radius: 16px 16px 0 0;
+    max-height: 75vh;
+    padding: 14px 14px 24px;
+  }
+  #dates-panel::before {
+    content: ""; display: block;
+    width: 36px; height: 4px; background: #ccc;
+    border-radius: 2px; margin: -4px auto 12px;
+  }
+}
+
+</style>
+</head>
+<body>
+
+<div class="hub">
+<header class="hub-header">
+<h1>WhatsApp архив</h1>
+<p>Выберите чат для просмотра</p>
+</header>
+<div class="chat-cards">
+<a class="chat-card" href="parinton.html"><div class="card-icon">👤</div><div class="card-body"><div class="card-title">+66 91 824 1010</div><div class="card-sub">Личный чат · ~PARINTON</div><div class="card-meta"><span>3458 сообщений</span><span>·</span><span>160 дней</span></div><div class="card-range">9 марта 2025 — 26 апреля 2026</div></div><div class="card-arrow">→</div></a>
+<a class="chat-card" href="beach-case.html"><div class="card-icon">👥</div><div class="card-body"><div class="card-title">Andrey Freedom — beach case</div><div class="card-sub">Группа · Алиса адвокат, NikitaBKK и др.</div><div class="card-meta"><span>340 сообщений</span><span>·</span><span>18 дней</span></div><div class="card-range">8 октября 2025 — 27 марта 2026</div></div><div class="card-arrow">→</div></a>
+</div></div>
+</body></html>
