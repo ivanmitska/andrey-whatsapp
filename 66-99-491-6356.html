@@ -1,0 +1,382 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WhatsApp — +66 99 491 6356</title>
+<style>
+
+:root {
+  --bg: #efeae2;
+  --header: #008069;
+  --header-2: #015e4f;
+  --bubble-in: #ffffff;
+  --bubble-out: #d9fdd3;
+  --text: #111b21;
+  --muted: #667781;
+}
+* { box-sizing: border-box; }
+html, body {
+  margin: 0; padding: 0; background: var(--bg); color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Segoe UI",
+               Roboto, "Noto Sans Thai", "Apple Color Emoji", sans-serif;
+  font-size: 14.5px;
+}
+body {
+  background-image:
+    radial-gradient(rgba(0,0,0,0.025) 1px, transparent 1px),
+    radial-gradient(rgba(0,0,0,0.025) 1px, transparent 1px);
+  background-size: 22px 22px, 22px 22px;
+  background-position: 0 0, 11px 11px;
+}
+
+/* ========== Hub (index.html) ========== */
+.hub { max-width: 720px; margin: 0 auto; padding: 28px 18px 60px; }
+.hub-header { text-align: center; padding: 18px 0 22px; }
+.hub-header h1 {
+  margin: 0 0 6px; color: var(--header);
+  font-size: 26px; font-weight: 700; letter-spacing: -0.3px;
+}
+.hub-header p { margin: 0; color: var(--muted); font-size: 14px; }
+.chat-cards { display: flex; flex-direction: column; gap: 12px; }
+.chat-card {
+  display: flex; align-items: center; gap: 14px;
+  background: #fff; padding: 16px; border-radius: 14px;
+  text-decoration: none; color: inherit;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+.chat-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.1);
+}
+.card-icon {
+  flex: 0 0 56px; height: 56px; width: 56px;
+  background: #d9fdd3; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 28px;
+}
+.card-body { flex: 1 1 auto; min-width: 0; }
+.card-title {
+  font-size: 16px; font-weight: 600;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.card-sub {
+  color: var(--muted); font-size: 13px; margin-top: 3px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.card-meta {
+  display: flex; gap: 6px; margin-top: 6px;
+  color: #54656f; font-size: 12.5px;
+}
+.card-range { color: #8a929b; font-size: 12px; margin-top: 2px; }
+.card-arrow { color: var(--header); font-size: 22px; flex: 0 0 auto; }
+
+/* ========== Chat page ========== */
+.chat-header {
+  position: sticky; top: 0; z-index: 20;
+  background: var(--header); color: #fff;
+  padding: 12px 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+.header-row {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; flex-wrap: wrap;
+}
+.title-block { min-width: 0; flex: 1 1 auto; }
+.back-link {
+  display: inline-block; color: #cbeee5;
+  text-decoration: none; font-size: 12.5px; margin-bottom: 2px;
+}
+.back-link:hover { color: #fff; }
+.title { font-weight: 600; font-size: 16px; line-height: 1.2; }
+.sub { font-size: 12.5px; opacity: 0.85; margin-top: 2px; }
+.controls { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.controls input[type=date],
+.controls button {
+  background: rgba(255,255,255,0.18);
+  color: #fff; border: 0;
+  padding: 8px 12px; border-radius: 8px;
+  font-size: 14px; font-family: inherit;
+  cursor: pointer; min-height: 38px;
+  -webkit-tap-highlight-color: transparent;
+}
+.controls input[type=date] { color-scheme: dark; }
+.controls button:hover,
+.controls input[type=date]:hover { background: rgba(255,255,255,0.28); }
+.controls button.primary { background: #fff; color: var(--header); font-weight: 600; }
+.controls button.primary:hover { background: #f0f0f0; }
+.controls button[hidden] { display: none; }
+.icon-btn { padding: 8px 10px !important; font-size: 16px; }
+
+#dates-panel {
+  position: fixed;
+  top: 78px; left: 0; right: 0;
+  background: #fff;
+  max-height: calc(100vh - 100px);
+  overflow-y: auto;
+  z-index: 18;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+  padding: 14px 16px 18px;
+  border-bottom: 1px solid #e3e3e3;
+}
+#dates-panel[hidden] { display: none; }
+.panel-hint { color: #54656f; font-size: 12.5px; margin: 0 0 10px; }
+.month-block { margin-bottom: 14px; }
+.month-block:last-child { margin-bottom: 0; }
+.month-title {
+  font-weight: 600; color: var(--header);
+  font-size: 13px; margin: 4px 0 8px;
+  text-transform: uppercase; letter-spacing: 0.4px;
+}
+.day-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.day-chip {
+  background: #f0f2f5; border: 0; padding: 7px 11px;
+  border-radius: 16px; font-size: 13px; cursor: pointer;
+  text-decoration: none; color: inherit;
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: inherit; min-height: 32px;
+}
+.day-chip:hover { background: #d9fdd3; }
+.day-chip.active { background: var(--header); color: #fff; }
+.day-chip .count {
+  font-size: 11px; background: rgba(0,0,0,0.08);
+  padding: 1px 6px; border-radius: 10px;
+}
+.day-chip.active .count { background: rgba(255,255,255,0.25); }
+
+#backdrop {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.35);
+  z-index: 17;
+}
+#backdrop[hidden] { display: none; }
+
+.chat { max-width: 960px; margin: 0 auto; padding: 18px 14px 80px; }
+.date-divider { text-align: center; margin: 22px 0 14px; scroll-margin-top: 80px; }
+.date-divider span {
+  background: #ffffffd4; color: #54656f; font-size: 12.3px;
+  padding: 5px 12px; border-radius: 8px;
+  box-shadow: 0 1px 1px rgba(0,0,0,0.08);
+}
+.system-msg {
+  text-align: center; margin: 14px auto; max-width: 580px;
+  background: #fdf4c5; color: #54656f; font-size: 12.5px;
+  padding: 8px 14px; border-radius: 8px;
+  box-shadow: 0 1px 1px rgba(0,0,0,0.06);
+}
+.msg { display: flex; margin: 3px 0; }
+.msg-left { justify-content: flex-start; }
+.msg-right { justify-content: flex-end; }
+.bubble {
+  position: relative;
+  max-width: min(78%, 620px);
+  padding: 7px 10px 7px 11px; border-radius: 8px;
+  box-shadow: 0 1px 0.5px rgba(0,0,0,0.13);
+  word-wrap: break-word; overflow-wrap: anywhere;
+}
+.msg-left .bubble { background: var(--bubble-in); border-top-left-radius: 0; }
+.msg-right .bubble { background: var(--bubble-out); border-top-right-radius: 0; }
+.sender {
+  font-size: 12.7px; font-weight: 600; margin-bottom: 3px;
+}
+.text { white-space: pre-wrap; line-height: 1.4; }
+.text a { color: #027eb5; }
+.time {
+  font-size: 11px; color: var(--muted);
+  text-align: right; margin-top: 3px; user-select: none;
+}
+.attachment { margin: 4px 0; }
+.attachment + .attachment { margin-top: 6px; }
+.photo, .video {
+  max-width: 100%; max-height: 380px;
+  border-radius: 6px; display: block;
+}
+.video { width: 340px; max-width: 100%; background: #000; }
+.sticker { max-width: 160px; max-height: 160px; display: block; }
+.audio { width: 100%; min-width: 240px; max-width: 340px; display: block; }
+.file {
+  display: flex; align-items: center; gap: 10px;
+  background: rgba(0,0,0,0.06); padding: 10px 12px; border-radius: 8px;
+  text-decoration: none; color: inherit;
+  max-width: 360px;
+}
+.file:hover { background: rgba(0,0,0,0.1); }
+.file-icon { font-size: 22px; flex: 0 0 auto; }
+.file-name { word-break: break-all; font-size: 13.5px; }
+
+.empty-state {
+  text-align: center; color: var(--muted); padding: 40px 20px;
+  font-size: 14px;
+}
+.empty-state[hidden] { display: none; }
+
+@media (max-width: 700px) {
+  .chat-header { padding: 10px 12px; }
+  .title { font-size: 15px; }
+  .sub { font-size: 12px; }
+  .controls { gap: 6px; }
+  .controls input[type=date],
+  .controls button { padding: 7px 10px; font-size: 13.5px; min-height: 36px; }
+  .chat { padding: 12px 8px 80px; }
+  .bubble { max-width: 92%; padding: 6px 9px; }
+  .photo { max-height: 320px; }
+  .video { width: 100%; }
+
+  .hub { padding: 18px 14px 60px; }
+  .hub-header h1 { font-size: 22px; }
+  .chat-card { padding: 14px; gap: 12px; }
+  .card-icon { flex-basis: 48px; height: 48px; width: 48px; font-size: 24px; }
+  .card-title { font-size: 15px; }
+
+  #dates-panel {
+    top: auto; bottom: 0;
+    left: 0; right: 0;
+    border-radius: 16px 16px 0 0;
+    max-height: 75vh;
+    padding: 14px 14px 24px;
+  }
+  #dates-panel::before {
+    content: ""; display: block;
+    width: 36px; height: 4px; background: #ccc;
+    border-radius: 2px; margin: -4px auto 12px;
+  }
+}
+
+</style>
+</head>
+<body>
+
+<header class="chat-header"><div class="header-row">
+<div class="title-block">
+<a class="back-link" href="index.html">‹ Все чаты</a>
+<div class="title">+66 99 491 6356</div>
+<div class="sub">Личный чат · Payong · 41 сообщений · 2 дней</div>
+</div>
+<div class="controls">
+<input type="date" id="datePicker" min="2025-10-18" max="2025-11-24" aria-label="Выбрать дату">
+<button id="togglePanel" class="icon-btn" aria-expanded="false" aria-controls="dates-panel" title="Все даты">📅</button>
+<button id="clearFilter" class="primary" hidden>Сброс</button>
+</div></div></header>
+<div id="backdrop" hidden></div>
+<aside id="dates-panel" hidden aria-label="Список дат">
+<p class="panel-hint">Выберите день — остальные сообщения скроются.</p>
+<div class="month-block">
+<div class="month-title">Октябрь 2025</div>
+<div class="day-chips">
+<a href="#d-2025-10-18" class="day-chip" data-date="2025-10-18"><span>18 октября</span><span class="count">17</span></a>
+</div></div>
+<div class="month-block">
+<div class="month-title">Ноябрь 2025</div>
+<div class="day-chips">
+<a href="#d-2025-11-24" class="day-chip" data-date="2025-11-24"><span>24 ноября</span><span class="count">23</span></a>
+</div></div>
+</aside>
+<main class="chat">
+<div id="empty-state" class="empty-state" hidden>За выбранный день нет сообщений.</div>
+<div class="date-divider" id="d-2025-10-18" data-date="2025-10-18"><span>18 октября 2025</span></div>
+<div class="system-msg" data-date="2025-10-18">Сообщения и звонки защищены сквозным шифрованием. Прочитать, прослушать или переслать их могут только участники этого чата.</div>
+<div class="msg msg-left" data-date="2025-10-18"><div class="bubble"><div class="sender" style="color:#1f7a8c">Payong</div><div class="text">Hi</div><div class="time">17:07</div></div></div>
+<div class="msg msg-left" data-date="2025-10-18"><div class="bubble"><div class="sender" style="color:#1f7a8c">Payong</div><div class="text">How are you</div><div class="time">17:07</div></div></div>
+<div class="msg msg-left" data-date="2025-10-18"><div class="bubble"><div class="sender" style="color:#1f7a8c">Payong</div><div class="text">Are you ok??</div><div class="time">17:08</div></div></div>
+<div class="msg msg-left" data-date="2025-10-18"><div class="bubble"><div class="sender" style="color:#1f7a8c">Payong</div><div class="text">tomorrow im working if you have time come see me our my office i have business to presentation you</div><div class="time">17:09</div></div></div>
+<div class="msg msg-right" data-date="2025-10-18"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">Hello</div><div class="time">17:53</div></div></div>
+<div class="msg msg-right" data-date="2025-10-18"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">It is all right</div><div class="time">17:53</div></div></div>
+<div class="msg msg-right" data-date="2025-10-18"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">Yes</div><div class="time">17:54</div></div></div>
+<div class="msg msg-left" data-date="2025-10-18"><div class="bubble"><div class="sender" style="color:#1f7a8c">Payong</div><div class="text">about home</div><div class="time">17:54</div></div></div>
+<div class="msg msg-right" data-date="2025-10-18"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">Yes, we&#x27;ll drive up with pleasure</div><div class="time">17:55</div></div></div>
+<div class="msg msg-left" data-date="2025-10-18"><div class="bubble"><div class="sender" style="color:#1f7a8c">Payong</div><div class="text">Ok</div><div class="time">17:55</div></div></div>
+<div class="msg msg-right" data-date="2025-10-18"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">We wanted to see you ourselves and we prepared something for you, so we are going to you tomorrow on our business to tell you something, it&#x27;s our personal</div><div class="time">17:56</div></div></div>
+<div class="msg msg-right" data-date="2025-10-18"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">We&#x27;re coming to you tomorrow without any business, but if you have things to do for us, we&#x27;re ready to discuss things too</div><div class="time">17:56</div></div></div>
+<div class="msg msg-right" data-date="2025-10-18"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">In a good sense, the word</div><div class="time">17:57</div></div></div>
+<div class="msg msg-right" data-date="2025-10-18"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">I guess what you want to talk about yesterday, the lawyers allowed us to take our things from the old house, but we had a tear there, we felt bad there because the food that had been lying in the house for a long time, in which we were not allowed to enter, I think you want to talk about it, in turn, we hired a company that will tidy up and clean it up like this</div><div class="time">18:05</div></div></div>
+<div class="msg msg-right" data-date="2025-10-18"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">But first we&#x27;ll check with the lawyers when we can do it because we don&#x27;t have the right to go into the house without permission</div><div class="time">18:06</div></div></div>
+<div class="msg msg-right" data-date="2025-10-18"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">Вы удалили данное сообщение.</div><div class="time">18:07</div></div></div>
+<div class="msg msg-right" data-date="2025-10-18"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">Вы удалили данное сообщение.</div><div class="time">18:08</div></div></div>
+<div class="date-divider" id="d-2025-11-24" data-date="2025-11-24"><span>24 ноября 2025</span></div>
+<div class="msg msg-right" data-date="2025-11-24"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">Payong Hello<br>This is Andrey, once we came to you with Vera and wrote an application, then rented a Toyota Forchuner car from you if you remember me</div><div class="time">15:17</div></div></div>
+<div class="msg msg-left" data-date="2025-11-24"><div class="bubble"><div class="sender" style="color:#1f7a8c">Payong</div><div class="text">Yes</div><div class="time">15:22</div></div></div>
+<div class="msg msg-left" data-date="2025-11-24"><div class="bubble"><div class="sender" style="color:#1f7a8c">Payong</div><div class="text">How are you</div><div class="time">15:22</div></div></div>
+<div class="msg msg-right" data-date="2025-11-24"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">I&#x27;m doing very badly, I&#x27;m in Russia, I&#x27;m undergoing treatment, I have a high temperature on nervous grounds or it&#x27;s some kind of virus, doctors can&#x27;t understand what&#x27;s happening to me</div><div class="time">15:23</div></div></div>
+<div class="msg msg-right" data-date="2025-11-24"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">I have already requested a peace agreement with Mr. Parinton from the lawyers.</div><div class="time">15:24</div></div></div>
+<div class="msg msg-right" data-date="2025-11-24"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">He didn&#x27;t give me a penny back, I bought three plots from him, I paid him for building a house, I paid him the total cost of 16,000,000 baht, but no one returned me anything, in the end, he borrowed another 200,000 baht from me and said that he would return them on the 30th, but did not return them, then he sent us with faith to Malaysia to get a work visa and we paid him his wife another 50,000 baht, but upon returning to Thailand, no one made us a work visa, we were completely deceived, I was completely robbed, I lost all the money I earned, I am in a deep depression</div><div class="time">15:25</div></div></div>
+<div class="msg msg-right" data-date="2025-11-24"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">I just want Thailand to be open to me, I love Thailand very much, I have already come to terms with the fact that he cheated me for a lot of money and I have problems in my family, we have to pay in cash, we have to pay for school, we have to pay for the boarding house of the entrusted mother, but we spent all the money and now we are in a very difficult situation</div><div class="time">15:26</div></div></div>
+<div class="msg msg-right" data-date="2025-11-24"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">If you could somehow help me in this matter, I would sincerely thank you, I&#x27;m not a greedy person, I paid a lot of money, but no one returned anything to us</div><div class="time">15:27</div></div></div>
+<div class="msg msg-right" data-date="2025-11-24"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">You said that he would return the money to my parents, my parents are very old people and it&#x27;s hard for them to come to Thailand, but he personally promised you that he would return the money, but he didn&#x27;t return a penny</div><div class="time">15:28</div></div></div>
+<div class="msg msg-right" data-date="2025-11-24"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">He openly threatens me on the Internet to put me and faith in prison, they wrote to us threateningly, he calls himself a real gangster, we don&#x27;t feel safe, we are in a very difficult state and the situation is very difficult because we are under aggression</div><div class="time">15:30</div></div></div>
+<div class="msg msg-right" data-date="2025-11-24"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="attachment"><a class="img-link" href="WhatsApp%20Chat%20-%20%2B66%2099%20491%206356/00000029-PHOTO-2025-11-24-15-31-11.jpg" target="_blank"><img class="photo" loading="lazy" src="WhatsApp%20Chat%20-%20%2B66%2099%20491%206356/00000029-PHOTO-2025-11-24-15-31-11.jpg" alt=""></a></div><div class="time">15:31</div></div></div>
+<div class="msg msg-right" data-date="2025-11-24"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="attachment"><a class="img-link" href="WhatsApp%20Chat%20-%20%2B66%2099%20491%206356/00000030-PHOTO-2025-11-24-15-31-11.jpg" target="_blank"><img class="photo" loading="lazy" src="WhatsApp%20Chat%20-%20%2B66%2099%20491%206356/00000030-PHOTO-2025-11-24-15-31-11.jpg" alt=""></a></div><div class="time">15:31</div></div></div>
+<div class="msg msg-right" data-date="2025-11-24"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="attachment"><a class="img-link" href="WhatsApp%20Chat%20-%20%2B66%2099%20491%206356/00000031-PHOTO-2025-11-24-15-31-11.jpg" target="_blank"><img class="photo" loading="lazy" src="WhatsApp%20Chat%20-%20%2B66%2099%20491%206356/00000031-PHOTO-2025-11-24-15-31-11.jpg" alt=""></a></div><div class="time">15:31</div></div></div>
+<div class="msg msg-right" data-date="2025-11-24"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="attachment"><a class="img-link" href="WhatsApp%20Chat%20-%20%2B66%2099%20491%206356/00000032-PHOTO-2025-11-24-15-31-11.jpg" target="_blank"><img class="photo" loading="lazy" src="WhatsApp%20Chat%20-%20%2B66%2099%20491%206356/00000032-PHOTO-2025-11-24-15-31-11.jpg" alt=""></a></div><div class="time">15:31</div></div></div>
+<div class="msg msg-right" data-date="2025-11-24"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">We are already ready to agree not to get our money back, we already agree to any conditions as long as they lag behind us and let us live in peace, we love Thailand and want to live in Thailand, so I want to peacefully agree with him that peace will come</div><div class="time">15:32</div></div></div>
+<div class="msg msg-right" data-date="2025-11-24"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">He looked into the eyes of my wife whose name is Vera and said that the wedding would be in a new house, but in the end everything happened, otherwise we were deceived, nothing was returned to us, we have nothing that we bought and what he promised to build, we played a wedding in a rented house and it was very hard for us to play a wedding because we had no money, but we were looking for it in Russia to play a wedding in Thailand</div><div class="time">15:33</div></div></div>
+<div class="msg msg-right" data-date="2025-11-24"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">We love Thailand very much and want everything to end peacefully, we really want everything to stop as soon as possible and peace to come</div><div class="time">15:33</div></div></div>
+<div class="msg msg-right" data-date="2025-11-24"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">We found a lot of information on the Internet about the victims, apparently we became a part of what is happening on Freedom Beach and I regret these events are killing our family</div><div class="time">15:34</div></div></div>
+<div class="msg msg-right" data-date="2025-11-24"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">If he is honest with you and told you that he will return the money to my parents, then my very old parents are ready to come to Thailand for him to return the money if he keeps his word he gave you</div><div class="time">15:43</div></div></div>
+<div class="msg msg-right" data-date="2025-11-24"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">Вы удалили данное сообщение.</div><div class="time">15:44</div></div></div>
+<div class="msg msg-right" data-date="2025-11-24"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">But I just want peace, I want peace to come, I want no one to get hurt, I want everything to be fair and for it to end peacefully as soon as possible, we don&#x27;t demand money, we want a peaceful solution to the problem, he himself offered to return the money to my parents, he told you that he would return the money to my parents</div><div class="time">16:54</div></div></div>
+<div class="msg msg-right" data-date="2025-11-24"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">If he says that he is an honest person and he told you that he will return the money to my parents, then let him return the money to my parents, my parents are very old, but they are ready to come to Thailand for him to return the money because he promised you that he will return the money to my parents</div><div class="time">16:55</div></div></div>
+<div class="msg msg-right" data-date="2025-11-24"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">But I just want peace if he wants to return the money he can return it but I want peace and I want this situation to end soon our family is suffering if you can somehow help in this situation please help</div><div class="time">16:56</div></div></div>
+</main>
+<script>
+(function() {
+  const datePicker = document.getElementById('datePicker');
+  const clearBtn   = document.getElementById('clearFilter');
+  const toggleBtn  = document.getElementById('togglePanel');
+  const panel      = document.getElementById('dates-panel');
+  const backdrop   = document.getElementById('backdrop');
+  const empty      = document.getElementById('empty-state');
+  const items      = document.querySelectorAll('.msg, .date-divider, .system-msg');
+
+  function setPanel(open) {
+    panel.hidden = !open;
+    backdrop.hidden = !open;
+    toggleBtn.setAttribute('aria-expanded', String(open));
+    document.body.style.overflow = open ? 'hidden' : '';
+  }
+
+  function applyFilter(date, opts) {
+    opts = opts || {};
+    let visible = 0;
+    items.forEach(el => {
+      const match = !date || el.dataset.date === date;
+      el.style.display = match ? '' : 'none';
+      if (match) visible++;
+    });
+    document.querySelectorAll('.day-chip').forEach(c => {
+      c.classList.toggle('active', !!date && c.dataset.date === date);
+    });
+    clearBtn.hidden = !date;
+    datePicker.value = date || '';
+    empty.hidden = visible > 0;
+
+    if (date && opts.scroll !== false) {
+      const target = document.getElementById('d-' + date);
+      if (target) {
+        setTimeout(() => target.scrollIntoView({block: 'start'}), 30);
+      }
+    }
+  }
+
+  datePicker.addEventListener('change', e => {
+    applyFilter(e.target.value);
+    setPanel(false);
+  });
+  clearBtn.addEventListener('click', () => {
+    applyFilter('');
+    setPanel(false);
+  });
+  toggleBtn.addEventListener('click', () => setPanel(panel.hidden));
+  backdrop.addEventListener('click', () => setPanel(false));
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && !panel.hidden) setPanel(false);
+  });
+  panel.addEventListener('click', e => {
+    const chip = e.target.closest('.day-chip');
+    if (chip) {
+      e.preventDefault();
+      applyFilter(chip.dataset.date);
+      setPanel(false);
+    }
+  });
+})();
+</script>
+</body></html>

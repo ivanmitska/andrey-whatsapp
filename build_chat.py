@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
-"""Build readable HTML views of multiple WhatsApp chat exports + landing page."""
+"""Build readable HTML views of all WhatsApp chat exports + landing page.
+
+Auto-discovers any folder named ``WhatsApp Chat - <name>`` that contains
+``_chat.txt`` and generates one HTML page per chat plus an ``index.html``
+hub. No code changes needed when new chat folders are dropped in.
+"""
 import re
 import html
 from collections import OrderedDict
@@ -7,27 +12,8 @@ from pathlib import Path
 from urllib.parse import quote
 
 ROOT = Path(__file__).resolve().parent
-
-CHATS = [
-    {
-        "dir": "WhatsApp Chat - +66 91 824 1010",
-        "out": "parinton.html",
-        "title": "+66 91 824 1010",
-        "subtitle": "Личный чат · ~PARINTON",
-        "icon": "👤",
-        "system_sender": None,
-    },
-    {
-        "dir": "WhatsApp Chat - Andrey Freedom  beach case",
-        "out": "beach-case.html",
-        "title": "Andrey Freedom — beach case",
-        "subtitle": "Группа · Алиса адвокат, NikitaBKK и др.",
-        "icon": "👥",
-        "system_sender": "Andrey Freedom  beach case",
-    },
-]
-
-ME = "🌏"  # always on right with green bubble
+CHAT_PREFIX = "WhatsApp Chat - "
+ME = "🌏"  # always rendered on right with green bubble
 
 LRM = "‎"
 MSG_RE = re.compile(
@@ -61,6 +47,23 @@ SENDER_NAME_COLORS = [
     "#a14545", "#a87800", "#1f5fc8", "#8e44ad",
     "#16a085", "#d35400", "#7f8c8d", "#c0392b",
 ]
+
+CYRILLIC_TR = {
+    'а':'a','б':'b','в':'v','г':'g','д':'d','е':'e','ё':'e','ж':'zh',
+    'з':'z','и':'i','й':'i','к':'k','л':'l','м':'m','н':'n','о':'o',
+    'п':'p','р':'r','с':'s','т':'t','у':'u','ф':'f','х':'h','ц':'ts',
+    'ч':'ch','ш':'sh','щ':'sch','ъ':'','ы':'y','ь':'','э':'e','ю':'yu','я':'ya',
+}
+
+
+def slugify(name: str) -> str:
+    s = name.lower()
+    out = []
+    for ch in s:
+        out.append(CYRILLIC_TR.get(ch, ch))
+    s = "".join(out)
+    s = re.sub(r"[^a-z0-9]+", "-", s).strip("-")
+    return s or "chat"
 
 
 def parse_messages(txt_path: Path):
@@ -105,6 +108,10 @@ def media_kind(fname: str) -> str:
         return "pdf"
     if f.endswith(".vcf"):
         return "vcf"
+    if f.endswith((".doc", ".docx", ".xls", ".xlsx", ".ppt", ".pptx")):
+        return "office"
+    if f.endswith((".zip", ".rar", ".7z", ".tar", ".gz")):
+        return "archive"
     return "file"
 
 
@@ -129,6 +136,14 @@ def render_attachment(fname: str, chat_dir_name: str) -> str:
     if kind == "vcf":
         return (f'<a class="file vcf" href="{href}" target="_blank">'
                 f'<span class="file-icon">👤</span>'
+                f'<span class="file-name">{nm}</span></a>')
+    if kind == "office":
+        return (f'<a class="file office" href="{href}" target="_blank">'
+                f'<span class="file-icon">📝</span>'
+                f'<span class="file-name">{nm}</span></a>')
+    if kind == "archive":
+        return (f'<a class="file archive" href="{href}" target="_blank">'
+                f'<span class="file-icon">🗜️</span>'
                 f'<span class="file-name">{nm}</span></a>')
     return (f'<a class="file" href="{href}" target="_blank">'
             f'<span class="file-icon">📎</span>'
@@ -157,38 +172,85 @@ def fmt_time(msg) -> str:
     return f"{msg['hh']:02d}:{msg['mm']:02d}"
 
 
-def is_group_system(text: str, attachments, chat) -> bool:
-    if attachments:
-        return False
-    if not text:
+def is_group_system(text: str, attachments) -> bool:
+    if attachments or not text:
         return False
     return any(p in text for p in SYSTEM_PATTERNS)
 
 
-def render_chat_page(chat: dict) -> dict:
-    """Build one chat HTML, return stats."""
-    chat_dir_name = chat["dir"]
-    chat_dir = ROOT / chat_dir_name
-    txt = chat_dir / "_chat.txt"
-    out_path = ROOT / chat["out"]
-    msgs = parse_messages(txt)
+def discover_chats():
+    found = []
+    for entry in sorted(ROOT.iterdir()):
+        if not entry.is_dir() or not entry.name.startswith(CHAT_PREFIX):
+            continue
+        txt = entry / "_chat.txt"
+        if not txt.exists():
+            continue
+        msgs = parse_messages(txt)
+        if not msgs:
+            continue
+        found.append(make_chat_config(entry, msgs))
+    return found
 
-    # Collect senders excluding ME and group system sender
+
+def make_chat_config(folder: Path, msgs: list) -> dict:
+    name = folder.name[len(CHAT_PREFIX):].strip()
+    slug = slugify(name)
+
+    senders_seen = []
+    seen = set()
+    for m in msgs:
+        s = m["sender"]
+        if s not in seen:
+            seen.add(s)
+            senders_seen.append(s)
+
+    system_candidate = name if name in seen else None
+    other = [s for s in senders_seen if s != ME and s != system_candidate]
+    is_group = len(other) >= 2
+
+    if is_group:
+        icon = "👥"
+        names_str = ", ".join(other[:3])
+        if len(other) > 3:
+            names_str += f" +{len(other) - 3}"
+        subtitle = f"Группа · {names_str}"
+        system_sender = system_candidate
+    else:
+        icon = "👤"
+        system_sender = None
+        if other:
+            subtitle = f"Личный чат · {other[0]}"
+        else:
+            subtitle = "Личный чат"
+
+    return {
+        "dir": folder.name,
+        "out": f"{slug}.html",
+        "title": name,
+        "subtitle": subtitle,
+        "icon": icon,
+        "system_sender": system_sender,
+        "is_group": is_group,
+        "msgs": msgs,
+    }
+
+
+def render_chat_page(chat: dict) -> dict:
+    chat_dir_name = chat["dir"]
+    out_path = ROOT / chat["out"]
+    msgs = chat["msgs"]
+
     senders_seen = OrderedDict()
     for m in msgs:
         s = m["sender"]
-        if s == ME:
+        if s == ME or (chat["system_sender"] and s == chat["system_sender"]):
             continue
-        if chat.get("system_sender") and s == chat["system_sender"]:
-            continue
-        if s not in senders_seen:
-            senders_seen[s] = True
+        senders_seen.setdefault(s, True)
     other_senders = list(senders_seen.keys())
-    sender_color = {}
-    for i, s in enumerate(other_senders):
-        sender_color[s] = SENDER_NAME_COLORS[i % len(SENDER_NAME_COLORS)]
+    sender_color = {s: SENDER_NAME_COLORS[i % len(SENDER_NAME_COLORS)]
+                    for i, s in enumerate(other_senders)}
 
-    # Pre-process messages
     rendered_msgs = []
     day_count = {}
     for m in msgs:
@@ -197,9 +259,9 @@ def render_chat_page(chat: dict) -> dict:
         text_only = ATTACH_RE.sub("", body).strip().replace(LRM, "").strip()
 
         is_sys = False
-        if chat.get("system_sender") and m["sender"] == chat["system_sender"]:
+        if chat["system_sender"] and m["sender"] == chat["system_sender"]:
             is_sys = True
-        elif is_group_system(text_only, attachments, chat):
+        elif is_group_system(text_only, attachments):
             is_sys = True
 
         if not text_only and not attachments and not is_sys:
@@ -219,21 +281,26 @@ def render_chat_page(chat: dict) -> dict:
         ym = k[:7]
         months.setdefault(ym, []).append(k)
 
-    # Compose HTML
     title = chat["title"]
     subtitle = chat["subtitle"]
-    senders_label = ", ".join([ME] + other_senders) if other_senders else ME
 
-    out = [build_head(f"WhatsApp Chat — {title}")]
+    out = [build_head(f"WhatsApp — {title}")]
     out.append('<header class="chat-header"><div class="header-row">')
     out.append('<div class="title-block">')
     out.append('<a class="back-link" href="index.html">‹ Все чаты</a>')
     out.append(f'<div class="title">{html.escape(title)}</div>')
-    out.append(f'<div class="sub">{html.escape(subtitle)} · {len(rendered_msgs)} сообщений · {len(sorted_days)} дней</div>')
+    out.append(
+        f'<div class="sub">{html.escape(subtitle)} · '
+        f'{len(rendered_msgs)} сообщений · {len(sorted_days)} дней</div>'
+    )
     out.append('</div>')
     out.append('<div class="controls">')
-    out.append(f'<input type="date" id="datePicker" min="{min_date}" max="{max_date}" aria-label="Выбрать дату">')
-    out.append('<button id="togglePanel" class="icon-btn" aria-expanded="false" aria-controls="dates-panel" title="Все даты">📅</button>')
+    out.append(
+        f'<input type="date" id="datePicker" min="{min_date}" max="{max_date}" '
+        f'aria-label="Выбрать дату">'
+    )
+    out.append('<button id="togglePanel" class="icon-btn" aria-expanded="false" '
+               'aria-controls="dates-panel" title="Все даты">📅</button>')
     out.append('<button id="clearFilter" class="primary" hidden>Сброс</button>')
     out.append('</div></div></header>')
 
@@ -257,7 +324,8 @@ def render_chat_page(chat: dict) -> dict:
     out.append('</aside>')
 
     out.append('<main class="chat">')
-    out.append('<div id="empty-state" class="empty-state" hidden>За выбранный день нет сообщений.</div>')
+    out.append('<div id="empty-state" class="empty-state" hidden>'
+               'За выбранный день нет сообщений.</div>')
 
     last_date = None
     for m, attachments, text_only, is_sys in rendered_msgs:
@@ -286,9 +354,11 @@ def render_chat_page(chat: dict) -> dict:
             name_color = sender_color.get(sender, SENDER_NAME_COLORS[0])
 
         bubble = [f'<div class="msg msg-{side}" data-date="{dkey}"><div class="bubble">']
-        bubble.append(f'<div class="sender" style="color:{name_color}">{html.escape(sender)}</div>')
+        bubble.append(f'<div class="sender" style="color:{name_color}">'
+                      f'{html.escape(sender)}</div>')
         for fname in attachments:
-            bubble.append(f'<div class="attachment">{render_attachment(fname, chat_dir_name)}</div>')
+            bubble.append(f'<div class="attachment">'
+                          f'{render_attachment(fname, chat_dir_name)}</div>')
         if text_only:
             bubble.append(f'<div class="text">{render_text(text_only)}</div>')
         bubble.append(f'<div class="time">{fmt_time(m)}</div>')
@@ -313,7 +383,7 @@ def build_index(chat_stats):
     out.append('<div class="hub">')
     out.append('<header class="hub-header">')
     out.append('<h1>WhatsApp архив</h1>')
-    out.append('<p>Выберите чат для просмотра</p>')
+    out.append(f'<p>{len(chat_stats)} чатов</p>')
     out.append('</header>')
     out.append('<div class="chat-cards">')
     for chat, stats in chat_stats:
@@ -322,9 +392,8 @@ def build_index(chat_stats):
         subtitle = html.escape(chat["subtitle"])
         icon = chat["icon"]
         if stats["min_date"]:
-            min_label = format_iso_date(stats["min_date"])
-            max_label = format_iso_date(stats["max_date"])
-            range_label = f"{min_label} — {max_label}"
+            range_label = (f"{format_iso_date(stats['min_date'])} — "
+                           f"{format_iso_date(stats['max_date'])}")
         else:
             range_label = "—"
         out.append(
@@ -334,8 +403,7 @@ def build_index(chat_stats):
             f'<div class="card-title">{title}</div>'
             f'<div class="card-sub">{subtitle}</div>'
             f'<div class="card-meta">'
-            f'<span>{stats["messages"]} сообщений</span>'
-            f'<span>·</span>'
+            f'<span>{stats["messages"]} сообщений</span><span>·</span>'
             f'<span>{stats["days"]} дней</span>'
             f'</div>'
             f'<div class="card-range">{range_label}</div>'
@@ -394,9 +462,7 @@ body {
 }
 
 /* ========== Hub (index.html) ========== */
-.hub {
-  max-width: 720px; margin: 0 auto; padding: 28px 18px 60px;
-}
+.hub { max-width: 720px; margin: 0 auto; padding: 28px 18px 60px; }
 .hub-header { text-align: center; padding: 18px 0 22px; }
 .hub-header h1 {
   margin: 0 0 6px; color: var(--header);
@@ -676,15 +742,18 @@ CHAT_SCRIPT_FOOT = """<script>
 
 
 def main():
+    chats = discover_chats()
+    print(f"Discovered {len(chats)} chat folder(s).")
     chat_stats = []
-    for chat in CHATS:
-        chat_dir = ROOT / chat["dir"]
-        if not chat_dir.exists():
-            print(f"SKIP: {chat['dir']} (folder missing)")
-            continue
+    for chat in chats:
         stats = render_chat_page(chat)
         chat_stats.append((chat, stats))
-        print(f"  → {chat['out']}: {stats['messages']} messages, {stats['days']} days, senders: {stats['senders']}")
+        kind = "group" if chat["is_group"] else "personal"
+        print(f"  → {chat['out']:30s} [{kind}] "
+              f"{stats['messages']} msgs, {stats['days']} days "
+              f"({len(stats['senders'])} senders)")
+    # Sort hub by message count descending (most active first)
+    chat_stats.sort(key=lambda cs: cs[1]["messages"], reverse=True)
     build_index(chat_stats)
     print(f"  → index.html: {len(chat_stats)} chats")
 
