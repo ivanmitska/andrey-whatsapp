@@ -12,14 +12,24 @@ from pathlib import Path
 from urllib.parse import quote
 
 ROOT = Path(__file__).resolve().parent
-CHAT_PREFIX = "WhatsApp Chat - "
-ME = "🌏"  # always rendered on right with green bubble
+CHAT_PREFIXES = (
+    "WhatsApp Chat - ",          # iOS export, English locale
+    "Чат WhatsApp с контактом ",  # Android export, Russian locale
+)
+ME_NAMES = {"🌏", "Андрей"}  # any of these is rendered on right as "me"
 
 LRM = "‎"
-MSG_RE = re.compile(
+
+# iOS:     [9/3/68, 13:41:40] ~PARINTON: text  (Buddhist year, brackets, seconds)
+MSG_RE_IOS = re.compile(
     r'^‎?\[(\d{1,2})/(\d{1,2})/(\d{2,4}),\s*(\d{1,2}):(\d{2}):(\d{2})\]\s+([^:]+?):\s?(.*)$'
 )
-ATTACH_RE = re.compile(r'‎?<прикреплено:\s*([^>]+)>')
+# Android: 24.12.2025, 03:13 - Sender: text  (full year, dots, no seconds, sender optional)
+MSG_RE_ANDROID = re.compile(
+    r'^‎?(\d{1,2})\.(\d{1,2})\.(\d{4}),\s*(\d{1,2}):(\d{2})\s*-\s*(?:([^:]{1,80}?):\s)?(.*)$'
+)
+ATTACH_RE_IOS = re.compile(r'‎?<прикреплено:\s*([^>]+)>')
+ATTACH_RE_ANDROID = re.compile(r'‎?([^\n]+?)\s*\(файл добавлен\)')
 PREFIX_RE = re.compile(r'^\d+-')
 URL_RE = re.compile(r'(https?://[^\s<>"]+)')
 
@@ -66,23 +76,45 @@ def slugify(name: str) -> str:
     return s or "chat"
 
 
-def parse_messages(txt_path: Path):
+def detect_format(raw: str) -> str:
+    head = raw[:2000]
+    if re.search(r'^‎?\[\d{1,2}/\d{1,2}/\d{2,4},', head, re.MULTILINE):
+        return "ios"
+    if re.search(r'^‎?\d{1,2}\.\d{1,2}\.\d{4},', head, re.MULTILINE):
+        return "android"
+    return "ios"
+
+
+def parse_messages(txt_path: Path, fmt: str = None):
     raw = txt_path.read_text(encoding="utf-8")
+    if fmt is None:
+        fmt = detect_format(raw)
+    regex = MSG_RE_ANDROID if fmt == "android" else MSG_RE_IOS
+
     msgs = []
     cur = None
     for line in raw.splitlines():
-        m = MSG_RE.match(line)
+        m = regex.match(line)
         if m:
             if cur is not None:
                 msgs.append(cur)
-            d, mo, y, h, mi, s, sender, body = m.groups()
-            year = int(y)
-            if year < 100:
-                year += 1957  # Buddhist 2-digit -> Gregorian (2568 -> 2025)
-            cleaned_sender = sender.strip().lstrip("~").strip()
+            if fmt == "android":
+                d, mo, y, h, mi, sender, body = m.groups()
+                second = 0
+                year = int(y)
+            else:
+                d, mo, y, h, mi, s, sender, body = m.groups()
+                second = int(s)
+                year = int(y)
+                if year < 100:
+                    year += 1957  # Buddhist 2-digit -> Gregorian (2568 -> 2025)
+            if sender is not None:
+                cleaned_sender = sender.strip().lstrip("~").strip()
+            else:
+                cleaned_sender = ""  # system event with no explicit sender
             cur = {
                 "d": int(d), "m": int(mo), "y": year,
-                "hh": int(h), "mm": int(mi), "ss": int(s),
+                "hh": int(h), "mm": int(mi), "ss": second,
                 "sender": cleaned_sender,
                 "body": body,
             }
@@ -92,6 +124,28 @@ def parse_messages(txt_path: Path):
     if cur is not None:
         msgs.append(cur)
     return msgs
+
+
+def find_txt(folder: Path):
+    """Return the chat txt path for a folder, or None."""
+    candidate = folder / "_chat.txt"
+    if candidate.exists():
+        return candidate
+    txts = sorted(folder.glob("*.txt"))
+    return txts[0] if txts else None
+
+
+def folder_display_name(folder_name: str) -> str:
+    """Return the chat name with prefix stripped, preserving original whitespace.
+
+    Whitespace must stay as-is so system_sender matching against actual
+    senders (e.g. group names with double spaces) keeps working.
+    """
+    normalized = _normalize_ws(folder_name)
+    for prefix in CHAT_PREFIXES:
+        if normalized.startswith(prefix):
+            return folder_name[len(prefix):].strip()
+    return folder_name.strip()
 
 
 def media_kind(fname: str) -> str:
@@ -178,35 +232,46 @@ def is_group_system(text: str, attachments) -> bool:
     return any(p in text for p in SYSTEM_PATTERNS)
 
 
+def _normalize_ws(s: str) -> str:
+    return re.sub(r"\s+", " ", s)
+
+
 def discover_chats():
     found = []
     for entry in sorted(ROOT.iterdir()):
-        if not entry.is_dir() or not entry.name.startswith(CHAT_PREFIX):
+        if not entry.is_dir():
             continue
-        txt = entry / "_chat.txt"
-        if not txt.exists():
+        normalized = _normalize_ws(entry.name)
+        if not any(normalized.startswith(p) for p in CHAT_PREFIXES):
             continue
-        msgs = parse_messages(txt)
+        txt = find_txt(entry)
+        if not txt:
+            continue
+        raw = txt.read_text(encoding="utf-8")
+        fmt = detect_format(raw)
+        msgs = parse_messages(txt, fmt)
         if not msgs:
             continue
-        found.append(make_chat_config(entry, msgs))
+        found.append(make_chat_config(entry, msgs, fmt))
     return found
 
 
-def make_chat_config(folder: Path, msgs: list) -> dict:
-    name = folder.name[len(CHAT_PREFIX):].strip()
+def make_chat_config(folder: Path, msgs: list, fmt: str) -> dict:
+    name = folder_display_name(folder.name)
     slug = slugify(name)
 
     senders_seen = []
     seen = set()
     for m in msgs:
         s = m["sender"]
-        if s not in seen:
-            seen.add(s)
-            senders_seen.append(s)
+        if not s or s in seen:
+            continue
+        seen.add(s)
+        senders_seen.append(s)
 
     system_candidate = name if name in seen else None
-    other = [s for s in senders_seen if s != ME and s != system_candidate]
+    other = [s for s in senders_seen
+             if s not in ME_NAMES and s != system_candidate]
     is_group = len(other) >= 2
 
     if is_group:
@@ -232,6 +297,7 @@ def make_chat_config(folder: Path, msgs: list) -> dict:
         "icon": icon,
         "system_sender": system_sender,
         "is_group": is_group,
+        "fmt": fmt,
         "msgs": msgs,
     }
 
@@ -240,11 +306,14 @@ def render_chat_page(chat: dict) -> dict:
     chat_dir_name = chat["dir"]
     out_path = ROOT / chat["out"]
     msgs = chat["msgs"]
+    attach_re = ATTACH_RE_ANDROID if chat["fmt"] == "android" else ATTACH_RE_IOS
 
     senders_seen = OrderedDict()
     for m in msgs:
         s = m["sender"]
-        if s == ME or (chat["system_sender"] and s == chat["system_sender"]):
+        if not s:
+            continue
+        if s in ME_NAMES or (chat["system_sender"] and s == chat["system_sender"]):
             continue
         senders_seen.setdefault(s, True)
     other_senders = list(senders_seen.keys())
@@ -255,11 +324,13 @@ def render_chat_page(chat: dict) -> dict:
     day_count = {}
     for m in msgs:
         body = m["body"]
-        attachments = ATTACH_RE.findall(body)
-        text_only = ATTACH_RE.sub("", body).strip().replace(LRM, "").strip()
+        attachments = attach_re.findall(body)
+        text_only = attach_re.sub("", body).strip().replace(LRM, "").strip()
 
         is_sys = False
-        if chat["system_sender"] and m["sender"] == chat["system_sender"]:
+        if not m["sender"]:
+            is_sys = True  # system event with no explicit sender (Android format)
+        elif chat["system_sender"] and m["sender"] == chat["system_sender"]:
             is_sys = True
         elif is_group_system(text_only, attachments):
             is_sys = True
@@ -346,7 +417,7 @@ def render_chat_page(chat: dict) -> dict:
             continue
 
         sender = m["sender"]
-        if sender == ME:
+        if sender in ME_NAMES:
             side = "right"
             name_color = "#06796b"
         else:
@@ -374,7 +445,7 @@ def render_chat_page(chat: dict) -> dict:
         "days": len(sorted_days),
         "min_date": min_date,
         "max_date": max_date,
-        "senders": [ME] + other_senders,
+        "senders": ["me"] + other_senders,
     }
 
 
