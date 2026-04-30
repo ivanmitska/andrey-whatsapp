@@ -209,6 +209,228 @@ body {
 }
 .empty-state[hidden] { display: none; }
 
+/* ========== Nav drawer ========== */
+#nav-drawer {
+  position: fixed; top: 0; left: 0; bottom: 0;
+  width: 320px; max-width: 88vw;
+  background: #fff; z-index: 30;
+  box-shadow: 4px 0 20px rgba(0,0,0,0.18);
+  overflow-y: auto;
+  display: flex; flex-direction: column;
+}
+#nav-drawer[hidden] { display: none; }
+.drawer-h {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 18px;
+  background: var(--header); color: #fff;
+  position: sticky; top: 0;
+}
+.drawer-h .icon-btn {
+  background: rgba(255,255,255,0.18); color: #fff;
+  border: 0; border-radius: 8px;
+  padding: 6px 10px; font-size: 14px; cursor: pointer;
+}
+.drawer-h .icon-btn:hover { background: rgba(255,255,255,0.28); }
+.drawer-title { font-weight: 600; font-size: 16px; }
+.drawer-home {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 18px;
+  text-decoration: none; color: inherit;
+  border-bottom: 1px solid #eee;
+  font-size: 14.5px;
+}
+.drawer-home:hover { background: #f5f5f5; }
+.dh-icon { font-size: 18px; }
+.drawer-section {
+  padding: 14px 18px 6px;
+  font-size: 11.5px; font-weight: 600;
+  color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px;
+}
+.drawer-chats { display: flex; flex-direction: column; padding-bottom: 16px; }
+.drawer-chat {
+  display: flex; align-items: center; gap: 12px;
+  padding: 11px 18px;
+  text-decoration: none; color: inherit;
+  border-left: 3px solid transparent;
+  transition: background 0.1s;
+}
+.drawer-chat:hover { background: #f5f5f5; }
+.drawer-chat.active {
+  background: #e7f7e7;
+  border-left-color: var(--header);
+  pointer-events: none;
+}
+.dc-icon {
+  flex: 0 0 38px; height: 38px; width: 38px;
+  background: #d9fdd3; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 19px;
+}
+.dc-info { display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1 1 auto; }
+.dc-name {
+  font-weight: 600; font-size: 14px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.dc-meta { color: var(--muted); font-size: 12px; }
+#nav-backdrop {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.4);
+  z-index: 29;
+}
+#nav-backdrop[hidden] { display: none; }
+
+.menu-btn {
+  background: rgba(255,255,255,0.18) !important;
+  color: #fff !important;
+  font-size: 18px !important;
+  flex: 0 0 auto;
+}
+
+/* ========== Tabs ========== */
+.tabs {
+  display: flex;
+  background: #fff;
+  position: sticky; top: 78px; z-index: 15;
+  border-bottom: 1px solid #e5e7eb;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+  padding: 0 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.tabs::-webkit-scrollbar { display: none; }
+.tab {
+  background: transparent; border: 0;
+  padding: 12px 14px;
+  font-size: 14px; font-family: inherit;
+  cursor: pointer; color: #54656f;
+  display: flex; align-items: center; gap: 6px;
+  border-bottom: 2px solid transparent;
+  white-space: nowrap;
+}
+.tab:hover { color: var(--header); }
+.tab.active {
+  color: var(--header);
+  border-bottom-color: var(--header);
+  font-weight: 600;
+}
+.tab-count {
+  font-size: 11.5px;
+  background: #f0f2f5;
+  padding: 1px 7px;
+  border-radius: 10px;
+  min-width: 20px;
+  text-align: center;
+}
+.tab.active .tab-count { background: #d9fdd3; }
+[data-tab-content][hidden] { display: none; }
+
+/* Hide filter controls outside messages tab */
+body[data-active-tab="media"] .controls,
+body[data-active-tab="docs"] .controls { display: none; }
+
+/* ========== Media tab ========== */
+.media-wrap { max-width: 1080px; margin: 0 auto; padding-bottom: 60px; }
+.media-day { padding: 16px 14px 0; }
+.media-day-title {
+  font-size: 12.5px; color: #54656f;
+  margin: 0 0 8px;
+  text-transform: uppercase; letter-spacing: 0.3px;
+  font-weight: 600;
+  display: flex; align-items: center; gap: 8px;
+}
+.day-count-pill {
+  background: #f0f2f5; padding: 1px 8px;
+  border-radius: 10px; font-size: 11px;
+  color: #54656f; text-transform: none; letter-spacing: 0;
+}
+.media-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 4px;
+}
+.media-thumb {
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: 4px;
+  position: relative;
+  display: block;
+  background: #cfd2d6;
+  cursor: zoom-in;
+}
+.media-thumb img,
+.media-thumb video {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: 4px;
+}
+.media-thumb.video::before {
+  content: "";
+  position: absolute; inset: 0;
+  background: rgba(0,0,0,0.18);
+  border-radius: 4px;
+  pointer-events: none;
+}
+.media-thumb .play-icon {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  color: #fff;
+  font-size: 16px;
+  background: rgba(0,0,0,0.55);
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  z-index: 2;
+  padding-left: 3px;
+}
+.media-thumb.sticker-thumb { background: transparent; }
+.media-thumb.sticker-thumb img { object-fit: contain; padding: 6px; }
+
+/* ========== Docs tab ========== */
+.docs-wrap { max-width: 760px; margin: 0 auto; padding: 0 14px 60px; }
+.docs-day { padding-top: 16px; }
+.docs-day-title {
+  font-size: 12.5px; color: #54656f;
+  margin: 0 0 8px; padding: 0 4px;
+  text-transform: uppercase; letter-spacing: 0.3px;
+  font-weight: 600;
+}
+.docs-list { display: flex; flex-direction: column; gap: 6px; }
+.doc-item {
+  display: flex; align-items: flex-start; gap: 12px;
+  background: #fff; padding: 12px 14px;
+  border-radius: 10px;
+  text-decoration: none; color: inherit;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+  transition: background 0.1s;
+}
+.doc-item:hover { background: #f9f9f9; }
+.doc-icon {
+  flex: 0 0 40px; font-size: 24px;
+  text-align: center; line-height: 1.5;
+}
+.doc-meta { flex: 1 1 auto; min-width: 0; }
+.doc-name { font-size: 14px; word-break: break-word; line-height: 1.35; }
+.doc-info { color: var(--muted); font-size: 12.5px; margin-top: 3px; }
+.doc-meta audio { width: 100%; max-width: 360px; margin-top: 8px; display: block; }
+.audio-item { background: #fff; cursor: default; }
+
+@media (max-width: 700px) {
+  .tabs { top: 70px; padding: 0 4px; }
+  .tab { padding: 10px 10px; font-size: 13px; }
+  .tab-count { font-size: 11px; padding: 1px 6px; }
+  .media-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 3px;
+  }
+  .media-day { padding: 12px 4px 0; }
+  .media-day-title { padding: 0 4px; }
+  .docs-wrap { padding: 0 6px 40px; }
+  .doc-item { padding: 10px 12px; }
+  #nav-drawer { width: 88vw; }
+  .menu-btn { font-size: 16px !important; padding: 7px 9px !important; }
+}
+
 @media (max-width: 700px) {
   .chat-header { padding: 10px 12px; }
   .title { font-size: 15px; }
@@ -243,20 +465,20 @@ body {
 
 </style>
 </head>
-<body>
 
+<body>
 <div class="hub">
 <header class="hub-header">
 <h1>WhatsApp архив</h1>
 <p>7 чатов</p>
 </header>
 <div class="chat-cards">
-<a class="chat-card" href="66-91-824-1010.html"><div class="card-icon">👤</div><div class="card-body"><div class="card-title">+66 91 824 1010</div><div class="card-sub">Личный чат · PARINTON</div><div class="card-meta"><span>3458 сообщений</span><span>·</span><span>160 дней</span></div><div class="card-range">9 марта 2025 — 26 апреля 2026</div></div><div class="card-arrow">→</div></a>
-<a class="chat-card" href="alisa-advokat.html"><div class="card-icon">👤</div><div class="card-body"><div class="card-title">Алиса адвокат</div><div class="card-sub">Личный чат</div><div class="card-meta"><span>2383 сообщений</span><span>·</span><span>35 дней</span></div><div class="card-range">1 октября 2025 — 27 марта 2026</div></div><div class="card-arrow">→</div></a>
-<a class="chat-card" href="toonii.html"><div class="card-icon">👤</div><div class="card-body"><div class="card-title">Toonii</div><div class="card-sub">Личный чат</div><div class="card-meta"><span>684 сообщений</span><span>·</span><span>20 дней</span></div><div class="card-range">3 октября 2025 — 28 ноября 2025</div></div><div class="card-arrow">→</div></a>
-<a class="chat-card" href="tooni.html"><div class="card-icon">👤</div><div class="card-body"><div class="card-title">Tooni</div><div class="card-sub">Личный чат</div><div class="card-meta"><span>422 сообщений</span><span>·</span><span>39 дней</span></div><div class="card-range">24 декабря 2025 — 25 марта 2026</div></div><div class="card-arrow">→</div></a>
-<a class="chat-card" href="andrey-freedom-beach-case.html"><div class="card-icon">👥</div><div class="card-body"><div class="card-title">Andrey Freedom  beach case</div><div class="card-sub">Группа · Алиса адвокат, NikitaBKK, МeМii ~ +1</div><div class="card-meta"><span>340 сообщений</span><span>·</span><span>18 дней</span></div><div class="card-range">8 октября 2025 — 27 марта 2026</div></div><div class="card-arrow">→</div></a>
-<a class="chat-card" href="66-80-041-5533.html"><div class="card-icon">👤</div><div class="card-body"><div class="card-title">+66 80 041 5533</div><div class="card-sub">Личный чат · Anna Frank</div><div class="card-meta"><span>110 сообщений</span><span>·</span><span>1 дней</span></div><div class="card-range">1 октября 2025 — 1 октября 2025</div></div><div class="card-arrow">→</div></a>
-<a class="chat-card" href="66-99-491-6356.html"><div class="card-icon">👤</div><div class="card-body"><div class="card-title">+66 99 491 6356</div><div class="card-sub">Личный чат · Payong</div><div class="card-meta"><span>41 сообщений</span><span>·</span><span>2 дней</span></div><div class="card-range">18 октября 2025 — 24 ноября 2025</div></div><div class="card-arrow">→</div></a>
+<a class="chat-card" href="66-91-824-1010.html"><div class="card-icon">👤</div><div class="card-body"><div class="card-title">+66 91 824 1010</div><div class="card-sub">Личный чат · PARINTON</div><div class="card-meta"><span>3458 сообщений</span><span>·</span><span>160 дней</span><span>·</span><span>1492 медиа</span></div><div class="card-range">9 марта 2025 — 26 апреля 2026</div></div><div class="card-arrow">→</div></a>
+<a class="chat-card" href="alisa-advokat.html"><div class="card-icon">👤</div><div class="card-body"><div class="card-title">Алиса адвокат</div><div class="card-sub">Личный чат</div><div class="card-meta"><span>2383 сообщений</span><span>·</span><span>35 дней</span><span>·</span><span>535 медиа</span></div><div class="card-range">1 октября 2025 — 27 марта 2026</div></div><div class="card-arrow">→</div></a>
+<a class="chat-card" href="toonii.html"><div class="card-icon">👤</div><div class="card-body"><div class="card-title">Toonii</div><div class="card-sub">Личный чат</div><div class="card-meta"><span>684 сообщений</span><span>·</span><span>20 дней</span><span>·</span><span>256 медиа</span></div><div class="card-range">3 октября 2025 — 28 ноября 2025</div></div><div class="card-arrow">→</div></a>
+<a class="chat-card" href="tooni.html"><div class="card-icon">👤</div><div class="card-body"><div class="card-title">Tooni</div><div class="card-sub">Личный чат</div><div class="card-meta"><span>422 сообщений</span><span>·</span><span>39 дней</span><span>·</span><span>105 медиа</span></div><div class="card-range">24 декабря 2025 — 25 марта 2026</div></div><div class="card-arrow">→</div></a>
+<a class="chat-card" href="andrey-freedom-beach-case.html"><div class="card-icon">👥</div><div class="card-body"><div class="card-title">Andrey Freedom  beach case</div><div class="card-sub">Группа · Алиса адвокат, NikitaBKK, МeМii ~ +1</div><div class="card-meta"><span>340 сообщений</span><span>·</span><span>18 дней</span><span>·</span><span>132 медиа</span></div><div class="card-range">8 октября 2025 — 27 марта 2026</div></div><div class="card-arrow">→</div></a>
+<a class="chat-card" href="66-80-041-5533.html"><div class="card-icon">👤</div><div class="card-body"><div class="card-title">+66 80 041 5533</div><div class="card-sub">Личный чат · Anna Frank</div><div class="card-meta"><span>110 сообщений</span><span>·</span><span>1 дней</span><span>·</span><span>83 медиа</span></div><div class="card-range">1 октября 2025 — 1 октября 2025</div></div><div class="card-arrow">→</div></a>
+<a class="chat-card" href="66-99-491-6356.html"><div class="card-icon">👤</div><div class="card-body"><div class="card-title">+66 99 491 6356</div><div class="card-sub">Личный чат · Payong</div><div class="card-meta"><span>41 сообщений</span><span>·</span><span>2 дней</span><span>·</span><span>4 медиа</span></div><div class="card-range">18 октября 2025 — 24 ноября 2025</div></div><div class="card-arrow">→</div></a>
 </div></div>
 </body></html>

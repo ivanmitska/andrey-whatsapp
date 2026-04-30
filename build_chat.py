@@ -302,18 +302,23 @@ def make_chat_config(folder: Path, msgs: list, fmt: str) -> dict:
     }
 
 
-def render_chat_page(chat: dict) -> dict:
-    chat_dir_name = chat["dir"]
-    out_path = ROOT / chat["out"]
+DOC_KINDS = {"pdf", "vcf", "office", "archive", "audio", "file"}
+GALLERY_KINDS = {"image", "video", "sticker"}
+DOC_ICONS = {"pdf": "📄", "vcf": "👤", "office": "📝",
+             "archive": "🗜️", "audio": "🎙", "file": "📎"}
+
+
+def collect_data(chat: dict) -> dict:
+    """Walk messages once, return everything renderers need."""
     msgs = chat["msgs"]
     attach_re = ATTACH_RE_ANDROID if chat["fmt"] == "android" else ATTACH_RE_IOS
 
     senders_seen = OrderedDict()
     for m in msgs:
         s = m["sender"]
-        if not s:
+        if not s or s in ME_NAMES:
             continue
-        if s in ME_NAMES or (chat["system_sender"] and s == chat["system_sender"]):
+        if chat["system_sender"] and s == chat["system_sender"]:
             continue
         senders_seen.setdefault(s, True)
     other_senders = list(senders_seen.keys())
@@ -322,6 +327,9 @@ def render_chat_page(chat: dict) -> dict:
 
     rendered_msgs = []
     day_count = {}
+    media_items = []
+    doc_items = []
+
     for m in msgs:
         body = m["body"]
         attachments = attach_re.findall(body)
@@ -329,7 +337,7 @@ def render_chat_page(chat: dict) -> dict:
 
         is_sys = False
         if not m["sender"]:
-            is_sys = True  # system event with no explicit sender (Android format)
+            is_sys = True
         elif chat["system_sender"] and m["sender"] == chat["system_sender"]:
             is_sys = True
         elif is_group_system(text_only, attachments):
@@ -340,66 +348,78 @@ def render_chat_page(chat: dict) -> dict:
 
         rendered_msgs.append((m, attachments, text_only, is_sys))
         if not is_sys:
-            key = date_key(m)
-            day_count[key] = day_count.get(key, 0) + 1
+            day_count[date_key(m)] = day_count.get(date_key(m), 0) + 1
+            for fname in attachments:
+                kind = media_kind(fname)
+                item = {
+                    "date": date_key(m),
+                    "date_label": fmt_date(m),
+                    "time": fmt_time(m),
+                    "sender": m["sender"],
+                    "kind": kind,
+                    "fname": fname,
+                }
+                if kind in GALLERY_KINDS:
+                    media_items.append(item)
+                else:
+                    doc_items.append(item)
 
     sorted_days = sorted(day_count.keys())
-    min_date = sorted_days[0] if sorted_days else ""
-    max_date = sorted_days[-1] if sorted_days else ""
+    return {
+        "rendered_msgs": rendered_msgs,
+        "day_count": day_count,
+        "sorted_days": sorted_days,
+        "min_date": sorted_days[0] if sorted_days else "",
+        "max_date": sorted_days[-1] if sorted_days else "",
+        "media_items": media_items,
+        "doc_items": doc_items,
+        "other_senders": other_senders,
+        "sender_color": sender_color,
+        "msg_count": len(rendered_msgs),
+    }
 
-    months = OrderedDict()
-    for k in sorted_days:
-        ym = k[:7]
-        months.setdefault(ym, []).append(k)
 
-    title = chat["title"]
-    subtitle = chat["subtitle"]
+def render_drawer(current_chat: dict, all_chats: list) -> str:
+    parts = ['<aside id="nav-drawer" hidden aria-label="Меню">']
+    parts.append('<div class="drawer-h">')
+    parts.append('<div class="drawer-title">WhatsApp архив</div>')
+    parts.append('<button id="navClose" class="icon-btn" aria-label="Закрыть">✕</button>')
+    parts.append('</div>')
+    parts.append('<a class="drawer-home" href="index.html">'
+                 '<span class="dh-icon">🏠</span><span>На главную</span></a>')
+    parts.append('<div class="drawer-section">Все чаты</div>')
+    parts.append('<nav class="drawer-chats">')
+    for c in all_chats:
+        is_active = c is current_chat
+        href = quote(c["out"])
+        title = html.escape(c["title"])
+        msg_count = c["data"]["msg_count"]
+        days = len(c["data"]["sorted_days"])
+        active_cls = " active" if is_active else ""
+        parts.append(
+            f'<a href="{href}" class="drawer-chat{active_cls}">'
+            f'<span class="dc-icon">{c["icon"]}</span>'
+            f'<span class="dc-info">'
+            f'<span class="dc-name">{title}</span>'
+            f'<span class="dc-meta">{msg_count} сообщ. · {days} дн.</span>'
+            f'</span>'
+            f'</a>'
+        )
+    parts.append('</nav></aside>')
+    parts.append('<div id="nav-backdrop" hidden></div>')
+    return "\n".join(parts)
 
-    out = [build_head(f"WhatsApp — {title}")]
-    out.append('<header class="chat-header"><div class="header-row">')
-    out.append('<div class="title-block">')
-    out.append('<a class="back-link" href="index.html">‹ Все чаты</a>')
-    out.append(f'<div class="title">{html.escape(title)}</div>')
-    out.append(
-        f'<div class="sub">{html.escape(subtitle)} · '
-        f'{len(rendered_msgs)} сообщений · {len(sorted_days)} дней</div>'
-    )
-    out.append('</div>')
-    out.append('<div class="controls">')
-    out.append(
-        f'<input type="date" id="datePicker" min="{min_date}" max="{max_date}" '
-        f'aria-label="Выбрать дату">'
-    )
-    out.append('<button id="togglePanel" class="icon-btn" aria-expanded="false" '
-               'aria-controls="dates-panel" title="Все даты">📅</button>')
-    out.append('<button id="clearFilter" class="primary" hidden>Сброс</button>')
-    out.append('</div></div></header>')
 
-    out.append('<div id="backdrop" hidden></div>')
-    out.append('<aside id="dates-panel" hidden aria-label="Список дат">')
-    out.append('<p class="panel-hint">Выберите день — остальные сообщения скроются.</p>')
-    for ym, keys in months.items():
-        y, mo = ym.split("-")
-        m_title = f"{MONTHS_RU_NOM[int(mo) - 1]} {y}"
-        out.append('<div class="month-block">')
-        out.append(f'<div class="month-title">{m_title}</div>')
-        out.append('<div class="day-chips">')
-        for k in keys:
-            _, _, dd = k.split("-")
-            label = f"{int(dd)} {MONTHS_RU_GEN[int(mo) - 1]}"
-            out.append(
-                f'<a href="#d-{k}" class="day-chip" data-date="{k}">'
-                f'<span>{label}</span><span class="count">{day_count[k]}</span></a>'
-            )
-        out.append('</div></div>')
-    out.append('</aside>')
-
+def render_messages_section(chat: dict, data: dict) -> str:
+    chat_dir_name = chat["dir"]
+    sender_color = data["sender_color"]
+    out = ['<div data-tab-content="messages">']
     out.append('<main class="chat">')
     out.append('<div id="empty-state" class="empty-state" hidden>'
                'За выбранный день нет сообщений.</div>')
 
     last_date = None
-    for m, attachments, text_only, is_sys in rendered_msgs:
+    for m, attachments, text_only, is_sys in data["rendered_msgs"]:
         cur_date = (m["y"], m["m"], m["d"])
         dkey = date_key(m)
         if cur_date != last_date:
@@ -436,35 +456,197 @@ def render_chat_page(chat: dict) -> dict:
         bubble.append('</div></div>')
         out.append("".join(bubble))
 
-    out.append('</main>')
+    out.append('</main></div>')
+    return "\n".join(out)
+
+
+def render_media_section(chat: dict, data: dict) -> str:
+    chat_dir_name = chat["dir"]
+    items = data["media_items"]
+    out = ['<div data-tab-content="media" hidden>']
+    if not items:
+        out.append('<div class="empty-state">В этом чате нет фото и видео.</div>')
+        out.append('</div>')
+        return "\n".join(out)
+
+    by_day = OrderedDict()
+    for item in items:
+        if item["date"] not in by_day:
+            by_day[item["date"]] = {"label": item["date_label"], "items": []}
+        by_day[item["date"]]["items"].append(item)
+
+    out.append('<div class="media-wrap">')
+    for dkey, group in by_day.items():
+        out.append('<div class="media-day">')
+        out.append(f'<div class="media-day-title">{group["label"]} '
+                   f'<span class="day-count-pill">{len(group["items"])}</span></div>')
+        out.append('<div class="media-grid">')
+        for item in group["items"]:
+            href = quote(f"{chat_dir_name}/{item['fname']}")
+            if item["kind"] == "video":
+                out.append(
+                    f'<a class="media-thumb video" href="{href}" target="_blank">'
+                    f'<video preload="metadata" muted playsinline src="{href}#t=0.5"></video>'
+                    f'<span class="play-icon">▶</span></a>'
+                )
+            elif item["kind"] == "sticker":
+                out.append(
+                    f'<a class="media-thumb sticker-thumb" href="{href}" target="_blank">'
+                    f'<img loading="lazy" src="{href}" alt=""></a>'
+                )
+            else:
+                out.append(
+                    f'<a class="media-thumb" href="{href}" target="_blank">'
+                    f'<img loading="lazy" src="{href}" alt=""></a>'
+                )
+        out.append('</div></div>')
+    out.append('</div></div>')
+    return "\n".join(out)
+
+
+def render_docs_section(chat: dict, data: dict) -> str:
+    chat_dir_name = chat["dir"]
+    items = data["doc_items"]
+    out = ['<div data-tab-content="docs" hidden>']
+    if not items:
+        out.append('<div class="empty-state">В этом чате нет документов и аудио.</div>')
+        out.append('</div>')
+        return "\n".join(out)
+
+    by_day = OrderedDict()
+    for item in items:
+        if item["date"] not in by_day:
+            by_day[item["date"]] = {"label": item["date_label"], "items": []}
+        by_day[item["date"]]["items"].append(item)
+
+    out.append('<div class="docs-wrap">')
+    for dkey, group in by_day.items():
+        out.append('<div class="docs-day">')
+        out.append(f'<div class="docs-day-title">{group["label"]}</div>')
+        out.append('<div class="docs-list">')
+        for item in group["items"]:
+            href = quote(f"{chat_dir_name}/{item['fname']}")
+            display_name = PREFIX_RE.sub("", item["fname"])
+            nm = html.escape(display_name)
+            icon = DOC_ICONS.get(item["kind"], "📎")
+            meta = html.escape(f"{item['sender']} · {item['time']}")
+            if item["kind"] == "audio":
+                out.append(
+                    f'<div class="doc-item audio-item">'
+                    f'<div class="doc-icon">{icon}</div>'
+                    f'<div class="doc-meta">'
+                    f'<div class="doc-name">{nm}</div>'
+                    f'<div class="doc-info">{meta}</div>'
+                    f'<audio controls preload="none" src="{href}"></audio>'
+                    f'</div></div>'
+                )
+            else:
+                out.append(
+                    f'<a class="doc-item" href="{href}" target="_blank">'
+                    f'<div class="doc-icon">{icon}</div>'
+                    f'<div class="doc-meta">'
+                    f'<div class="doc-name">{nm}</div>'
+                    f'<div class="doc-info">{meta}</div>'
+                    f'</div></a>'
+                )
+        out.append('</div></div>')
+    out.append('</div></div>')
+    return "\n".join(out)
+
+
+def render_chat_page(chat: dict, all_chats: list):
+    out_path = ROOT / chat["out"]
+    data = chat["data"]
+    title = chat["title"]
+    subtitle = chat["subtitle"]
+    msg_count = data["msg_count"]
+    days = len(data["sorted_days"])
+    media_count = len(data["media_items"])
+    doc_count = len(data["doc_items"])
+
+    months = OrderedDict()
+    for k in data["sorted_days"]:
+        ym = k[:7]
+        months.setdefault(ym, []).append(k)
+
+    out = [build_head(f"WhatsApp — {title}")]
+    out.append('<body data-active-tab="messages">')
+    out.append(render_drawer(chat, all_chats))
+
+    out.append('<header class="chat-header"><div class="header-row">')
+    out.append('<button id="navToggle" class="icon-btn menu-btn" '
+               'aria-label="Открыть меню" title="Меню">☰</button>')
+    out.append('<div class="title-block">')
+    out.append('<a class="back-link" href="index.html">‹ Все чаты</a>')
+    out.append(f'<div class="title">{html.escape(title)}</div>')
+    out.append(
+        f'<div class="sub">{html.escape(subtitle)} · '
+        f'{msg_count} сообщений · {days} дней</div>'
+    )
+    out.append('</div>')
+    out.append('<div class="controls">')
+    out.append(
+        f'<input type="date" id="datePicker" min="{data["min_date"]}" '
+        f'max="{data["max_date"]}" aria-label="Выбрать дату">'
+    )
+    out.append('<button id="togglePanel" class="icon-btn" aria-expanded="false" '
+               'aria-controls="dates-panel" title="Все даты">📅</button>')
+    out.append('<button id="clearFilter" class="primary" hidden>Сброс</button>')
+    out.append('</div></div></header>')
+
+    out.append('<div class="tabs" role="tablist">')
+    out.append('<button class="tab active" data-tab="messages" role="tab">'
+               f'Сообщения <span class="tab-count">{msg_count}</span></button>')
+    out.append('<button class="tab" data-tab="media" role="tab">'
+               f'Медиа <span class="tab-count">{media_count}</span></button>')
+    out.append('<button class="tab" data-tab="docs" role="tab">'
+               f'Документы <span class="tab-count">{doc_count}</span></button>')
+    out.append('</div>')
+
+    out.append('<div id="backdrop" hidden></div>')
+    out.append('<aside id="dates-panel" hidden aria-label="Список дат">')
+    out.append('<p class="panel-hint">Выберите день — остальные сообщения скроются.</p>')
+    for ym, keys in months.items():
+        y, mo = ym.split("-")
+        m_title = f"{MONTHS_RU_NOM[int(mo) - 1]} {y}"
+        out.append(f'<div class="month-block"><div class="month-title">{m_title}</div>')
+        out.append('<div class="day-chips">')
+        for k in keys:
+            _, _, dd = k.split("-")
+            label = f"{int(dd)} {MONTHS_RU_GEN[int(mo) - 1]}"
+            out.append(
+                f'<a href="#d-{k}" class="day-chip" data-date="{k}">'
+                f'<span>{label}</span><span class="count">{data["day_count"][k]}</span></a>'
+            )
+        out.append('</div></div>')
+    out.append('</aside>')
+
+    out.append(render_messages_section(chat, data))
+    out.append(render_media_section(chat, data))
+    out.append(render_docs_section(chat, data))
+
     out.append(CHAT_SCRIPT_FOOT)
     out_path.write_text("\n".join(out), encoding="utf-8")
 
-    return {
-        "messages": len(rendered_msgs),
-        "days": len(sorted_days),
-        "min_date": min_date,
-        "max_date": max_date,
-        "senders": ["me"] + other_senders,
-    }
 
-
-def build_index(chat_stats):
+def build_index(chats):
     out = [build_head("WhatsApp архив")]
+    out.append('<body>')
     out.append('<div class="hub">')
     out.append('<header class="hub-header">')
     out.append('<h1>WhatsApp архив</h1>')
-    out.append(f'<p>{len(chat_stats)} чатов</p>')
+    out.append(f'<p>{len(chats)} чатов</p>')
     out.append('</header>')
     out.append('<div class="chat-cards">')
-    for chat, stats in chat_stats:
+    for chat in chats:
+        d = chat["data"]
         href = quote(chat["out"])
         title = html.escape(chat["title"])
         subtitle = html.escape(chat["subtitle"])
         icon = chat["icon"]
-        if stats["min_date"]:
-            range_label = (f"{format_iso_date(stats['min_date'])} — "
-                           f"{format_iso_date(stats['max_date'])}")
+        if d["min_date"]:
+            range_label = (f"{format_iso_date(d['min_date'])} — "
+                           f"{format_iso_date(d['max_date'])}")
         else:
             range_label = "—"
         out.append(
@@ -474,8 +656,9 @@ def build_index(chat_stats):
             f'<div class="card-title">{title}</div>'
             f'<div class="card-sub">{subtitle}</div>'
             f'<div class="card-meta">'
-            f'<span>{stats["messages"]} сообщений</span><span>·</span>'
-            f'<span>{stats["days"]} дней</span>'
+            f'<span>{d["msg_count"]} сообщений</span><span>·</span>'
+            f'<span>{len(d["sorted_days"])} дней</span><span>·</span>'
+            f'<span>{len(d["media_items"])} медиа</span>'
             f'</div>'
             f'<div class="card-range">{range_label}</div>'
             f'</div>'
@@ -503,7 +686,6 @@ def build_head(title: str) -> str:
 {CSS}
 </style>
 </head>
-<body>
 """
 
 
@@ -711,6 +893,228 @@ body {
 }
 .empty-state[hidden] { display: none; }
 
+/* ========== Nav drawer ========== */
+#nav-drawer {
+  position: fixed; top: 0; left: 0; bottom: 0;
+  width: 320px; max-width: 88vw;
+  background: #fff; z-index: 30;
+  box-shadow: 4px 0 20px rgba(0,0,0,0.18);
+  overflow-y: auto;
+  display: flex; flex-direction: column;
+}
+#nav-drawer[hidden] { display: none; }
+.drawer-h {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 18px;
+  background: var(--header); color: #fff;
+  position: sticky; top: 0;
+}
+.drawer-h .icon-btn {
+  background: rgba(255,255,255,0.18); color: #fff;
+  border: 0; border-radius: 8px;
+  padding: 6px 10px; font-size: 14px; cursor: pointer;
+}
+.drawer-h .icon-btn:hover { background: rgba(255,255,255,0.28); }
+.drawer-title { font-weight: 600; font-size: 16px; }
+.drawer-home {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 18px;
+  text-decoration: none; color: inherit;
+  border-bottom: 1px solid #eee;
+  font-size: 14.5px;
+}
+.drawer-home:hover { background: #f5f5f5; }
+.dh-icon { font-size: 18px; }
+.drawer-section {
+  padding: 14px 18px 6px;
+  font-size: 11.5px; font-weight: 600;
+  color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px;
+}
+.drawer-chats { display: flex; flex-direction: column; padding-bottom: 16px; }
+.drawer-chat {
+  display: flex; align-items: center; gap: 12px;
+  padding: 11px 18px;
+  text-decoration: none; color: inherit;
+  border-left: 3px solid transparent;
+  transition: background 0.1s;
+}
+.drawer-chat:hover { background: #f5f5f5; }
+.drawer-chat.active {
+  background: #e7f7e7;
+  border-left-color: var(--header);
+  pointer-events: none;
+}
+.dc-icon {
+  flex: 0 0 38px; height: 38px; width: 38px;
+  background: #d9fdd3; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 19px;
+}
+.dc-info { display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1 1 auto; }
+.dc-name {
+  font-weight: 600; font-size: 14px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.dc-meta { color: var(--muted); font-size: 12px; }
+#nav-backdrop {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.4);
+  z-index: 29;
+}
+#nav-backdrop[hidden] { display: none; }
+
+.menu-btn {
+  background: rgba(255,255,255,0.18) !important;
+  color: #fff !important;
+  font-size: 18px !important;
+  flex: 0 0 auto;
+}
+
+/* ========== Tabs ========== */
+.tabs {
+  display: flex;
+  background: #fff;
+  position: sticky; top: 78px; z-index: 15;
+  border-bottom: 1px solid #e5e7eb;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+  padding: 0 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.tabs::-webkit-scrollbar { display: none; }
+.tab {
+  background: transparent; border: 0;
+  padding: 12px 14px;
+  font-size: 14px; font-family: inherit;
+  cursor: pointer; color: #54656f;
+  display: flex; align-items: center; gap: 6px;
+  border-bottom: 2px solid transparent;
+  white-space: nowrap;
+}
+.tab:hover { color: var(--header); }
+.tab.active {
+  color: var(--header);
+  border-bottom-color: var(--header);
+  font-weight: 600;
+}
+.tab-count {
+  font-size: 11.5px;
+  background: #f0f2f5;
+  padding: 1px 7px;
+  border-radius: 10px;
+  min-width: 20px;
+  text-align: center;
+}
+.tab.active .tab-count { background: #d9fdd3; }
+[data-tab-content][hidden] { display: none; }
+
+/* Hide filter controls outside messages tab */
+body[data-active-tab="media"] .controls,
+body[data-active-tab="docs"] .controls { display: none; }
+
+/* ========== Media tab ========== */
+.media-wrap { max-width: 1080px; margin: 0 auto; padding-bottom: 60px; }
+.media-day { padding: 16px 14px 0; }
+.media-day-title {
+  font-size: 12.5px; color: #54656f;
+  margin: 0 0 8px;
+  text-transform: uppercase; letter-spacing: 0.3px;
+  font-weight: 600;
+  display: flex; align-items: center; gap: 8px;
+}
+.day-count-pill {
+  background: #f0f2f5; padding: 1px 8px;
+  border-radius: 10px; font-size: 11px;
+  color: #54656f; text-transform: none; letter-spacing: 0;
+}
+.media-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 4px;
+}
+.media-thumb {
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: 4px;
+  position: relative;
+  display: block;
+  background: #cfd2d6;
+  cursor: zoom-in;
+}
+.media-thumb img,
+.media-thumb video {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: 4px;
+}
+.media-thumb.video::before {
+  content: "";
+  position: absolute; inset: 0;
+  background: rgba(0,0,0,0.18);
+  border-radius: 4px;
+  pointer-events: none;
+}
+.media-thumb .play-icon {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  color: #fff;
+  font-size: 16px;
+  background: rgba(0,0,0,0.55);
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  z-index: 2;
+  padding-left: 3px;
+}
+.media-thumb.sticker-thumb { background: transparent; }
+.media-thumb.sticker-thumb img { object-fit: contain; padding: 6px; }
+
+/* ========== Docs tab ========== */
+.docs-wrap { max-width: 760px; margin: 0 auto; padding: 0 14px 60px; }
+.docs-day { padding-top: 16px; }
+.docs-day-title {
+  font-size: 12.5px; color: #54656f;
+  margin: 0 0 8px; padding: 0 4px;
+  text-transform: uppercase; letter-spacing: 0.3px;
+  font-weight: 600;
+}
+.docs-list { display: flex; flex-direction: column; gap: 6px; }
+.doc-item {
+  display: flex; align-items: flex-start; gap: 12px;
+  background: #fff; padding: 12px 14px;
+  border-radius: 10px;
+  text-decoration: none; color: inherit;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+  transition: background 0.1s;
+}
+.doc-item:hover { background: #f9f9f9; }
+.doc-icon {
+  flex: 0 0 40px; font-size: 24px;
+  text-align: center; line-height: 1.5;
+}
+.doc-meta { flex: 1 1 auto; min-width: 0; }
+.doc-name { font-size: 14px; word-break: break-word; line-height: 1.35; }
+.doc-info { color: var(--muted); font-size: 12.5px; margin-top: 3px; }
+.doc-meta audio { width: 100%; max-width: 360px; margin-top: 8px; display: block; }
+.audio-item { background: #fff; cursor: default; }
+
+@media (max-width: 700px) {
+  .tabs { top: 70px; padding: 0 4px; }
+  .tab { padding: 10px 10px; font-size: 13px; }
+  .tab-count { font-size: 11px; padding: 1px 6px; }
+  .media-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 3px;
+  }
+  .media-day { padding: 12px 4px 0; }
+  .media-day-title { padding: 0 4px; }
+  .docs-wrap { padding: 0 6px 40px; }
+  .doc-item { padding: 10px 12px; }
+  #nav-drawer { width: 88vw; }
+  .menu-btn { font-size: 16px !important; padding: 7px 9px !important; }
+}
+
 @media (max-width: 700px) {
   .chat-header { padding: 10px 12px; }
   .title { font-size: 15px; }
@@ -747,6 +1151,7 @@ body {
 
 CHAT_SCRIPT_FOOT = """<script>
 (function() {
+  // ===== Date filter (messages tab) =====
   const datePicker = document.getElementById('datePicker');
   const clearBtn   = document.getElementById('clearFilter');
   const toggleBtn  = document.getElementById('togglePanel');
@@ -775,29 +1180,18 @@ CHAT_SCRIPT_FOOT = """<script>
     });
     clearBtn.hidden = !date;
     datePicker.value = date || '';
-    empty.hidden = visible > 0;
+    if (empty) empty.hidden = visible > 0;
 
     if (date && opts.scroll !== false) {
       const target = document.getElementById('d-' + date);
-      if (target) {
-        setTimeout(() => target.scrollIntoView({block: 'start'}), 30);
-      }
+      if (target) setTimeout(() => target.scrollIntoView({block: 'start'}), 30);
     }
   }
 
-  datePicker.addEventListener('change', e => {
-    applyFilter(e.target.value);
-    setPanel(false);
-  });
-  clearBtn.addEventListener('click', () => {
-    applyFilter('');
-    setPanel(false);
-  });
+  datePicker.addEventListener('change', e => { applyFilter(e.target.value); setPanel(false); });
+  clearBtn.addEventListener('click', () => { applyFilter(''); setPanel(false); });
   toggleBtn.addEventListener('click', () => setPanel(panel.hidden));
   backdrop.addEventListener('click', () => setPanel(false));
-  document.addEventListener('keydown', e => {
-    if (e.key === 'Escape' && !panel.hidden) setPanel(false);
-  });
   panel.addEventListener('click', e => {
     const chip = e.target.closest('.day-chip');
     if (chip) {
@@ -805,6 +1199,39 @@ CHAT_SCRIPT_FOOT = """<script>
       applyFilter(chip.dataset.date);
       setPanel(false);
     }
+  });
+
+  // ===== Tabs =====
+  const tabBtns = document.querySelectorAll('.tab');
+  const tabContents = document.querySelectorAll('[data-tab-content]');
+  function activateTab(name) {
+    tabBtns.forEach(b => b.classList.toggle('active', b.dataset.tab === name));
+    tabContents.forEach(c => { c.hidden = c.dataset.tabContent !== name; });
+    document.body.dataset.activeTab = name;
+    if (name !== 'messages' && !panel.hidden) setPanel(false);
+    window.scrollTo({top: 0, behavior: 'instant'});
+  }
+  tabBtns.forEach(b => b.addEventListener('click', () => activateTab(b.dataset.tab)));
+
+  // ===== Nav drawer =====
+  const drawer = document.getElementById('nav-drawer');
+  const navBackdrop = document.getElementById('nav-backdrop');
+  const navToggle = document.getElementById('navToggle');
+  const navClose = document.getElementById('navClose');
+  function setDrawer(open) {
+    if (drawer) drawer.hidden = !open;
+    if (navBackdrop) navBackdrop.hidden = !open;
+    document.body.style.overflow = open ? 'hidden' : '';
+  }
+  if (navToggle) navToggle.addEventListener('click', () => setDrawer(true));
+  if (navClose) navClose.addEventListener('click', () => setDrawer(false));
+  if (navBackdrop) navBackdrop.addEventListener('click', () => setDrawer(false));
+
+  // ===== Global Escape: close any open overlay =====
+  document.addEventListener('keydown', e => {
+    if (e.key !== 'Escape') return;
+    if (drawer && !drawer.hidden) { setDrawer(false); return; }
+    if (!panel.hidden) { setPanel(false); return; }
   });
 })();
 </script>
@@ -815,18 +1242,21 @@ CHAT_SCRIPT_FOOT = """<script>
 def main():
     chats = discover_chats()
     print(f"Discovered {len(chats)} chat folder(s).")
-    chat_stats = []
+    # First pass: walk messages and collect per-chat data
     for chat in chats:
-        stats = render_chat_page(chat)
-        chat_stats.append((chat, stats))
+        chat["data"] = collect_data(chat)
+    # Sort by message count desc → consistent nav drawer + index card order
+    chats_sorted = sorted(chats, key=lambda c: c["data"]["msg_count"], reverse=True)
+    # Second pass: render pages with full nav
+    for chat in chats_sorted:
+        render_chat_page(chat, chats_sorted)
         kind = "group" if chat["is_group"] else "personal"
+        d = chat["data"]
         print(f"  → {chat['out']:30s} [{kind}] "
-              f"{stats['messages']} msgs, {stats['days']} days "
-              f"({len(stats['senders'])} senders)")
-    # Sort hub by message count descending (most active first)
-    chat_stats.sort(key=lambda cs: cs[1]["messages"], reverse=True)
-    build_index(chat_stats)
-    print(f"  → index.html: {len(chat_stats)} chats")
+              f"{d['msg_count']} msgs, {len(d['sorted_days'])} days, "
+              f"{len(d['media_items'])} media, {len(d['doc_items'])} docs")
+    build_index(chats_sorted)
+    print(f"  → index.html: {len(chats_sorted)} chats")
 
 
 if __name__ == "__main__":

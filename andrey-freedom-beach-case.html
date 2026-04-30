@@ -209,6 +209,228 @@ body {
 }
 .empty-state[hidden] { display: none; }
 
+/* ========== Nav drawer ========== */
+#nav-drawer {
+  position: fixed; top: 0; left: 0; bottom: 0;
+  width: 320px; max-width: 88vw;
+  background: #fff; z-index: 30;
+  box-shadow: 4px 0 20px rgba(0,0,0,0.18);
+  overflow-y: auto;
+  display: flex; flex-direction: column;
+}
+#nav-drawer[hidden] { display: none; }
+.drawer-h {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 18px;
+  background: var(--header); color: #fff;
+  position: sticky; top: 0;
+}
+.drawer-h .icon-btn {
+  background: rgba(255,255,255,0.18); color: #fff;
+  border: 0; border-radius: 8px;
+  padding: 6px 10px; font-size: 14px; cursor: pointer;
+}
+.drawer-h .icon-btn:hover { background: rgba(255,255,255,0.28); }
+.drawer-title { font-weight: 600; font-size: 16px; }
+.drawer-home {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 18px;
+  text-decoration: none; color: inherit;
+  border-bottom: 1px solid #eee;
+  font-size: 14.5px;
+}
+.drawer-home:hover { background: #f5f5f5; }
+.dh-icon { font-size: 18px; }
+.drawer-section {
+  padding: 14px 18px 6px;
+  font-size: 11.5px; font-weight: 600;
+  color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px;
+}
+.drawer-chats { display: flex; flex-direction: column; padding-bottom: 16px; }
+.drawer-chat {
+  display: flex; align-items: center; gap: 12px;
+  padding: 11px 18px;
+  text-decoration: none; color: inherit;
+  border-left: 3px solid transparent;
+  transition: background 0.1s;
+}
+.drawer-chat:hover { background: #f5f5f5; }
+.drawer-chat.active {
+  background: #e7f7e7;
+  border-left-color: var(--header);
+  pointer-events: none;
+}
+.dc-icon {
+  flex: 0 0 38px; height: 38px; width: 38px;
+  background: #d9fdd3; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 19px;
+}
+.dc-info { display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1 1 auto; }
+.dc-name {
+  font-weight: 600; font-size: 14px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.dc-meta { color: var(--muted); font-size: 12px; }
+#nav-backdrop {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.4);
+  z-index: 29;
+}
+#nav-backdrop[hidden] { display: none; }
+
+.menu-btn {
+  background: rgba(255,255,255,0.18) !important;
+  color: #fff !important;
+  font-size: 18px !important;
+  flex: 0 0 auto;
+}
+
+/* ========== Tabs ========== */
+.tabs {
+  display: flex;
+  background: #fff;
+  position: sticky; top: 78px; z-index: 15;
+  border-bottom: 1px solid #e5e7eb;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+  padding: 0 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.tabs::-webkit-scrollbar { display: none; }
+.tab {
+  background: transparent; border: 0;
+  padding: 12px 14px;
+  font-size: 14px; font-family: inherit;
+  cursor: pointer; color: #54656f;
+  display: flex; align-items: center; gap: 6px;
+  border-bottom: 2px solid transparent;
+  white-space: nowrap;
+}
+.tab:hover { color: var(--header); }
+.tab.active {
+  color: var(--header);
+  border-bottom-color: var(--header);
+  font-weight: 600;
+}
+.tab-count {
+  font-size: 11.5px;
+  background: #f0f2f5;
+  padding: 1px 7px;
+  border-radius: 10px;
+  min-width: 20px;
+  text-align: center;
+}
+.tab.active .tab-count { background: #d9fdd3; }
+[data-tab-content][hidden] { display: none; }
+
+/* Hide filter controls outside messages tab */
+body[data-active-tab="media"] .controls,
+body[data-active-tab="docs"] .controls { display: none; }
+
+/* ========== Media tab ========== */
+.media-wrap { max-width: 1080px; margin: 0 auto; padding-bottom: 60px; }
+.media-day { padding: 16px 14px 0; }
+.media-day-title {
+  font-size: 12.5px; color: #54656f;
+  margin: 0 0 8px;
+  text-transform: uppercase; letter-spacing: 0.3px;
+  font-weight: 600;
+  display: flex; align-items: center; gap: 8px;
+}
+.day-count-pill {
+  background: #f0f2f5; padding: 1px 8px;
+  border-radius: 10px; font-size: 11px;
+  color: #54656f; text-transform: none; letter-spacing: 0;
+}
+.media-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 4px;
+}
+.media-thumb {
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: 4px;
+  position: relative;
+  display: block;
+  background: #cfd2d6;
+  cursor: zoom-in;
+}
+.media-thumb img,
+.media-thumb video {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: 4px;
+}
+.media-thumb.video::before {
+  content: "";
+  position: absolute; inset: 0;
+  background: rgba(0,0,0,0.18);
+  border-radius: 4px;
+  pointer-events: none;
+}
+.media-thumb .play-icon {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  color: #fff;
+  font-size: 16px;
+  background: rgba(0,0,0,0.55);
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  z-index: 2;
+  padding-left: 3px;
+}
+.media-thumb.sticker-thumb { background: transparent; }
+.media-thumb.sticker-thumb img { object-fit: contain; padding: 6px; }
+
+/* ========== Docs tab ========== */
+.docs-wrap { max-width: 760px; margin: 0 auto; padding: 0 14px 60px; }
+.docs-day { padding-top: 16px; }
+.docs-day-title {
+  font-size: 12.5px; color: #54656f;
+  margin: 0 0 8px; padding: 0 4px;
+  text-transform: uppercase; letter-spacing: 0.3px;
+  font-weight: 600;
+}
+.docs-list { display: flex; flex-direction: column; gap: 6px; }
+.doc-item {
+  display: flex; align-items: flex-start; gap: 12px;
+  background: #fff; padding: 12px 14px;
+  border-radius: 10px;
+  text-decoration: none; color: inherit;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+  transition: background 0.1s;
+}
+.doc-item:hover { background: #f9f9f9; }
+.doc-icon {
+  flex: 0 0 40px; font-size: 24px;
+  text-align: center; line-height: 1.5;
+}
+.doc-meta { flex: 1 1 auto; min-width: 0; }
+.doc-name { font-size: 14px; word-break: break-word; line-height: 1.35; }
+.doc-info { color: var(--muted); font-size: 12.5px; margin-top: 3px; }
+.doc-meta audio { width: 100%; max-width: 360px; margin-top: 8px; display: block; }
+.audio-item { background: #fff; cursor: default; }
+
+@media (max-width: 700px) {
+  .tabs { top: 70px; padding: 0 4px; }
+  .tab { padding: 10px 10px; font-size: 13px; }
+  .tab-count { font-size: 11px; padding: 1px 6px; }
+  .media-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 3px;
+  }
+  .media-day { padding: 12px 4px 0; }
+  .media-day-title { padding: 0 4px; }
+  .docs-wrap { padding: 0 6px 40px; }
+  .doc-item { padding: 10px 12px; }
+  #nav-drawer { width: 88vw; }
+  .menu-btn { font-size: 16px !important; padding: 7px 9px !important; }
+}
+
 @media (max-width: 700px) {
   .chat-header { padding: 10px 12px; }
   .title { font-size: 15px; }
@@ -243,9 +465,27 @@ body {
 
 </style>
 </head>
-<body>
 
+<body data-active-tab="messages">
+<aside id="nav-drawer" hidden aria-label="Меню">
+<div class="drawer-h">
+<div class="drawer-title">WhatsApp архив</div>
+<button id="navClose" class="icon-btn" aria-label="Закрыть">✕</button>
+</div>
+<a class="drawer-home" href="index.html"><span class="dh-icon">🏠</span><span>На главную</span></a>
+<div class="drawer-section">Все чаты</div>
+<nav class="drawer-chats">
+<a href="66-91-824-1010.html" class="drawer-chat"><span class="dc-icon">👤</span><span class="dc-info"><span class="dc-name">+66 91 824 1010</span><span class="dc-meta">3458 сообщ. · 160 дн.</span></span></a>
+<a href="alisa-advokat.html" class="drawer-chat"><span class="dc-icon">👤</span><span class="dc-info"><span class="dc-name">Алиса адвокат</span><span class="dc-meta">2383 сообщ. · 35 дн.</span></span></a>
+<a href="toonii.html" class="drawer-chat"><span class="dc-icon">👤</span><span class="dc-info"><span class="dc-name">Toonii</span><span class="dc-meta">684 сообщ. · 20 дн.</span></span></a>
+<a href="tooni.html" class="drawer-chat"><span class="dc-icon">👤</span><span class="dc-info"><span class="dc-name">Tooni</span><span class="dc-meta">422 сообщ. · 39 дн.</span></span></a>
+<a href="andrey-freedom-beach-case.html" class="drawer-chat active"><span class="dc-icon">👥</span><span class="dc-info"><span class="dc-name">Andrey Freedom  beach case</span><span class="dc-meta">340 сообщ. · 18 дн.</span></span></a>
+<a href="66-80-041-5533.html" class="drawer-chat"><span class="dc-icon">👤</span><span class="dc-info"><span class="dc-name">+66 80 041 5533</span><span class="dc-meta">110 сообщ. · 1 дн.</span></span></a>
+<a href="66-99-491-6356.html" class="drawer-chat"><span class="dc-icon">👤</span><span class="dc-info"><span class="dc-name">+66 99 491 6356</span><span class="dc-meta">41 сообщ. · 2 дн.</span></span></a>
+</nav></aside>
+<div id="nav-backdrop" hidden></div>
 <header class="chat-header"><div class="header-row">
+<button id="navToggle" class="icon-btn menu-btn" aria-label="Открыть меню" title="Меню">☰</button>
 <div class="title-block">
 <a class="back-link" href="index.html">‹ Все чаты</a>
 <div class="title">Andrey Freedom  beach case</div>
@@ -256,11 +496,15 @@ body {
 <button id="togglePanel" class="icon-btn" aria-expanded="false" aria-controls="dates-panel" title="Все даты">📅</button>
 <button id="clearFilter" class="primary" hidden>Сброс</button>
 </div></div></header>
+<div class="tabs" role="tablist">
+<button class="tab active" data-tab="messages" role="tab">Сообщения <span class="tab-count">340</span></button>
+<button class="tab" data-tab="media" role="tab">Медиа <span class="tab-count">132</span></button>
+<button class="tab" data-tab="docs" role="tab">Документы <span class="tab-count">7</span></button>
+</div>
 <div id="backdrop" hidden></div>
 <aside id="dates-panel" hidden aria-label="Список дат">
 <p class="panel-hint">Выберите день — остальные сообщения скроются.</p>
-<div class="month-block">
-<div class="month-title">Октябрь 2025</div>
+<div class="month-block"><div class="month-title">Октябрь 2025</div>
 <div class="day-chips">
 <a href="#d-2025-10-08" class="day-chip" data-date="2025-10-08"><span>8 октября</span><span class="count">51</span></a>
 <a href="#d-2025-10-09" class="day-chip" data-date="2025-10-09"><span>9 октября</span><span class="count">72</span></a>
@@ -275,8 +519,7 @@ body {
 <a href="#d-2025-10-27" class="day-chip" data-date="2025-10-27"><span>27 октября</span><span class="count">6</span></a>
 <a href="#d-2025-10-28" class="day-chip" data-date="2025-10-28"><span>28 октября</span><span class="count">4</span></a>
 </div></div>
-<div class="month-block">
-<div class="month-title">Ноябрь 2025</div>
+<div class="month-block"><div class="month-title">Ноябрь 2025</div>
 <div class="day-chips">
 <a href="#d-2025-11-04" class="day-chip" data-date="2025-11-04"><span>4 ноября</span><span class="count">3</span></a>
 <a href="#d-2025-11-09" class="day-chip" data-date="2025-11-09"><span>9 ноября</span><span class="count">4</span></a>
@@ -284,12 +527,12 @@ body {
 <a href="#d-2025-11-18" class="day-chip" data-date="2025-11-18"><span>18 ноября</span><span class="count">37</span></a>
 <a href="#d-2025-11-28" class="day-chip" data-date="2025-11-28"><span>28 ноября</span><span class="count">17</span></a>
 </div></div>
-<div class="month-block">
-<div class="month-title">Март 2026</div>
+<div class="month-block"><div class="month-title">Март 2026</div>
 <div class="day-chips">
 <a href="#d-2026-03-27" class="day-chip" data-date="2026-03-27"><span>27 марта</span><span class="count">20</span></a>
 </div></div>
 </aside>
+<div data-tab-content="messages">
 <main class="chat">
 <div id="empty-state" class="empty-state" hidden>За выбранный день нет сообщений.</div>
 <div class="date-divider" id="d-2025-10-08" data-date="2025-10-08"><span>8 октября 2025</span></div>
@@ -651,9 +894,211 @@ body {
 <div class="msg msg-right" data-date="2026-03-27"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">I also ask you to submit copies of the contracts signed between me and Parinton, which, as you said, are kept in the police department.<br><br>You don&#x27;t have to take the originals from the police station. Send copies of these contracts.<br><br>As well as all the documents listed above. That&#x27;s enough for now.<br><br>Thank you</div><div class="time">18:54</div></div></div>
 <div class="date-divider" id="d-2026-04-26" data-date="2026-04-26"><span>26 апреля 2026</span></div>
 <div class="system-msg" data-date="2026-04-26">Вы отключили расширенную защиту конфиденциальности в чате.</div>
-</main>
+</main></div>
+<div data-tab-content="media" hidden>
+<div class="media-wrap">
+<div class="media-day">
+<div class="media-day-title">8 октября 2025 <span class="day-count-pill">45</span></div>
+<div class="media-grid">
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000006-PHOTO-2025-10-08-11-45-44.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000006-PHOTO-2025-10-08-11-45-44.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000007-PHOTO-2025-10-08-11-45-44.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000007-PHOTO-2025-10-08-11-45-44.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000008-PHOTO-2025-10-08-11-45-44.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000008-PHOTO-2025-10-08-11-45-44.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000009-PHOTO-2025-10-08-11-45-44.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000009-PHOTO-2025-10-08-11-45-44.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000010-PHOTO-2025-10-08-11-46-15.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000010-PHOTO-2025-10-08-11-46-15.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000011-PHOTO-2025-10-08-11-46-15.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000011-PHOTO-2025-10-08-11-46-15.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000014-PHOTO-2025-10-08-12-20-51.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000014-PHOTO-2025-10-08-12-20-51.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000015-PHOTO-2025-10-08-12-20-51.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000015-PHOTO-2025-10-08-12-20-51.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000016-PHOTO-2025-10-08-12-20-51.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000016-PHOTO-2025-10-08-12-20-51.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000017-PHOTO-2025-10-08-12-20-52.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000017-PHOTO-2025-10-08-12-20-52.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000018-PHOTO-2025-10-08-12-20-52.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000018-PHOTO-2025-10-08-12-20-52.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000019-PHOTO-2025-10-08-12-22-39.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000019-PHOTO-2025-10-08-12-22-39.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000020-PHOTO-2025-10-08-13-12-03.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000020-PHOTO-2025-10-08-13-12-03.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000021-PHOTO-2025-10-08-13-12-04.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000021-PHOTO-2025-10-08-13-12-04.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000022-PHOTO-2025-10-08-13-12-04.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000022-PHOTO-2025-10-08-13-12-04.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000023-PHOTO-2025-10-08-13-12-04.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000023-PHOTO-2025-10-08-13-12-04.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000024-PHOTO-2025-10-08-13-12-05.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000024-PHOTO-2025-10-08-13-12-05.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000025-PHOTO-2025-10-08-13-12-05.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000025-PHOTO-2025-10-08-13-12-05.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000026-PHOTO-2025-10-08-13-12-05.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000026-PHOTO-2025-10-08-13-12-05.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000027-PHOTO-2025-10-08-13-12-06.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000027-PHOTO-2025-10-08-13-12-06.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000028-PHOTO-2025-10-08-13-12-06.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000028-PHOTO-2025-10-08-13-12-06.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000029-PHOTO-2025-10-08-13-12-06.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000029-PHOTO-2025-10-08-13-12-06.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000030-PHOTO-2025-10-08-13-12-07.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000030-PHOTO-2025-10-08-13-12-07.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000031-PHOTO-2025-10-08-13-12-07.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000031-PHOTO-2025-10-08-13-12-07.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000032-PHOTO-2025-10-08-13-12-07.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000032-PHOTO-2025-10-08-13-12-07.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000033-PHOTO-2025-10-08-13-12-07.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000033-PHOTO-2025-10-08-13-12-07.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000034-PHOTO-2025-10-08-13-12-08.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000034-PHOTO-2025-10-08-13-12-08.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000035-PHOTO-2025-10-08-13-12-08.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000035-PHOTO-2025-10-08-13-12-08.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000036-PHOTO-2025-10-08-13-12-08.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000036-PHOTO-2025-10-08-13-12-08.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000037-PHOTO-2025-10-08-13-12-09.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000037-PHOTO-2025-10-08-13-12-09.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000038-PHOTO-2025-10-08-13-12-09.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000038-PHOTO-2025-10-08-13-12-09.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000039-PHOTO-2025-10-08-13-12-09.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000039-PHOTO-2025-10-08-13-12-09.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000040-PHOTO-2025-10-08-13-38-52.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000040-PHOTO-2025-10-08-13-38-52.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000041-PHOTO-2025-10-08-13-38-52.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000041-PHOTO-2025-10-08-13-38-52.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000042-PHOTO-2025-10-08-13-38-52.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000042-PHOTO-2025-10-08-13-38-52.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000043-PHOTO-2025-10-08-13-38-52.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000043-PHOTO-2025-10-08-13-38-52.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000044-PHOTO-2025-10-08-13-38-52.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000044-PHOTO-2025-10-08-13-38-52.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000045-PHOTO-2025-10-08-13-39-33.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000045-PHOTO-2025-10-08-13-39-33.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000046-PHOTO-2025-10-08-13-39-33.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000046-PHOTO-2025-10-08-13-39-33.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000047-PHOTO-2025-10-08-13-39-33.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000047-PHOTO-2025-10-08-13-39-33.jpg" alt=""></a>
+<a class="media-thumb video" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000048-VIDEO-2025-10-08-13-39-33.mp4" target="_blank"><video preload="metadata" muted playsinline src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000048-VIDEO-2025-10-08-13-39-33.mp4#t=0.5"></video><span class="play-icon">▶</span></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000052-PHOTO-2025-10-08-17-41-59.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000052-PHOTO-2025-10-08-17-41-59.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000053-PHOTO-2025-10-08-17-43-49.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000053-PHOTO-2025-10-08-17-43-49.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000054-PHOTO-2025-10-08-17-47-00.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000054-PHOTO-2025-10-08-17-47-00.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000055-PHOTO-2025-10-08-17-48-12.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000055-PHOTO-2025-10-08-17-48-12.jpg" alt=""></a>
+</div></div>
+<div class="media-day">
+<div class="media-day-title">9 октября 2025 <span class="day-count-pill">49</span></div>
+<div class="media-grid">
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000056-PHOTO-2025-10-09-09-41-23.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000056-PHOTO-2025-10-09-09-41-23.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000057-PHOTO-2025-10-09-09-43-05.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000057-PHOTO-2025-10-09-09-43-05.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000058-PHOTO-2025-10-09-10-56-35.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000058-PHOTO-2025-10-09-10-56-35.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000059-PHOTO-2025-10-09-11-03-34.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000059-PHOTO-2025-10-09-11-03-34.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000060-PHOTO-2025-10-09-11-04-37.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000060-PHOTO-2025-10-09-11-04-37.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000061-PHOTO-2025-10-09-11-06-20.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000061-PHOTO-2025-10-09-11-06-20.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000062-PHOTO-2025-10-09-11-06-41.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000062-PHOTO-2025-10-09-11-06-41.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000063-PHOTO-2025-10-09-11-07-01.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000063-PHOTO-2025-10-09-11-07-01.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000064-PHOTO-2025-10-09-11-07-12.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000064-PHOTO-2025-10-09-11-07-12.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000065-PHOTO-2025-10-09-11-07-45.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000065-PHOTO-2025-10-09-11-07-45.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000066-PHOTO-2025-10-09-11-10-40.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000066-PHOTO-2025-10-09-11-10-40.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000067-PHOTO-2025-10-09-11-12-18.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000067-PHOTO-2025-10-09-11-12-18.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000068-PHOTO-2025-10-09-11-12-43.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000068-PHOTO-2025-10-09-11-12-43.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000069-PHOTO-2025-10-09-11-14-08.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000069-PHOTO-2025-10-09-11-14-08.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000070-PHOTO-2025-10-09-11-16-19.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000070-PHOTO-2025-10-09-11-16-19.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000071-PHOTO-2025-10-09-11-16-45.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000071-PHOTO-2025-10-09-11-16-45.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000072-PHOTO-2025-10-09-13-41-15.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000072-PHOTO-2025-10-09-13-41-15.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000073-PHOTO-2025-10-09-13-41-15.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000073-PHOTO-2025-10-09-13-41-15.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000074-PHOTO-2025-10-09-13-41-15.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000074-PHOTO-2025-10-09-13-41-15.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000075-PHOTO-2025-10-09-13-41-15.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000075-PHOTO-2025-10-09-13-41-15.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000076-PHOTO-2025-10-09-13-41-15.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000076-PHOTO-2025-10-09-13-41-15.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000077-PHOTO-2025-10-09-13-41-32.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000077-PHOTO-2025-10-09-13-41-32.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000078-PHOTO-2025-10-09-13-41-32.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000078-PHOTO-2025-10-09-13-41-32.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000079-PHOTO-2025-10-09-13-41-32.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000079-PHOTO-2025-10-09-13-41-32.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000080-PHOTO-2025-10-09-13-41-32.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000080-PHOTO-2025-10-09-13-41-32.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000081-PHOTO-2025-10-09-13-41-32.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000081-PHOTO-2025-10-09-13-41-32.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000082-PHOTO-2025-10-09-13-41-32.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000082-PHOTO-2025-10-09-13-41-32.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000083-PHOTO-2025-10-09-13-41-32.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000083-PHOTO-2025-10-09-13-41-32.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000084-PHOTO-2025-10-09-13-41-32.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000084-PHOTO-2025-10-09-13-41-32.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000085-PHOTO-2025-10-09-13-41-32.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000085-PHOTO-2025-10-09-13-41-32.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000086-PHOTO-2025-10-09-13-41-32.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000086-PHOTO-2025-10-09-13-41-32.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000087-PHOTO-2025-10-09-13-41-32.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000087-PHOTO-2025-10-09-13-41-32.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000088-PHOTO-2025-10-09-13-41-32.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000088-PHOTO-2025-10-09-13-41-32.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000089-PHOTO-2025-10-09-13-41-32.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000089-PHOTO-2025-10-09-13-41-32.jpg" alt=""></a>
+<a class="media-thumb video" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000090-VIDEO-2025-10-09-13-45-24.mp4" target="_blank"><video preload="metadata" muted playsinline src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000090-VIDEO-2025-10-09-13-45-24.mp4#t=0.5"></video><span class="play-icon">▶</span></a>
+<a class="media-thumb video" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000091-VIDEO-2025-10-09-13-45-24.mp4" target="_blank"><video preload="metadata" muted playsinline src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000091-VIDEO-2025-10-09-13-45-24.mp4#t=0.5"></video><span class="play-icon">▶</span></a>
+<a class="media-thumb video" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000092-VIDEO-2025-10-09-13-45-24.mp4" target="_blank"><video preload="metadata" muted playsinline src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000092-VIDEO-2025-10-09-13-45-24.mp4#t=0.5"></video><span class="play-icon">▶</span></a>
+<a class="media-thumb video" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000093-VIDEO-2025-10-09-13-45-24.mp4" target="_blank"><video preload="metadata" muted playsinline src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000093-VIDEO-2025-10-09-13-45-24.mp4#t=0.5"></video><span class="play-icon">▶</span></a>
+<a class="media-thumb video" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000094-VIDEO-2025-10-09-13-45-24.mp4" target="_blank"><video preload="metadata" muted playsinline src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000094-VIDEO-2025-10-09-13-45-24.mp4#t=0.5"></video><span class="play-icon">▶</span></a>
+<a class="media-thumb video" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000095-VIDEO-2025-10-09-13-45-24.mp4" target="_blank"><video preload="metadata" muted playsinline src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000095-VIDEO-2025-10-09-13-45-24.mp4#t=0.5"></video><span class="play-icon">▶</span></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000096-PHOTO-2025-10-09-13-54-49.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000096-PHOTO-2025-10-09-13-54-49.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000097-PHOTO-2025-10-09-13-58-32.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000097-PHOTO-2025-10-09-13-58-32.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000099-PHOTO-2025-10-09-14-07-39.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000099-PHOTO-2025-10-09-14-07-39.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000100-PHOTO-2025-10-09-14-13-50.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000100-PHOTO-2025-10-09-14-13-50.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000101-PHOTO-2025-10-09-14-20-41.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000101-PHOTO-2025-10-09-14-20-41.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000102-PHOTO-2025-10-09-14-20-41.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000102-PHOTO-2025-10-09-14-20-41.jpg" alt=""></a>
+<a class="media-thumb video" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000103-VIDEO-2025-10-09-14-20-41.mp4" target="_blank"><video preload="metadata" muted playsinline src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000103-VIDEO-2025-10-09-14-20-41.mp4#t=0.5"></video><span class="play-icon">▶</span></a>
+<a class="media-thumb video" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000104-VIDEO-2025-10-09-14-20-41.mp4" target="_blank"><video preload="metadata" muted playsinline src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000104-VIDEO-2025-10-09-14-20-41.mp4#t=0.5"></video><span class="play-icon">▶</span></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000107-PHOTO-2025-10-09-14-42-05.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000107-PHOTO-2025-10-09-14-42-05.jpg" alt=""></a>
+</div></div>
+<div class="media-day">
+<div class="media-day-title">14 октября 2025 <span class="day-count-pill">25</span></div>
+<div class="media-grid">
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000148-PHOTO-2025-10-14-14-04-51.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000148-PHOTO-2025-10-14-14-04-51.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000149-PHOTO-2025-10-14-14-04-52.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000149-PHOTO-2025-10-14-14-04-52.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000150-PHOTO-2025-10-14-14-04-52.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000150-PHOTO-2025-10-14-14-04-52.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000151-PHOTO-2025-10-14-14-04-52.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000151-PHOTO-2025-10-14-14-04-52.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000152-PHOTO-2025-10-14-14-04-53.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000152-PHOTO-2025-10-14-14-04-53.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000153-PHOTO-2025-10-14-14-04-53.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000153-PHOTO-2025-10-14-14-04-53.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000154-PHOTO-2025-10-14-14-04-53.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000154-PHOTO-2025-10-14-14-04-53.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000155-PHOTO-2025-10-14-14-04-53.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000155-PHOTO-2025-10-14-14-04-53.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000156-PHOTO-2025-10-14-14-04-54.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000156-PHOTO-2025-10-14-14-04-54.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000157-PHOTO-2025-10-14-14-04-54.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000157-PHOTO-2025-10-14-14-04-54.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000158-PHOTO-2025-10-14-14-04-54.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000158-PHOTO-2025-10-14-14-04-54.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000159-PHOTO-2025-10-14-14-04-55.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000159-PHOTO-2025-10-14-14-04-55.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000160-PHOTO-2025-10-14-14-04-55.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000160-PHOTO-2025-10-14-14-04-55.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000161-PHOTO-2025-10-14-14-04-55.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000161-PHOTO-2025-10-14-14-04-55.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000162-PHOTO-2025-10-14-14-04-56.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000162-PHOTO-2025-10-14-14-04-56.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000163-PHOTO-2025-10-14-14-04-56.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000163-PHOTO-2025-10-14-14-04-56.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000164-PHOTO-2025-10-14-14-04-56.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000164-PHOTO-2025-10-14-14-04-56.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000165-PHOTO-2025-10-14-14-04-57.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000165-PHOTO-2025-10-14-14-04-57.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000166-PHOTO-2025-10-14-14-04-57.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000166-PHOTO-2025-10-14-14-04-57.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000167-PHOTO-2025-10-14-14-04-57.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000167-PHOTO-2025-10-14-14-04-57.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000168-PHOTO-2025-10-14-14-04-57.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000168-PHOTO-2025-10-14-14-04-57.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000169-PHOTO-2025-10-14-14-04-58.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000169-PHOTO-2025-10-14-14-04-58.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000170-PHOTO-2025-10-14-14-04-58.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000170-PHOTO-2025-10-14-14-04-58.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000171-PHOTO-2025-10-14-14-04-58.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000171-PHOTO-2025-10-14-14-04-58.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000173-PHOTO-2025-10-14-14-05-23.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000173-PHOTO-2025-10-14-14-05-23.jpg" alt=""></a>
+</div></div>
+<div class="media-day">
+<div class="media-day-title">16 октября 2025 <span class="day-count-pill">1</span></div>
+<div class="media-grid">
+<a class="media-thumb video" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000191-VIDEO-2025-10-16-16-31-29.mp4" target="_blank"><video preload="metadata" muted playsinline src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000191-VIDEO-2025-10-16-16-31-29.mp4#t=0.5"></video><span class="play-icon">▶</span></a>
+</div></div>
+<div class="media-day">
+<div class="media-day-title">17 октября 2025 <span class="day-count-pill">4</span></div>
+<div class="media-grid">
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000192-PHOTO-2025-10-17-14-35-48.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000192-PHOTO-2025-10-17-14-35-48.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000193-PHOTO-2025-10-17-14-35-49.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000193-PHOTO-2025-10-17-14-35-49.jpg" alt=""></a>
+<a class="media-thumb video" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000196-VIDEO-2025-10-17-14-35-50.mp4" target="_blank"><video preload="metadata" muted playsinline src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000196-VIDEO-2025-10-17-14-35-50.mp4#t=0.5"></video><span class="play-icon">▶</span></a>
+<a class="media-thumb video" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000201-VIDEO-2025-10-17-15-21-39.mp4" target="_blank"><video preload="metadata" muted playsinline src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000201-VIDEO-2025-10-17-15-21-39.mp4#t=0.5"></video><span class="play-icon">▶</span></a>
+</div></div>
+<div class="media-day">
+<div class="media-day-title">4 ноября 2025 <span class="day-count-pill">1</span></div>
+<div class="media-grid">
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000257-PHOTO-2025-11-04-05-50-12.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000257-PHOTO-2025-11-04-05-50-12.jpg" alt=""></a>
+</div></div>
+<div class="media-day">
+<div class="media-day-title">28 ноября 2025 <span class="day-count-pill">1</span></div>
+<div class="media-grid">
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000303-PHOTO-2025-11-28-13-08-51.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000303-PHOTO-2025-11-28-13-08-51.jpg" alt=""></a>
+</div></div>
+<div class="media-day">
+<div class="media-day-title">27 марта 2026 <span class="day-count-pill">6</span></div>
+<div class="media-grid">
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000322-PHOTO-2026-03-27-13-39-47.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000322-PHOTO-2026-03-27-13-39-47.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000323-PHOTO-2026-03-27-13-39-48.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000323-PHOTO-2026-03-27-13-39-48.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000324-PHOTO-2026-03-27-13-39-48.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000324-PHOTO-2026-03-27-13-39-48.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000325-PHOTO-2026-03-27-13-39-48.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000325-PHOTO-2026-03-27-13-39-48.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000326-PHOTO-2026-03-27-13-39-49.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000326-PHOTO-2026-03-27-13-39-49.jpg" alt=""></a>
+<a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000327-PHOTO-2026-03-27-13-42-48.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000327-PHOTO-2026-03-27-13-42-48.jpg" alt=""></a>
+</div></div>
+</div></div>
+<div data-tab-content="docs" hidden>
+<div class="docs-wrap">
+<div class="docs-day">
+<div class="docs-day-title">8 октября 2025</div>
+<div class="docs-list">
+<div class="doc-item audio-item"><div class="doc-icon">🎙</div><div class="doc-meta"><div class="doc-name">AUDIO-2025-10-08-16-23-14.opus</div><div class="doc-info">🌏 · 16:23</div><audio controls preload="none" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000051-AUDIO-2025-10-08-16-23-14.opus"></audio></div></div>
+</div></div>
+<div class="docs-day">
+<div class="docs-day-title">12 октября 2025</div>
+<div class="docs-list">
+<a class="doc-item" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000128-%D0%97%D0%B0%D1%8F%D0%B2%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5%20%D0%BE%D1%82%20%D0%A2%D0%B0%D1%80%D0%B0%D1%81%D0%BA%D0%B8%D0%BD%D0%B0%20%D0%90%D0%BD%D0%B4%D1%80%D0%B5%D1%8F.pdf" target="_blank"><div class="doc-icon">📄</div><div class="doc-meta"><div class="doc-name">Заявление от Тараскина Андрея.pdf</div><div class="doc-info">Алиса адвокат · 10:10</div></div></a>
+</div></div>
+<div class="docs-day">
+<div class="docs-day-title">18 октября 2025</div>
+<div class="docs-list">
+<a class="doc-item" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000239-Deepclean.vcf" target="_blank"><div class="doc-icon">👤</div><div class="doc-meta"><div class="doc-name">Deepclean.vcf</div><div class="doc-info">Алиса адвокат · 18:19</div></div></a>
+</div></div>
+<div class="docs-day">
+<div class="docs-day-title">4 ноября 2025</div>
+<div class="docs-list">
+<a class="doc-item" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000256-flight_certificate_ru.pdf" target="_blank"><div class="doc-icon">📄</div><div class="doc-meta"><div class="doc-name">flight_certificate_ru.pdf</div><div class="doc-info">Алиса адвокат · 05:50</div></div></a>
+</div></div>
+<div class="docs-day">
+<div class="docs-day-title">18 ноября 2025</div>
+<div class="docs-list">
+<a class="doc-item" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000275-gu-Unknown.pdf" target="_blank"><div class="doc-icon">📄</div><div class="doc-meta"><div class="doc-name">gu-Unknown.pdf</div><div class="doc-info">🌏 · 11:58</div></div></a>
+</div></div>
+<div class="docs-day">
+<div class="docs-day-title">28 ноября 2025</div>
+<div class="docs-list">
+<a class="doc-item" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000302-589665517535756716_%E0%B8%AB%E0%B8%99%E0%B8%B1%E0%B8%87%E0%B8%AA%E0%B8%B7%E0%B8%AD%E0%B8%A1%E0%B8%AD%E0%B8%9A%E0%B8%AD%E0%B8%B3%E0%B8%99%E0%B8%B2%E0%B8%88%E0%B8%94%E0%B8%B3%E0%B9%80%E0%B8%99%E0%B8%B4%E0%B8%99%E0%B8%84%E0%B8%94%E0%B8%B5%20MR.%20ANDREI%20TARASKIN.pdf" target="_blank"><div class="doc-icon">📄</div><div class="doc-meta"><div class="doc-name">589665517535756716_หนังสือมอบอำนาจดำเนินคดี MR. ANDREI TARASKIN.pdf</div><div class="doc-info">Алиса адвокат · 12:58</div></div></a>
+<a class="doc-item" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000318-2025-11-28_001.pdf" target="_blank"><div class="doc-icon">📄</div><div class="doc-meta"><div class="doc-name">2025-11-28_001.pdf</div><div class="doc-info">🌏 · 23:37</div></div></a>
+</div></div>
+</div></div>
 <script>
 (function() {
+  // ===== Date filter (messages tab) =====
   const datePicker = document.getElementById('datePicker');
   const clearBtn   = document.getElementById('clearFilter');
   const toggleBtn  = document.getElementById('togglePanel');
@@ -682,29 +1127,18 @@ body {
     });
     clearBtn.hidden = !date;
     datePicker.value = date || '';
-    empty.hidden = visible > 0;
+    if (empty) empty.hidden = visible > 0;
 
     if (date && opts.scroll !== false) {
       const target = document.getElementById('d-' + date);
-      if (target) {
-        setTimeout(() => target.scrollIntoView({block: 'start'}), 30);
-      }
+      if (target) setTimeout(() => target.scrollIntoView({block: 'start'}), 30);
     }
   }
 
-  datePicker.addEventListener('change', e => {
-    applyFilter(e.target.value);
-    setPanel(false);
-  });
-  clearBtn.addEventListener('click', () => {
-    applyFilter('');
-    setPanel(false);
-  });
+  datePicker.addEventListener('change', e => { applyFilter(e.target.value); setPanel(false); });
+  clearBtn.addEventListener('click', () => { applyFilter(''); setPanel(false); });
   toggleBtn.addEventListener('click', () => setPanel(panel.hidden));
   backdrop.addEventListener('click', () => setPanel(false));
-  document.addEventListener('keydown', e => {
-    if (e.key === 'Escape' && !panel.hidden) setPanel(false);
-  });
   panel.addEventListener('click', e => {
     const chip = e.target.closest('.day-chip');
     if (chip) {
@@ -712,6 +1146,39 @@ body {
       applyFilter(chip.dataset.date);
       setPanel(false);
     }
+  });
+
+  // ===== Tabs =====
+  const tabBtns = document.querySelectorAll('.tab');
+  const tabContents = document.querySelectorAll('[data-tab-content]');
+  function activateTab(name) {
+    tabBtns.forEach(b => b.classList.toggle('active', b.dataset.tab === name));
+    tabContents.forEach(c => { c.hidden = c.dataset.tabContent !== name; });
+    document.body.dataset.activeTab = name;
+    if (name !== 'messages' && !panel.hidden) setPanel(false);
+    window.scrollTo({top: 0, behavior: 'instant'});
+  }
+  tabBtns.forEach(b => b.addEventListener('click', () => activateTab(b.dataset.tab)));
+
+  // ===== Nav drawer =====
+  const drawer = document.getElementById('nav-drawer');
+  const navBackdrop = document.getElementById('nav-backdrop');
+  const navToggle = document.getElementById('navToggle');
+  const navClose = document.getElementById('navClose');
+  function setDrawer(open) {
+    if (drawer) drawer.hidden = !open;
+    if (navBackdrop) navBackdrop.hidden = !open;
+    document.body.style.overflow = open ? 'hidden' : '';
+  }
+  if (navToggle) navToggle.addEventListener('click', () => setDrawer(true));
+  if (navClose) navClose.addEventListener('click', () => setDrawer(false));
+  if (navBackdrop) navBackdrop.addEventListener('click', () => setDrawer(false));
+
+  // ===== Global Escape: close any open overlay =====
+  document.addEventListener('keydown', e => {
+    if (e.key !== 'Escape') return;
+    if (drawer && !drawer.hidden) { setDrawer(false); return; }
+    if (!panel.hidden) { setPanel(false); return; }
   });
 })();
 </script>
