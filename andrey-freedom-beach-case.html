@@ -15,6 +15,64 @@
   --text: #111b21;
   --muted: #667781;
 }
+
+/* ===== i18n bilingual spans (CSS toggles which lang is visible) ===== */
+.i18n { display: inline; }
+.i18n > [data-l] { display: inline; }
+.i18n > [data-l="th"] { display: none; }
+body[data-lang="th"] .i18n > [data-l="ru"] { display: none; }
+body[data-lang="th"] .i18n > [data-l="th"] { display: inline; }
+
+/* ===== Language switcher pills ===== */
+.lang-switch {
+  display: inline-flex;
+  background: rgba(255,255,255,0.18);
+  border-radius: 8px;
+  padding: 2px;
+  flex: 0 0 auto;
+}
+.lang-switch .lang-btn {
+  background: transparent; color: #fff;
+  border: 0; padding: 5px 10px;
+  font-size: 12.5px; font-weight: 600;
+  font-family: inherit; cursor: pointer;
+  border-radius: 6px;
+  letter-spacing: 0.3px;
+  min-height: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+.lang-switch .lang-btn:hover { background: rgba(255,255,255,0.18); }
+.lang-switch .lang-btn.active {
+  background: #fff; color: var(--header);
+}
+.lang-switch-drawer {
+  background: #f0f2f5;
+}
+.lang-switch-drawer .lang-btn { color: var(--muted); }
+.lang-switch-drawer .lang-btn:hover { background: rgba(0,0,0,0.04); }
+.lang-switch-drawer .lang-btn.active {
+  background: var(--header);
+  color: #fff;
+}
+.drawer-footer {
+  margin-top: auto;
+  padding: 14px 18px 18px;
+  border-top: 1px solid #eee;
+  display: flex; align-items: center; gap: 12px;
+  justify-content: space-between;
+}
+.dl-label {
+  font-size: 12.5px; color: var(--muted);
+  font-weight: 600;
+}
+.hub-lang {
+  display: flex; justify-content: flex-end;
+  margin-bottom: 14px;
+}
+.hub-lang .lang-switch { background: #f0f2f5; }
+.hub-lang .lang-btn { color: var(--muted); }
+.hub-lang .lang-btn.active { background: var(--header); color: #fff; }
+
 * { box-sizing: border-box; }
 html, body {
   margin: 0; padding: 0; background: var(--bg); color: var(--text);
@@ -467,75 +525,78 @@ body[data-active-tab="docs"] .controls { display: none; }
 </head>
 
 <body data-active-tab="messages">
-<aside id="nav-drawer" hidden aria-label="Меню">
+<aside id="nav-drawer" hidden data-i18n-aria="menu" aria-label="Меню">
 <div class="drawer-h">
-<div class="drawer-title">WhatsApp архив</div>
-<button id="navClose" class="icon-btn" aria-label="Закрыть">✕</button>
+<div class="drawer-title"><span class="i18n"><span data-l="ru">WhatsApp архив</span><span data-l="th">คลัง WhatsApp</span></span></div>
+<button id="navClose" class="icon-btn" data-i18n-aria="close" aria-label="Закрыть">✕</button>
 </div>
-<a class="drawer-home" href="index.html"><span class="dh-icon">🏠</span><span>На главную</span></a>
-<div class="drawer-section">Все чаты</div>
+<a class="drawer-home" href="index.html"><span class="dh-icon">🏠</span><span class="i18n"><span data-l="ru">На главную</span><span data-l="th">หน้าแรก</span></span></a>
+<div class="drawer-section"><span class="i18n"><span data-l="ru">Все чаты</span><span data-l="th">แชททั้งหมด</span></span></div>
 <nav class="drawer-chats">
-<a href="66-91-824-1010.html" class="drawer-chat"><span class="dc-icon">👤</span><span class="dc-info"><span class="dc-name">+66 91 824 1010</span><span class="dc-meta">3458 сообщ. · 160 дн.</span></span></a>
-<a href="alisa-advokat.html" class="drawer-chat"><span class="dc-icon">👤</span><span class="dc-info"><span class="dc-name">Алиса адвокат</span><span class="dc-meta">2383 сообщ. · 35 дн.</span></span></a>
-<a href="toonii.html" class="drawer-chat"><span class="dc-icon">👤</span><span class="dc-info"><span class="dc-name">Toonii</span><span class="dc-meta">684 сообщ. · 20 дн.</span></span></a>
-<a href="tooni.html" class="drawer-chat"><span class="dc-icon">👤</span><span class="dc-info"><span class="dc-name">Tooni</span><span class="dc-meta">422 сообщ. · 39 дн.</span></span></a>
-<a href="andrey-freedom-beach-case.html" class="drawer-chat active"><span class="dc-icon">👥</span><span class="dc-info"><span class="dc-name">Andrey Freedom  beach case</span><span class="dc-meta">340 сообщ. · 18 дн.</span></span></a>
-<a href="66-80-041-5533.html" class="drawer-chat"><span class="dc-icon">👤</span><span class="dc-info"><span class="dc-name">+66 80 041 5533</span><span class="dc-meta">110 сообщ. · 1 дн.</span></span></a>
-<a href="66-99-491-6356.html" class="drawer-chat"><span class="dc-icon">👤</span><span class="dc-info"><span class="dc-name">+66 99 491 6356</span><span class="dc-meta">41 сообщ. · 2 дн.</span></span></a>
-</nav></aside>
+<a href="66-91-824-1010.html" class="drawer-chat"><span class="dc-icon">👤</span><span class="dc-info"><span class="dc-name">+66 91 824 1010</span><span class="dc-meta">3458 <span class="i18n"><span data-l="ru">сообщ.</span><span data-l="th">ข้อความ</span></span> · 160 <span class="i18n"><span data-l="ru">дн.</span><span data-l="th">วัน</span></span></span></span></a>
+<a href="alisa-advokat.html" class="drawer-chat"><span class="dc-icon">👤</span><span class="dc-info"><span class="dc-name">Алиса адвокат</span><span class="dc-meta">2383 <span class="i18n"><span data-l="ru">сообщ.</span><span data-l="th">ข้อความ</span></span> · 35 <span class="i18n"><span data-l="ru">дн.</span><span data-l="th">วัน</span></span></span></span></a>
+<a href="toonii.html" class="drawer-chat"><span class="dc-icon">👤</span><span class="dc-info"><span class="dc-name">Toonii</span><span class="dc-meta">684 <span class="i18n"><span data-l="ru">сообщ.</span><span data-l="th">ข้อความ</span></span> · 20 <span class="i18n"><span data-l="ru">дн.</span><span data-l="th">วัน</span></span></span></span></a>
+<a href="tooni.html" class="drawer-chat"><span class="dc-icon">👤</span><span class="dc-info"><span class="dc-name">Tooni</span><span class="dc-meta">422 <span class="i18n"><span data-l="ru">сообщ.</span><span data-l="th">ข้อความ</span></span> · 39 <span class="i18n"><span data-l="ru">дн.</span><span data-l="th">วัน</span></span></span></span></a>
+<a href="andrey-freedom-beach-case.html" class="drawer-chat active"><span class="dc-icon">👥</span><span class="dc-info"><span class="dc-name">Andrey Freedom  beach case</span><span class="dc-meta">340 <span class="i18n"><span data-l="ru">сообщ.</span><span data-l="th">ข้อความ</span></span> · 18 <span class="i18n"><span data-l="ru">дн.</span><span data-l="th">วัน</span></span></span></span></a>
+<a href="66-80-041-5533.html" class="drawer-chat"><span class="dc-icon">👤</span><span class="dc-info"><span class="dc-name">+66 80 041 5533</span><span class="dc-meta">110 <span class="i18n"><span data-l="ru">сообщ.</span><span data-l="th">ข้อความ</span></span> · 1 <span class="i18n"><span data-l="ru">дн.</span><span data-l="th">วัน</span></span></span></span></a>
+<a href="66-99-491-6356.html" class="drawer-chat"><span class="dc-icon">👤</span><span class="dc-info"><span class="dc-name">+66 99 491 6356</span><span class="dc-meta">41 <span class="i18n"><span data-l="ru">сообщ.</span><span data-l="th">ข้อความ</span></span> · 2 <span class="i18n"><span data-l="ru">дн.</span><span data-l="th">วัน</span></span></span></span></a>
+</nav>
+<div class="drawer-footer"><span class="dl-label"><span class="i18n"><span data-l="ru">Язык</span><span data-l="th">ภาษา</span></span></span><div class="lang-switch lang-switch-drawer" role="group" aria-label="Language"><button data-lang-set="ru" class="lang-btn">RU</button><button data-lang-set="th" class="lang-btn">TH</button></div></div>
+</aside>
 <div id="nav-backdrop" hidden></div>
 <header class="chat-header"><div class="header-row">
-<button id="navToggle" class="icon-btn menu-btn" aria-label="Открыть меню" title="Меню">☰</button>
+<button id="navToggle" class="icon-btn menu-btn" data-i18n-aria="open_menu" data-i18n-title="menu" aria-label="Открыть меню" title="Меню">☰</button>
 <div class="title-block">
-<a class="back-link" href="index.html">‹ Все чаты</a>
+<a class="back-link" href="index.html"><span class="i18n"><span data-l="ru">‹ Все чаты</span><span data-l="th">‹ แชททั้งหมด</span></span></a>
 <div class="title">Andrey Freedom  beach case</div>
-<div class="sub">Группа · Алиса адвокат, NikitaBKK, МeМii ~ +1 · 340 сообщений · 18 дней</div>
+<div class="sub"><span class="i18n"><span data-l="ru">Группа</span><span data-l="th">กลุ่ม</span></span> · Алиса адвокат, NikitaBKK, МeМii ~ +1 · 340 <span class="i18n"><span data-l="ru">сообщений</span><span data-l="th">ข้อความ</span></span> · 18 <span class="i18n"><span data-l="ru">дней</span><span data-l="th">วัน</span></span></div>
 </div>
 <div class="controls">
-<input type="date" id="datePicker" min="2025-10-08" max="2026-03-27" aria-label="Выбрать дату">
-<button id="togglePanel" class="icon-btn" aria-expanded="false" aria-controls="dates-panel" title="Все даты">📅</button>
-<button id="clearFilter" class="primary" hidden>Сброс</button>
+<div class="lang-switch" role="group" aria-label="Language"><button data-lang-set="ru" class="lang-btn">RU</button><button data-lang-set="th" class="lang-btn">TH</button></div>
+<input type="date" id="datePicker" min="2025-10-08" max="2026-03-27" data-i18n-aria="select_date" aria-label="Выбрать дату">
+<button id="togglePanel" class="icon-btn" aria-expanded="false" aria-controls="dates-panel" data-i18n-title="all_dates" title="Все даты">📅</button>
+<button id="clearFilter" class="primary" hidden><span class="i18n"><span data-l="ru">Сброс</span><span data-l="th">รีเซ็ต</span></span></button>
 </div></div></header>
 <div class="tabs" role="tablist">
-<button class="tab active" data-tab="messages" role="tab">Сообщения <span class="tab-count">340</span></button>
-<button class="tab" data-tab="media" role="tab">Медиа <span class="tab-count">132</span></button>
-<button class="tab" data-tab="docs" role="tab">Документы <span class="tab-count">7</span></button>
+<button class="tab active" data-tab="messages" role="tab"><span class="i18n"><span data-l="ru">Сообщения</span><span data-l="th">ข้อความ</span></span> <span class="tab-count">340</span></button>
+<button class="tab" data-tab="media" role="tab"><span class="i18n"><span data-l="ru">Медиа</span><span data-l="th">สื่อ</span></span> <span class="tab-count">132</span></button>
+<button class="tab" data-tab="docs" role="tab"><span class="i18n"><span data-l="ru">Документы</span><span data-l="th">เอกสาร</span></span> <span class="tab-count">7</span></button>
 </div>
 <div id="backdrop" hidden></div>
 <aside id="dates-panel" hidden aria-label="Список дат">
-<p class="panel-hint">Выберите день — остальные сообщения скроются.</p>
-<div class="month-block"><div class="month-title">Октябрь 2025</div>
+<p class="panel-hint"><span class="i18n"><span data-l="ru">Выберите день — остальные сообщения скроются.</span><span data-l="th">เลือกวัน — ข้อความที่เหลือจะถูกซ่อน</span></span></p>
+<div class="month-block"><div class="month-title"><span class="i18n"><span data-l="ru">Октябрь 2025</span><span data-l="th">ตุลาคม 2568</span></span></div>
 <div class="day-chips">
-<a href="#d-2025-10-08" class="day-chip" data-date="2025-10-08"><span>8 октября</span><span class="count">51</span></a>
-<a href="#d-2025-10-09" class="day-chip" data-date="2025-10-09"><span>9 октября</span><span class="count">72</span></a>
-<a href="#d-2025-10-12" class="day-chip" data-date="2025-10-12"><span>12 октября</span><span class="count">13</span></a>
-<a href="#d-2025-10-13" class="day-chip" data-date="2025-10-13"><span>13 октября</span><span class="count">7</span></a>
-<a href="#d-2025-10-14" class="day-chip" data-date="2025-10-14"><span>14 октября</span><span class="count">30</span></a>
-<a href="#d-2025-10-15" class="day-chip" data-date="2025-10-15"><span>15 октября</span><span class="count">8</span></a>
-<a href="#d-2025-10-16" class="day-chip" data-date="2025-10-16"><span>16 октября</span><span class="count">6</span></a>
-<a href="#d-2025-10-17" class="day-chip" data-date="2025-10-17"><span>17 октября</span><span class="count">10</span></a>
-<a href="#d-2025-10-18" class="day-chip" data-date="2025-10-18"><span>18 октября</span><span class="count">42</span></a>
-<a href="#d-2025-10-19" class="day-chip" data-date="2025-10-19"><span>19 октября</span><span class="count">2</span></a>
-<a href="#d-2025-10-27" class="day-chip" data-date="2025-10-27"><span>27 октября</span><span class="count">6</span></a>
-<a href="#d-2025-10-28" class="day-chip" data-date="2025-10-28"><span>28 октября</span><span class="count">4</span></a>
+<a href="#d-2025-10-08" class="day-chip" data-date="2025-10-08"><span class="i18n"><span data-l="ru">8 октября</span><span data-l="th">8 ตุลาคม</span></span><span class="count">51</span></a>
+<a href="#d-2025-10-09" class="day-chip" data-date="2025-10-09"><span class="i18n"><span data-l="ru">9 октября</span><span data-l="th">9 ตุลาคม</span></span><span class="count">72</span></a>
+<a href="#d-2025-10-12" class="day-chip" data-date="2025-10-12"><span class="i18n"><span data-l="ru">12 октября</span><span data-l="th">12 ตุลาคม</span></span><span class="count">13</span></a>
+<a href="#d-2025-10-13" class="day-chip" data-date="2025-10-13"><span class="i18n"><span data-l="ru">13 октября</span><span data-l="th">13 ตุลาคม</span></span><span class="count">7</span></a>
+<a href="#d-2025-10-14" class="day-chip" data-date="2025-10-14"><span class="i18n"><span data-l="ru">14 октября</span><span data-l="th">14 ตุลาคม</span></span><span class="count">30</span></a>
+<a href="#d-2025-10-15" class="day-chip" data-date="2025-10-15"><span class="i18n"><span data-l="ru">15 октября</span><span data-l="th">15 ตุลาคม</span></span><span class="count">8</span></a>
+<a href="#d-2025-10-16" class="day-chip" data-date="2025-10-16"><span class="i18n"><span data-l="ru">16 октября</span><span data-l="th">16 ตุลาคม</span></span><span class="count">6</span></a>
+<a href="#d-2025-10-17" class="day-chip" data-date="2025-10-17"><span class="i18n"><span data-l="ru">17 октября</span><span data-l="th">17 ตุลาคม</span></span><span class="count">10</span></a>
+<a href="#d-2025-10-18" class="day-chip" data-date="2025-10-18"><span class="i18n"><span data-l="ru">18 октября</span><span data-l="th">18 ตุลาคม</span></span><span class="count">42</span></a>
+<a href="#d-2025-10-19" class="day-chip" data-date="2025-10-19"><span class="i18n"><span data-l="ru">19 октября</span><span data-l="th">19 ตุลาคม</span></span><span class="count">2</span></a>
+<a href="#d-2025-10-27" class="day-chip" data-date="2025-10-27"><span class="i18n"><span data-l="ru">27 октября</span><span data-l="th">27 ตุลาคม</span></span><span class="count">6</span></a>
+<a href="#d-2025-10-28" class="day-chip" data-date="2025-10-28"><span class="i18n"><span data-l="ru">28 октября</span><span data-l="th">28 ตุลาคม</span></span><span class="count">4</span></a>
 </div></div>
-<div class="month-block"><div class="month-title">Ноябрь 2025</div>
+<div class="month-block"><div class="month-title"><span class="i18n"><span data-l="ru">Ноябрь 2025</span><span data-l="th">พฤศจิกายน 2568</span></span></div>
 <div class="day-chips">
-<a href="#d-2025-11-04" class="day-chip" data-date="2025-11-04"><span>4 ноября</span><span class="count">3</span></a>
-<a href="#d-2025-11-09" class="day-chip" data-date="2025-11-09"><span>9 ноября</span><span class="count">4</span></a>
-<a href="#d-2025-11-14" class="day-chip" data-date="2025-11-14"><span>14 ноября</span><span class="count">1</span></a>
-<a href="#d-2025-11-18" class="day-chip" data-date="2025-11-18"><span>18 ноября</span><span class="count">37</span></a>
-<a href="#d-2025-11-28" class="day-chip" data-date="2025-11-28"><span>28 ноября</span><span class="count">17</span></a>
+<a href="#d-2025-11-04" class="day-chip" data-date="2025-11-04"><span class="i18n"><span data-l="ru">4 ноября</span><span data-l="th">4 พฤศจิกายน</span></span><span class="count">3</span></a>
+<a href="#d-2025-11-09" class="day-chip" data-date="2025-11-09"><span class="i18n"><span data-l="ru">9 ноября</span><span data-l="th">9 พฤศจิกายน</span></span><span class="count">4</span></a>
+<a href="#d-2025-11-14" class="day-chip" data-date="2025-11-14"><span class="i18n"><span data-l="ru">14 ноября</span><span data-l="th">14 พฤศจิกายน</span></span><span class="count">1</span></a>
+<a href="#d-2025-11-18" class="day-chip" data-date="2025-11-18"><span class="i18n"><span data-l="ru">18 ноября</span><span data-l="th">18 พฤศจิกายน</span></span><span class="count">37</span></a>
+<a href="#d-2025-11-28" class="day-chip" data-date="2025-11-28"><span class="i18n"><span data-l="ru">28 ноября</span><span data-l="th">28 พฤศจิกายน</span></span><span class="count">17</span></a>
 </div></div>
-<div class="month-block"><div class="month-title">Март 2026</div>
+<div class="month-block"><div class="month-title"><span class="i18n"><span data-l="ru">Март 2026</span><span data-l="th">มีนาคม 2569</span></span></div>
 <div class="day-chips">
-<a href="#d-2026-03-27" class="day-chip" data-date="2026-03-27"><span>27 марта</span><span class="count">20</span></a>
+<a href="#d-2026-03-27" class="day-chip" data-date="2026-03-27"><span class="i18n"><span data-l="ru">27 марта</span><span data-l="th">27 มีนาคม</span></span><span class="count">20</span></a>
 </div></div>
 </aside>
 <div data-tab-content="messages">
 <main class="chat">
-<div id="empty-state" class="empty-state" hidden>За выбранный день нет сообщений.</div>
-<div class="date-divider" id="d-2025-10-08" data-date="2025-10-08"><span>8 октября 2025</span></div>
+<div id="empty-state" class="empty-state" hidden><span class="i18n"><span data-l="ru">За выбранный день нет сообщений.</span><span data-l="th">ไม่มีข้อความในวันที่เลือก</span></span></div>
+<div class="date-divider" id="d-2025-10-08" data-date="2025-10-08"><span><span class="i18n"><span data-l="ru">8 октября 2025</span><span data-l="th">8 ตุลาคม 2568</span></span></span></div>
 <div class="system-msg" data-date="2025-10-08">Сообщения и звонки защищены сквозным шифрованием. Прочитать, прослушать или переслать их могут только участники этого чата.</div>
 <div class="system-msg" data-date="2025-10-08">Алиса адвокат создал(-а) группу “Andrey Freedom  beach case”</div>
 <div class="system-msg" data-date="2025-10-08">Алиса адвокат добавил(-а) вас</div>
@@ -591,7 +652,7 @@ body[data-active-tab="docs"] .controls { display: none; }
 <div class="msg msg-right" data-date="2025-10-08"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="attachment"><a class="img-link" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000053-PHOTO-2025-10-08-17-43-49.jpg" target="_blank"><img class="photo" loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000053-PHOTO-2025-10-08-17-43-49.jpg" alt=""></a></div><div class="time">17:43</div></div></div>
 <div class="msg msg-right" data-date="2025-10-08"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="attachment"><a class="img-link" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000054-PHOTO-2025-10-08-17-47-00.jpg" target="_blank"><img class="photo" loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000054-PHOTO-2025-10-08-17-47-00.jpg" alt=""></a></div><div class="time">17:47</div></div></div>
 <div class="msg msg-right" data-date="2025-10-08"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="attachment"><a class="img-link" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000055-PHOTO-2025-10-08-17-48-12.jpg" target="_blank"><img class="photo" loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000055-PHOTO-2025-10-08-17-48-12.jpg" alt=""></a></div><div class="time">17:48</div></div></div>
-<div class="date-divider" id="d-2025-10-09" data-date="2025-10-09"><span>9 октября 2025</span></div>
+<div class="date-divider" id="d-2025-10-09" data-date="2025-10-09"><span><span class="i18n"><span data-l="ru">9 октября 2025</span><span data-l="th">9 ตุลาคม 2568</span></span></span></div>
 <div class="msg msg-right" data-date="2025-10-09"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="attachment"><a class="img-link" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000056-PHOTO-2025-10-09-09-41-23.jpg" target="_blank"><img class="photo" loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000056-PHOTO-2025-10-09-09-41-23.jpg" alt=""></a></div><div class="time">09:41</div></div></div>
 <div class="msg msg-right" data-date="2025-10-09"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="attachment"><a class="img-link" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000057-PHOTO-2025-10-09-09-43-05.jpg" target="_blank"><img class="photo" loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000057-PHOTO-2025-10-09-09-43-05.jpg" alt=""></a></div><div class="time">09:43</div></div></div>
 <div class="msg msg-right" data-date="2025-10-09"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="attachment"><a class="img-link" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000058-PHOTO-2025-10-09-10-56-35.jpg" target="_blank"><img class="photo" loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000058-PHOTO-2025-10-09-10-56-35.jpg" alt=""></a></div><div class="time">10:56</div></div></div>
@@ -664,7 +725,7 @@ body[data-active-tab="docs"] .controls { display: none; }
 <div class="msg msg-right" data-date="2025-10-09"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">Я готов оплатить за компетентную консультацию по данным  вопросам</div><div class="time">15:53</div></div></div>
 <div class="msg msg-right" data-date="2025-10-09"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">I am ready to pay for a competent consultation on this issue</div><div class="time">15:53</div></div></div>
 <div class="msg msg-right" data-date="2025-10-09"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">Хочу пояснить я не имею ничего против людей которые сейчас защищают меня. Не имею ничего против людей выражающих своё мнение и истинно понимают ситуацию. Я говорю лишь о том что чувствую. Говорю о том что меня обманул мошенник. И прошу компетентной консультации.</div><div class="time">19:41</div></div></div>
-<div class="date-divider" id="d-2025-10-12" data-date="2025-10-12"><span>12 октября 2025</span></div>
+<div class="date-divider" id="d-2025-10-12" data-date="2025-10-12"><span><span class="i18n"><span data-l="ru">12 октября 2025</span><span data-l="th">12 ตุลาคม 2568</span></span></span></div>
 <div class="msg msg-left" data-date="2025-10-12"><div class="bubble"><div class="sender" style="color:#1f7a8c">Алиса адвокат</div><div class="attachment"><a class="file pdf" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000128-%D0%97%D0%B0%D1%8F%D0%B2%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5%20%D0%BE%D1%82%20%D0%A2%D0%B0%D1%80%D0%B0%D1%81%D0%BA%D0%B8%D0%BD%D0%B0%20%D0%90%D0%BD%D0%B4%D1%80%D0%B5%D1%8F.pdf" target="_blank"><span class="file-icon">📄</span><span class="file-name">Заявление от Тараскина Андрея.pdf</span></a></div><div class="text">Заявление от Тараскина Андрея.pdf • 16 страниц</div><div class="time">10:10</div></div></div>
 <div class="msg msg-right" data-date="2025-10-12"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">Общее описание ситуации</div><div class="time">10:19</div></div></div>
 <div class="msg msg-right" data-date="2025-10-12"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">В этом заявлении не указал про третий участок который я арендовал у Паринтона за 3.000.000 Батт. В новой версии дополнил</div><div class="time">13:49</div></div></div>
@@ -678,7 +739,7 @@ body[data-active-tab="docs"] .controls { display: none; }
 <div class="msg msg-right" data-date="2025-10-12"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">Если будет надо предоставлю</div><div class="time">13:50</div></div></div>
 <div class="msg msg-right" data-date="2025-10-12"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">Спасибо</div><div class="time">13:50</div></div></div>
 <div class="msg msg-right" data-date="2025-10-12"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">На каждую сделку есть договора</div><div class="time">13:51</div></div></div>
-<div class="date-divider" id="d-2025-10-13" data-date="2025-10-13"><span>13 октября 2025</span></div>
+<div class="date-divider" id="d-2025-10-13" data-date="2025-10-13"><span><span class="i18n"><span data-l="ru">13 октября 2025</span><span data-l="th">13 ตุลาคม 2568</span></span></span></div>
 <div class="msg msg-right" data-date="2025-10-13"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">Здравствуйте!<br>Подскажите пожалуйста<br>Возможно ли правильно сформулировать моё заявление с юридической точки зрения. И выработать правильную позицию по моей защите и моих интересов?</div><div class="time">09:02</div></div></div>
 <div class="msg msg-right" data-date="2025-10-13"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">Если это возможно пришлите мне правильно составленное заявление на русском,тайском и английском языке</div><div class="time">09:04</div></div></div>
 <div class="msg msg-right" data-date="2025-10-13"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">Спасибо</div><div class="time">09:04</div></div></div>
@@ -686,7 +747,7 @@ body[data-active-tab="docs"] .controls { display: none; }
 <div class="msg msg-left" data-date="2025-10-13"><div class="bubble"><div class="sender" style="color:#1f7a8c">Алиса адвокат</div><div class="text">На основе вашего письма можно  сформулировать заявление - это будет делать адвокат вместе с полицией</div><div class="time">09:06</div></div></div>
 <div class="msg msg-left" data-date="2025-10-13"><div class="bubble"><div class="sender" style="color:#1f7a8c">Алиса адвокат</div><div class="text">Я переведу все на тайский и английский</div><div class="time">09:06</div></div></div>
 <div class="msg msg-right" data-date="2025-10-13"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">Спасибо</div><div class="time">09:10</div></div></div>
-<div class="date-divider" id="d-2025-10-14" data-date="2025-10-14"><span>14 октября 2025</span></div>
+<div class="date-divider" id="d-2025-10-14" data-date="2025-10-14"><span><span class="i18n"><span data-l="ru">14 октября 2025</span><span data-l="th">14 ตุลาคม 2568</span></span></span></div>
 <div class="msg msg-left" data-date="2025-10-14"><div class="bubble"><div class="sender" style="color:#1f7a8c">Алиса адвокат</div><div class="attachment"><a class="img-link" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000148-PHOTO-2025-10-14-14-04-51.jpg" target="_blank"><img class="photo" loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000148-PHOTO-2025-10-14-14-04-51.jpg" alt=""></a></div><div class="time">14:04</div></div></div>
 <div class="msg msg-left" data-date="2025-10-14"><div class="bubble"><div class="sender" style="color:#1f7a8c">Алиса адвокат</div><div class="attachment"><a class="img-link" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000149-PHOTO-2025-10-14-14-04-52.jpg" target="_blank"><img class="photo" loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000149-PHOTO-2025-10-14-14-04-52.jpg" alt=""></a></div><div class="time">14:04</div></div></div>
 <div class="msg msg-left" data-date="2025-10-14"><div class="bubble"><div class="sender" style="color:#1f7a8c">Алиса адвокат</div><div class="attachment"><a class="img-link" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000150-PHOTO-2025-10-14-14-04-52.jpg" target="_blank"><img class="photo" loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000150-PHOTO-2025-10-14-14-04-52.jpg" alt=""></a></div><div class="time">14:04</div></div></div>
@@ -717,7 +778,7 @@ body[data-active-tab="docs"] .controls { display: none; }
 <div class="msg msg-right" data-date="2025-10-14"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">I&#x27;m sending all the correspondence because he was lying that I allegedly forced him to do something, read it carefully and you&#x27;ll see my speech</div><div class="time">14:10</div></div></div>
 <div class="msg msg-right" data-date="2025-10-14"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">When I started asking for my money back, he started making up different stories and telling lies, and all the correspondence is all the confirmation of my words that I&#x27;m talking honestly, there is correspondence</div><div class="time">14:11</div></div></div>
 <div class="msg msg-right" data-date="2025-10-14"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">I don&#x27;t know Thai, so I didn&#x27;t understand what he was saying, I only guessed and realized that the man to whom I gave money started lying to me</div><div class="time">14:12</div></div></div>
-<div class="date-divider" id="d-2025-10-15" data-date="2025-10-15"><span>15 октября 2025</span></div>
+<div class="date-divider" id="d-2025-10-15" data-date="2025-10-15"><span><span class="i18n"><span data-l="ru">15 октября 2025</span><span data-l="th">15 ตุลาคม 2568</span></span></span></div>
 <div class="msg msg-left" data-date="2025-10-15"><div class="bubble"><div class="sender" style="color:#1f7a8c">Алиса адвокат</div><div class="text">Good afternoon everyone! Can you please confirm, when Andrey can go to pick up all his belongings from house ? Can with confirm with Kathu police station please to assist us</div><div class="time">14:42</div></div></div>
 <div class="msg msg-left" data-date="2025-10-15"><div class="bubble"><div class="sender" style="color:#1f7a8c">Алиса адвокат</div><div class="text">Maybe tomorrow during day time ?</div><div class="time">14:42</div></div></div>
 <div class="msg msg-right" data-date="2025-10-15"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">Yes, I&#x27;m ready to pick up the things tomorrow afternoon, I&#x27;ll organize a truck</div><div class="time">14:43</div></div></div>
@@ -726,14 +787,14 @@ body[data-active-tab="docs"] .controls { display: none; }
 <div class="msg msg-left" data-date="2025-10-15"><div class="bubble"><div class="sender" style="color:#5e4ec8">МeМii ~</div><div class="text">Noted</div><div class="time">14:48</div></div></div>
 <div class="msg msg-left" data-date="2025-10-15"><div class="bubble"><div class="sender" style="color:#5e4ec8">МeМii ~</div><div class="text">We will inform you today ka</div><div class="time">14:49</div></div></div>
 <div class="msg msg-right" data-date="2025-10-15"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">Okay, thank you, I&#x27;ll organize the truck at any time</div><div class="time">14:52</div></div></div>
-<div class="date-divider" id="d-2025-10-16" data-date="2025-10-16"><span>16 октября 2025</span></div>
+<div class="date-divider" id="d-2025-10-16" data-date="2025-10-16"><span><span class="i18n"><span data-l="ru">16 октября 2025</span><span data-l="th">16 ตุลาคม 2568</span></span></span></div>
 <div class="msg msg-left" data-date="2025-10-16"><div class="bubble"><div class="sender" style="color:#5e4ec8">МeМii ~</div><div class="text">Good afternoon ka<br>Update on the gun case<br>The police have now pressed charges, and he went to the police station and has already been released on bail.<br>The police would like you to come in to provide additional information next week, between Wednesday and Friday. Which day would be convenient for you ka?</div><div class="time">12:12</div></div></div>
 <div class="msg msg-left" data-date="2025-10-16"><div class="bubble"><div class="sender" style="color:#5e4ec8">МeМii ~</div><div class="text">As for your belongings, you can go in any time you want <br>there’s nothing to worry about<br>the police said ka.</div><div class="time">12:14</div></div></div>
 <div class="msg msg-right" data-date="2025-10-16"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">Good afternoon, I&#x27;ll tell you the time a little later</div><div class="time">12:15</div></div></div>
 <div class="msg msg-right" data-date="2025-10-16"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">Okay, thank you</div><div class="time">12:15</div></div></div>
 <div class="msg msg-left" data-date="2025-10-16"><div class="bubble"><div class="sender" style="color:#5e4ec8">МeМii ~</div><div class="text">My pleasure 🙏🏻</div><div class="time">12:23</div></div></div>
 <div class="msg msg-right" data-date="2025-10-16"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="attachment"><video class="video" controls preload="none" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000191-VIDEO-2025-10-16-16-31-29.mp4"></video></div><div class="time">16:31</div></div></div>
-<div class="date-divider" id="d-2025-10-17" data-date="2025-10-17"><span>17 октября 2025</span></div>
+<div class="date-divider" id="d-2025-10-17" data-date="2025-10-17"><span><span class="i18n"><span data-l="ru">17 октября 2025</span><span data-l="th">17 ตุลาคม 2568</span></span></span></div>
 <div class="msg msg-left" data-date="2025-10-17"><div class="bubble"><div class="sender" style="color:#1f7a8c">Алиса адвокат</div><div class="attachment"><a class="img-link" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000192-PHOTO-2025-10-17-14-35-48.jpg" target="_blank"><img class="photo" loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000192-PHOTO-2025-10-17-14-35-48.jpg" alt=""></a></div><div class="time">14:35</div></div></div>
 <div class="msg msg-left" data-date="2025-10-17"><div class="bubble"><div class="sender" style="color:#1f7a8c">Алиса адвокат</div><div class="attachment"><a class="img-link" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000193-PHOTO-2025-10-17-14-35-49.jpg" target="_blank"><img class="photo" loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000193-PHOTO-2025-10-17-14-35-49.jpg" alt=""></a></div><div class="time">14:35</div></div></div>
 <div class="msg msg-left" data-date="2025-10-17"><div class="bubble"><div class="sender" style="color:#1f7a8c">Алиса адвокат</div><div class="text">«Они хотят судиться со мной, хотя я не виноват. Тот, кто начал первым, должен принять последствия своих действий. Потому что он покупал голоса. Моя честь и достоинство вернутся ко мне только тогда, когда противоположная сторона окажется в тюрьме.<br>Принтхонг Руанграттанаванич (Понгпон Руанграт) — Сиа Лек (Фридом Бич).»</div><div class="time">14:35</div></div></div>
@@ -744,7 +805,7 @@ body[data-active-tab="docs"] .controls { display: none; }
 <div class="msg msg-right" data-date="2025-10-17"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">Это сообщение он прислал мне 5 октября</div><div class="time">14:39</div></div></div>
 <div class="msg msg-right" data-date="2025-10-17"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text"><a href="https://vt.tiktok.com/ZSUQLpDRT/" target="_blank" rel="noopener">https://vt.tiktok.com/ZSUQLpDRT/</a></div><div class="time">15:21</div></div></div>
 <div class="msg msg-right" data-date="2025-10-17"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="attachment"><video class="video" controls preload="none" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000201-VIDEO-2025-10-17-15-21-39.mp4"></video></div><div class="time">15:21</div></div></div>
-<div class="date-divider" id="d-2025-10-18" data-date="2025-10-18"><span>18 октября 2025</span></div>
+<div class="date-divider" id="d-2025-10-18" data-date="2025-10-18"><span><span class="i18n"><span data-l="ru">18 октября 2025</span><span data-l="th">18 ตุลาคม 2568</span></span></span></div>
 <div class="msg msg-right" data-date="2025-10-18"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">Всем доброе утро! <br>Я ничего не понимаю в судебной и уголовной системе, но у меня мысли о том, что человек по имени Паринтон чувствует безнаказанно. Он не боится судебной системы, я прочитал новости он ходит в суд с поддельным документами, но суд не говорит не да ни нет. поэтому судится с людьми которых обманывает. Он выгнал женщину из пляжа Фридом бич которая построила там ресторан. Ей вернули деньги только за землю но не за её ресторан ей никто ничего не вернул. И он отнял у неё ресторан. Возможно надо действовать не стандартно. Возможно ему кто-то помогает и поэтому он так легко выражается о государственной власти ( что он мнит себя Королем или премьер министром) это мое мнение субъективное мнение. Возможно ему кто-то помогает. Возможно надо действовать через прокуратуру. А не стандартными путями по которым идут все обычные люди. Я не знаю какая власть может влиять на справедливые решения. Прошу Вас подумать о том что у него есть покровители. Так как я поговорил с туристами и они говорят что он говорит о боге с первой минуты общения не зная человека. Он говорит о том что вот Вам именно вам можно здесь выбрать участок и построить бунгало. <br>Я изучил историю из его фейсбук и первые упоминая о том что он продал землю ещё 20 лет назад. Возможно это схема работает много лет но никто его не призвал к ответственности. Я не хочу ломать систему которую кто-то выстроил. Возможно у них отлажено до мелочей то что они делают. &lt;Сообщение изменено&gt;</div><div class="time">06:30</div></div></div>
 <div class="msg msg-right" data-date="2025-10-18"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">Сейчас он угрожает в интернете посадить мою Веру</div><div class="time">06:31</div></div></div>
 <div class="msg msg-right" data-date="2025-10-18"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">Меня и Веру</div><div class="time">06:31</div></div></div>
@@ -787,34 +848,34 @@ body[data-active-tab="docs"] .controls { display: none; }
 <div class="msg msg-right" data-date="2025-10-18"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">Спасибо</div><div class="time">18:19</div></div></div>
 <div class="msg msg-left" data-date="2025-10-18"><div class="bubble"><div class="sender" style="color:#1f7a8c">Алиса адвокат</div><div class="text">Там русский менеджер, легко общаться</div><div class="time">18:19</div></div></div>
 <div class="msg msg-right" data-date="2025-10-18"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">Спасибо</div><div class="time">18:20</div></div></div>
-<div class="date-divider" id="d-2025-10-19" data-date="2025-10-19"><span>19 октября 2025</span></div>
+<div class="date-divider" id="d-2025-10-19" data-date="2025-10-19"><span><span class="i18n"><span data-l="ru">19 октября 2025</span><span data-l="th">19 ตุลาคม 2568</span></span></span></div>
 <div class="msg msg-right" data-date="2025-10-19"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">Hello everyone!</div><div class="time">13:51</div></div></div>
 <div class="msg msg-right" data-date="2025-10-19"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">Please tell me when they will find my Toyota Camry when it will be in my parking lot or in the parking lot in the police as part of a criminal case</div><div class="time">13:52</div></div></div>
-<div class="date-divider" id="d-2025-10-27" data-date="2025-10-27"><span>27 октября 2025</span></div>
+<div class="date-divider" id="d-2025-10-27" data-date="2025-10-27"><span><span class="i18n"><span data-l="ru">27 октября 2025</span><span data-l="th">27 ตุลาคม 2568</span></span></span></div>
 <div class="msg msg-left" data-date="2025-10-27"><div class="bubble"><div class="sender" style="color:#1f7a8c">Алиса адвокат</div><div class="text">Is Andre free tomorrow at 1 pm?</div><div class="time">13:56</div></div></div>
 <div class="msg msg-left" data-date="2025-10-27"><div class="bubble"><div class="sender" style="color:#1f7a8c">Алиса адвокат</div><div class="text">I&#x27;m going to report a fraud case at Patong Police Station.</div><div class="time">13:56</div></div></div>
 <div class="msg msg-left" data-date="2025-10-27"><div class="bubble"><div class="sender" style="color:#1f7a8c">Алиса адвокат</div><div class="text">Здравствуйте</div><div class="time">13:56</div></div></div>
 <div class="msg msg-left" data-date="2025-10-27"><div class="bubble"><div class="sender" style="color:#1f7a8c">Алиса адвокат</div><div class="text">Вы затра свободны в 13 часов ?</div><div class="time">13:57</div></div></div>
 <div class="msg msg-left" data-date="2025-10-27"><div class="bubble"><div class="sender" style="color:#1f7a8c">Алиса адвокат</div><div class="text">Чтобы поехать подать репорт в Полиции Патонга</div><div class="time">13:57</div></div></div>
 <div class="msg msg-right" data-date="2025-10-27"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">Аудиозвонок, 5 мин. • Присоединились: 2</div><div class="time">15:07</div></div></div>
-<div class="date-divider" id="d-2025-10-28" data-date="2025-10-28"><span>28 октября 2025</span></div>
+<div class="date-divider" id="d-2025-10-28" data-date="2025-10-28"><span><span class="i18n"><span data-l="ru">28 октября 2025</span><span data-l="th">28 ตุลาคม 2568</span></span></span></div>
 <div class="msg msg-left" data-date="2025-10-28"><div class="bubble"><div class="sender" style="color:#1f7a8c">Алиса адвокат</div><div class="text">Khun Toon good afternoon</div><div class="time">10:00</div></div></div>
 <div class="msg msg-left" data-date="2025-10-28"><div class="bubble"><div class="sender" style="color:#1f7a8c">Алиса адвокат</div><div class="text">Andrey and Vera arrive, they are waiting at entrance</div><div class="time">10:00</div></div></div>
 <div class="msg msg-left" data-date="2025-10-28"><div class="bubble"><div class="sender" style="color:#2d8659">Toonii</div><div class="text">I&#x27;m going</div><div class="time">10:11</div></div></div>
 <div class="msg msg-left" data-date="2025-10-28"><div class="bubble"><div class="sender" style="color:#1f7a8c">Алиса адвокат</div><div class="text">They are waiting in coffe shop near entrance</div><div class="time">10:35</div></div></div>
-<div class="date-divider" id="d-2025-11-04" data-date="2025-11-04"><span>4 ноября 2025</span></div>
+<div class="date-divider" id="d-2025-11-04" data-date="2025-11-04"><span><span class="i18n"><span data-l="ru">4 ноября 2025</span><span data-l="th">4 พฤศจิกายน 2568</span></span></span></div>
 <div class="msg msg-left" data-date="2025-11-04"><div class="bubble"><div class="sender" style="color:#1f7a8c">Алиса адвокат</div><div class="attachment"><a class="file pdf" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000256-flight_certificate_ru.pdf" target="_blank"><span class="file-icon">📄</span><span class="file-name">flight_certificate_ru.pdf</span></a></div><div class="text">flight_certificate_ru.pdf • 1 страница</div><div class="time">05:50</div></div></div>
 <div class="msg msg-left" data-date="2025-11-04"><div class="bubble"><div class="sender" style="color:#1f7a8c">Алиса адвокат</div><div class="attachment"><a class="img-link" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000257-PHOTO-2025-11-04-05-50-12.jpg" target="_blank"><img class="photo" loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000257-PHOTO-2025-11-04-05-50-12.jpg" alt=""></a></div><div class="time">05:50</div></div></div>
 <div class="msg msg-left" data-date="2025-11-04"><div class="bubble"><div class="sender" style="color:#1f7a8c">Алиса адвокат</div><div class="text">Добрый  день ! Очень важно вам приехать до 17 числа, потому что будем заседание в суде и нам нужно дать показания, мы не можем еще раз продлять с 17 по 21</div><div class="time">10:36</div></div></div>
 <div class="system-msg" data-date="2025-11-04">Вы включили расширенную защиту конфиденциальности в чате. В этом чате никто не может автоматически сохранять медиафайлы, экспортировать историю, задавать вопросы Meta AI или формировать сводки непрочитанных сообщений.</div>
-<div class="date-divider" id="d-2025-11-09" data-date="2025-11-09"><span>9 ноября 2025</span></div>
+<div class="date-divider" id="d-2025-11-09" data-date="2025-11-09"><span><span class="i18n"><span data-l="ru">9 ноября 2025</span><span data-l="th">9 พฤศจิกายน 2568</span></span></span></div>
 <div class="msg msg-left" data-date="2025-11-09"><div class="bubble"><div class="sender" style="color:#1f7a8c">Алиса адвокат</div><div class="text">Good morning, khun Toon. Vera, wife of Andrey - arrive back to Phuket. Andrey is still in Russia on his medication treatment after big stress, and we are waiting his confirmation that he can fly back. Kindly provide for Vera day and time, when you can finish with her car transfer 🙏 next week</div><div class="time">08:11</div></div></div>
 <div class="msg msg-left" data-date="2025-11-09"><div class="bubble"><div class="sender" style="color:#2d8659">Toonii</div><div class="text">Good morning</div><div class="time">08:16</div></div></div>
 <div class="msg msg-left" data-date="2025-11-09"><div class="bubble"><div class="sender" style="color:#2d8659">Toonii</div><div class="text">The transfer has been processed. All that&#x27;s left is to pay some fees and the blue book from the registrar. I expect to get the blue book on Wednesday.</div><div class="time">08:16</div></div></div>
 <div class="msg msg-left" data-date="2025-11-09"><div class="bubble"><div class="sender" style="color:#2d8659">Toonii</div><div class="text">Will Andre fly back next week?</div><div class="time">08:16</div></div></div>
-<div class="date-divider" id="d-2025-11-14" data-date="2025-11-14"><span>14 ноября 2025</span></div>
+<div class="date-divider" id="d-2025-11-14" data-date="2025-11-14"><span><span class="i18n"><span data-l="ru">14 ноября 2025</span><span data-l="th">14 พฤศจิกายน 2568</span></span></span></div>
 <div class="msg msg-left" data-date="2025-11-14"><div class="bubble"><div class="sender" style="color:#1f7a8c">Алиса адвокат</div><div class="text">Андрей, добрый день ! Вам нужно на следующей неделе обязательно быть на Пхукте, потому что звонил прокурор - дело ему передали, и нам обязательно с вами нужно дать показания, или Предоставить документ из больницы, почему вы не можете явиться</div><div class="time">15:09</div></div></div>
-<div class="date-divider" id="d-2025-11-18" data-date="2025-11-18"><span>18 ноября 2025</span></div>
+<div class="date-divider" id="d-2025-11-18" data-date="2025-11-18"><span><span class="i18n"><span data-l="ru">18 ноября 2025</span><span data-l="th">18 พฤศจิกายน 2568</span></span></span></div>
 <div class="msg msg-right" data-date="2025-11-18"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">Добрый день!</div><div class="time">09:56</div></div></div>
 <div class="msg msg-right" data-date="2025-11-18"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">Я предполагаю что Вера Щурова мне изменяла с Паринтоном<br>Когда меня не было дома</div><div class="time">09:57</div></div></div>
 <div class="msg msg-right" data-date="2025-11-18"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">Я не раз их подозревал</div><div class="time">09:58</div></div></div>
@@ -852,7 +913,7 @@ body[data-active-tab="docs"] .controls { display: none; }
 <div class="msg msg-right" data-date="2025-11-18"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">Почти сразу</div><div class="time">16:02</div></div></div>
 <div class="msg msg-right" data-date="2025-11-18"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">У Тонни</div><div class="time">16:02</div></div></div>
 <div class="msg msg-right" data-date="2025-11-18"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">На английском через переводчик</div><div class="time">16:03</div></div></div>
-<div class="date-divider" id="d-2025-11-28" data-date="2025-11-28"><span>28 ноября 2025</span></div>
+<div class="date-divider" id="d-2025-11-28" data-date="2025-11-28"><span><span class="i18n"><span data-l="ru">28 ноября 2025</span><span data-l="th">28 พฤศจิกายน 2568</span></span></span></div>
 <div class="msg msg-left" data-date="2025-11-28"><div class="bubble"><div class="sender" style="color:#1f7a8c">Алиса адвокат</div><div class="attachment"><a class="file pdf" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000302-589665517535756716_%E0%B8%AB%E0%B8%99%E0%B8%B1%E0%B8%87%E0%B8%AA%E0%B8%B7%E0%B8%AD%E0%B8%A1%E0%B8%AD%E0%B8%9A%E0%B8%AD%E0%B8%B3%E0%B8%99%E0%B8%B2%E0%B8%88%E0%B8%94%E0%B8%B3%E0%B9%80%E0%B8%99%E0%B8%B4%E0%B8%99%E0%B8%84%E0%B8%94%E0%B8%B5%20MR.%20ANDREI%20TARASKIN.pdf" target="_blank"><span class="file-icon">📄</span><span class="file-name">589665517535756716_หนังสือมอบอำนาจดำเนินคดี MR. ANDREI TARASKIN.pdf</span></a></div><div class="text">589665517535756716_หนังสือมอบอำนาจดำเนินคดี MR. ANDREI TARASKIN.pdf • 3 страницы</div><div class="time">12:58</div></div></div>
 <div class="msg msg-left" data-date="2025-11-28"><div class="bubble"><div class="sender" style="color:#1f7a8c">Алиса адвокат</div><div class="attachment"><a class="img-link" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000303-PHOTO-2025-11-28-13-08-51.jpg" target="_blank"><img class="photo" loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000303-PHOTO-2025-11-28-13-08-51.jpg" alt=""></a></div><div class="time">13:08</div></div></div>
 <div class="msg msg-left" data-date="2025-11-28"><div class="bubble"><div class="sender" style="color:#1f7a8c">Алиса адвокат</div><div class="text">Dear khun Toon and khun Nin, I already explained to Andrey a new way of work and that you gonna take a risk on your behalf to be representative on Khun Andrey. I explain that this decision made after you consult with police and it’s will be harder for you to work and be responsible. Khun Andrey understands already</div><div class="time">13:10</div></div></div>
@@ -870,7 +931,7 @@ body[data-active-tab="docs"] .controls { display: none; }
 <div class="msg msg-left" data-date="2025-11-28"><div class="bubble"><div class="sender" style="color:#2d8659">Toonii</div><div class="text">Ok</div><div class="time">16:43</div></div></div>
 <div class="msg msg-right" data-date="2025-11-28"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">Вы удалили данное сообщение.</div><div class="time">23:33</div></div></div>
 <div class="msg msg-right" data-date="2025-11-28"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="attachment"><a class="file pdf" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000318-2025-11-28_001.pdf" target="_blank"><span class="file-icon">📄</span><span class="file-name">2025-11-28_001.pdf</span></a></div><div class="text">2025-11-28_001.pdf • 3 страницы</div><div class="time">23:37</div></div></div>
-<div class="date-divider" id="d-2026-03-27" data-date="2026-03-27"><span>27 марта 2026</span></div>
+<div class="date-divider" id="d-2026-03-27" data-date="2026-03-27"><span><span class="i18n"><span data-l="ru">27 марта 2026</span><span data-l="th">27 มีนาคม 2569</span></span></span></div>
 <div class="system-msg" data-date="2026-03-27">~ 🌏 присоединился(-ась) по ссылке на группу.</div>
 <div class="msg msg-left" data-date="2026-03-27"><div class="bubble"><div class="sender" style="color:#1f7a8c">Алиса адвокат</div><div class="text">Доброе утро, Андрей</div><div class="time">06:34</div></div></div>
 <div class="msg msg-left" data-date="2026-03-27"><div class="bubble"><div class="sender" style="color:#2d8659">Toonii</div><div class="attachment"><a class="img-link" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000322-PHOTO-2026-03-27-13-39-47.jpg" target="_blank"><img class="photo" loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000322-PHOTO-2026-03-27-13-39-47.jpg" alt=""></a></div><div class="time">13:39</div></div></div>
@@ -892,13 +953,13 @@ body[data-active-tab="docs"] .controls { display: none; }
 <div class="msg msg-right" data-date="2026-03-27"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">I&#x27;m Andrey Alexandrovich Taraskin, I officially request a &quot;Statement of Complaint&quot; filed on my behalf, including a &quot;Daily Case Report&quot; with an official Red seal from the police station. If you have sent any &quot;Inquiry Letters&quot; to investigators, provide copies with police stamps of receipt</div><div class="time">18:24</div></div></div>
 <div class="msg msg-right" data-date="2026-03-27"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">Также прошу представить копии договоров подписанные между мной и Паринтоном, которые как Вы сказали хранятся в отделе полиции.<br>Оригиналы изымать из полицейского участка не надо. Пришлите копии этих договоров. <br>А также все выше перечисленные документы. Пока этого достаточно.<br>Спасибо</div><div class="time">18:53</div></div></div>
 <div class="msg msg-right" data-date="2026-03-27"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">I also ask you to submit copies of the contracts signed between me and Parinton, which, as you said, are kept in the police department.<br><br>You don&#x27;t have to take the originals from the police station. Send copies of these contracts.<br><br>As well as all the documents listed above. That&#x27;s enough for now.<br><br>Thank you</div><div class="time">18:54</div></div></div>
-<div class="date-divider" id="d-2026-04-26" data-date="2026-04-26"><span>26 апреля 2026</span></div>
+<div class="date-divider" id="d-2026-04-26" data-date="2026-04-26"><span><span class="i18n"><span data-l="ru">26 апреля 2026</span><span data-l="th">26 เมษายน 2569</span></span></span></div>
 <div class="system-msg" data-date="2026-04-26">Вы отключили расширенную защиту конфиденциальности в чате.</div>
 </main></div>
 <div data-tab-content="media" hidden>
 <div class="media-wrap">
 <div class="media-day">
-<div class="media-day-title">8 октября 2025 <span class="day-count-pill">45</span></div>
+<div class="media-day-title"><span class="i18n"><span data-l="ru">8 октября 2025</span><span data-l="th">8 ตุลาคม 2568</span></span> <span class="day-count-pill">45</span></div>
 <div class="media-grid">
 <a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000006-PHOTO-2025-10-08-11-45-44.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000006-PHOTO-2025-10-08-11-45-44.jpg" alt=""></a>
 <a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000007-PHOTO-2025-10-08-11-45-44.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000007-PHOTO-2025-10-08-11-45-44.jpg" alt=""></a>
@@ -947,7 +1008,7 @@ body[data-active-tab="docs"] .controls { display: none; }
 <a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000055-PHOTO-2025-10-08-17-48-12.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000055-PHOTO-2025-10-08-17-48-12.jpg" alt=""></a>
 </div></div>
 <div class="media-day">
-<div class="media-day-title">9 октября 2025 <span class="day-count-pill">49</span></div>
+<div class="media-day-title"><span class="i18n"><span data-l="ru">9 октября 2025</span><span data-l="th">9 ตุลาคม 2568</span></span> <span class="day-count-pill">49</span></div>
 <div class="media-grid">
 <a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000056-PHOTO-2025-10-09-09-41-23.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000056-PHOTO-2025-10-09-09-41-23.jpg" alt=""></a>
 <a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000057-PHOTO-2025-10-09-09-43-05.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000057-PHOTO-2025-10-09-09-43-05.jpg" alt=""></a>
@@ -1000,7 +1061,7 @@ body[data-active-tab="docs"] .controls { display: none; }
 <a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000107-PHOTO-2025-10-09-14-42-05.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000107-PHOTO-2025-10-09-14-42-05.jpg" alt=""></a>
 </div></div>
 <div class="media-day">
-<div class="media-day-title">14 октября 2025 <span class="day-count-pill">25</span></div>
+<div class="media-day-title"><span class="i18n"><span data-l="ru">14 октября 2025</span><span data-l="th">14 ตุลาคม 2568</span></span> <span class="day-count-pill">25</span></div>
 <div class="media-grid">
 <a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000148-PHOTO-2025-10-14-14-04-51.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000148-PHOTO-2025-10-14-14-04-51.jpg" alt=""></a>
 <a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000149-PHOTO-2025-10-14-14-04-52.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000149-PHOTO-2025-10-14-14-04-52.jpg" alt=""></a>
@@ -1029,12 +1090,12 @@ body[data-active-tab="docs"] .controls { display: none; }
 <a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000173-PHOTO-2025-10-14-14-05-23.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000173-PHOTO-2025-10-14-14-05-23.jpg" alt=""></a>
 </div></div>
 <div class="media-day">
-<div class="media-day-title">16 октября 2025 <span class="day-count-pill">1</span></div>
+<div class="media-day-title"><span class="i18n"><span data-l="ru">16 октября 2025</span><span data-l="th">16 ตุลาคม 2568</span></span> <span class="day-count-pill">1</span></div>
 <div class="media-grid">
 <a class="media-thumb video" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000191-VIDEO-2025-10-16-16-31-29.mp4" target="_blank"><video preload="metadata" muted playsinline src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000191-VIDEO-2025-10-16-16-31-29.mp4#t=0.5"></video><span class="play-icon">▶</span></a>
 </div></div>
 <div class="media-day">
-<div class="media-day-title">17 октября 2025 <span class="day-count-pill">4</span></div>
+<div class="media-day-title"><span class="i18n"><span data-l="ru">17 октября 2025</span><span data-l="th">17 ตุลาคม 2568</span></span> <span class="day-count-pill">4</span></div>
 <div class="media-grid">
 <a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000192-PHOTO-2025-10-17-14-35-48.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000192-PHOTO-2025-10-17-14-35-48.jpg" alt=""></a>
 <a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000193-PHOTO-2025-10-17-14-35-49.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000193-PHOTO-2025-10-17-14-35-49.jpg" alt=""></a>
@@ -1042,17 +1103,17 @@ body[data-active-tab="docs"] .controls { display: none; }
 <a class="media-thumb video" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000201-VIDEO-2025-10-17-15-21-39.mp4" target="_blank"><video preload="metadata" muted playsinline src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000201-VIDEO-2025-10-17-15-21-39.mp4#t=0.5"></video><span class="play-icon">▶</span></a>
 </div></div>
 <div class="media-day">
-<div class="media-day-title">4 ноября 2025 <span class="day-count-pill">1</span></div>
+<div class="media-day-title"><span class="i18n"><span data-l="ru">4 ноября 2025</span><span data-l="th">4 พฤศจิกายน 2568</span></span> <span class="day-count-pill">1</span></div>
 <div class="media-grid">
 <a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000257-PHOTO-2025-11-04-05-50-12.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000257-PHOTO-2025-11-04-05-50-12.jpg" alt=""></a>
 </div></div>
 <div class="media-day">
-<div class="media-day-title">28 ноября 2025 <span class="day-count-pill">1</span></div>
+<div class="media-day-title"><span class="i18n"><span data-l="ru">28 ноября 2025</span><span data-l="th">28 พฤศจิกายน 2568</span></span> <span class="day-count-pill">1</span></div>
 <div class="media-grid">
 <a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000303-PHOTO-2025-11-28-13-08-51.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000303-PHOTO-2025-11-28-13-08-51.jpg" alt=""></a>
 </div></div>
 <div class="media-day">
-<div class="media-day-title">27 марта 2026 <span class="day-count-pill">6</span></div>
+<div class="media-day-title"><span class="i18n"><span data-l="ru">27 марта 2026</span><span data-l="th">27 มีนาคม 2569</span></span> <span class="day-count-pill">6</span></div>
 <div class="media-grid">
 <a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000322-PHOTO-2026-03-27-13-39-47.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000322-PHOTO-2026-03-27-13-39-47.jpg" alt=""></a>
 <a class="media-thumb" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000323-PHOTO-2026-03-27-13-39-48.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000323-PHOTO-2026-03-27-13-39-48.jpg" alt=""></a>
@@ -1065,32 +1126,32 @@ body[data-active-tab="docs"] .controls { display: none; }
 <div data-tab-content="docs" hidden>
 <div class="docs-wrap">
 <div class="docs-day">
-<div class="docs-day-title">8 октября 2025</div>
+<div class="docs-day-title"><span class="i18n"><span data-l="ru">8 октября 2025</span><span data-l="th">8 ตุลาคม 2568</span></span></div>
 <div class="docs-list">
 <div class="doc-item audio-item"><div class="doc-icon">🎙</div><div class="doc-meta"><div class="doc-name">AUDIO-2025-10-08-16-23-14.opus</div><div class="doc-info">🌏 · 16:23</div><audio controls preload="none" src="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000051-AUDIO-2025-10-08-16-23-14.opus"></audio></div></div>
 </div></div>
 <div class="docs-day">
-<div class="docs-day-title">12 октября 2025</div>
+<div class="docs-day-title"><span class="i18n"><span data-l="ru">12 октября 2025</span><span data-l="th">12 ตุลาคม 2568</span></span></div>
 <div class="docs-list">
 <a class="doc-item" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000128-%D0%97%D0%B0%D1%8F%D0%B2%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5%20%D0%BE%D1%82%20%D0%A2%D0%B0%D1%80%D0%B0%D1%81%D0%BA%D0%B8%D0%BD%D0%B0%20%D0%90%D0%BD%D0%B4%D1%80%D0%B5%D1%8F.pdf" target="_blank"><div class="doc-icon">📄</div><div class="doc-meta"><div class="doc-name">Заявление от Тараскина Андрея.pdf</div><div class="doc-info">Алиса адвокат · 10:10</div></div></a>
 </div></div>
 <div class="docs-day">
-<div class="docs-day-title">18 октября 2025</div>
+<div class="docs-day-title"><span class="i18n"><span data-l="ru">18 октября 2025</span><span data-l="th">18 ตุลาคม 2568</span></span></div>
 <div class="docs-list">
 <a class="doc-item" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000239-Deepclean.vcf" target="_blank"><div class="doc-icon">👤</div><div class="doc-meta"><div class="doc-name">Deepclean.vcf</div><div class="doc-info">Алиса адвокат · 18:19</div></div></a>
 </div></div>
 <div class="docs-day">
-<div class="docs-day-title">4 ноября 2025</div>
+<div class="docs-day-title"><span class="i18n"><span data-l="ru">4 ноября 2025</span><span data-l="th">4 พฤศจิกายน 2568</span></span></div>
 <div class="docs-list">
 <a class="doc-item" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000256-flight_certificate_ru.pdf" target="_blank"><div class="doc-icon">📄</div><div class="doc-meta"><div class="doc-name">flight_certificate_ru.pdf</div><div class="doc-info">Алиса адвокат · 05:50</div></div></a>
 </div></div>
 <div class="docs-day">
-<div class="docs-day-title">18 ноября 2025</div>
+<div class="docs-day-title"><span class="i18n"><span data-l="ru">18 ноября 2025</span><span data-l="th">18 พฤศจิกายน 2568</span></span></div>
 <div class="docs-list">
 <a class="doc-item" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000275-gu-Unknown.pdf" target="_blank"><div class="doc-icon">📄</div><div class="doc-meta"><div class="doc-name">gu-Unknown.pdf</div><div class="doc-info">🌏 · 11:58</div></div></a>
 </div></div>
 <div class="docs-day">
-<div class="docs-day-title">28 ноября 2025</div>
+<div class="docs-day-title"><span class="i18n"><span data-l="ru">28 ноября 2025</span><span data-l="th">28 พฤศจิกายน 2568</span></span></div>
 <div class="docs-list">
 <a class="doc-item" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000302-589665517535756716_%E0%B8%AB%E0%B8%99%E0%B8%B1%E0%B8%87%E0%B8%AA%E0%B8%B7%E0%B8%AD%E0%B8%A1%E0%B8%AD%E0%B8%9A%E0%B8%AD%E0%B8%B3%E0%B8%99%E0%B8%B2%E0%B8%88%E0%B8%94%E0%B8%B3%E0%B9%80%E0%B8%99%E0%B8%B4%E0%B8%99%E0%B8%84%E0%B8%94%E0%B8%B5%20MR.%20ANDREI%20TARASKIN.pdf" target="_blank"><div class="doc-icon">📄</div><div class="doc-meta"><div class="doc-name">589665517535756716_หนังสือมอบอำนาจดำเนินคดี MR. ANDREI TARASKIN.pdf</div><div class="doc-info">Алиса адвокат · 12:58</div></div></a>
 <a class="doc-item" href="WhatsApp%20Chat%20-%20Andrey%20Freedom%20%20beach%20case/00000318-2025-11-28_001.pdf" target="_blank"><div class="doc-icon">📄</div><div class="doc-meta"><div class="doc-name">2025-11-28_001.pdf</div><div class="doc-info">🌏 · 23:37</div></div></a>
@@ -1098,6 +1159,36 @@ body[data-active-tab="docs"] .controls { display: none; }
 </div></div>
 <script>
 (function() {
+  // ===== Language switching =====
+  const I18N = {"ru": {"menu": "Меню", "open_menu": "Открыть меню", "close": "Закрыть", "select_date": "Выбрать дату", "all_dates": "Все даты", "lang_label": "Язык"}, "th": {"menu": "เมนู", "open_menu": "เปิดเมนู", "close": "ปิด", "select_date": "เลือกวันที่", "all_dates": "วันที่ทั้งหมด", "lang_label": "ภาษา"}};
+  const LANGS = ['ru', 'th'];
+  function readLang() {
+    try {
+      const v = localStorage.getItem('archiveLang');
+      return LANGS.includes(v) ? v : 'ru';
+    } catch (e) { return 'ru'; }
+  }
+  function applyLang(lang) {
+    document.body.dataset.lang = lang;
+    document.documentElement.lang = lang;
+    try { localStorage.setItem('archiveLang', lang); } catch (e) {}
+    document.querySelectorAll('[data-lang-set]').forEach(b => {
+      b.classList.toggle('active', b.dataset.langSet === lang);
+    });
+    document.querySelectorAll('[data-i18n-aria]').forEach(el => {
+      const key = el.dataset.i18nAria;
+      if (I18N[lang] && I18N[lang][key]) el.setAttribute('aria-label', I18N[lang][key]);
+    });
+    document.querySelectorAll('[data-i18n-title]').forEach(el => {
+      const key = el.dataset.i18nTitle;
+      if (I18N[lang] && I18N[lang][key]) el.setAttribute('title', I18N[lang][key]);
+    });
+  }
+  document.querySelectorAll('[data-lang-set]').forEach(b => {
+    b.addEventListener('click', () => applyLang(b.dataset.langSet));
+  });
+  applyLang(readLang());
+
   // ===== Date filter (messages tab) =====
   const datePicker = document.getElementById('datePicker');
   const clearBtn   = document.getElementById('clearFilter');

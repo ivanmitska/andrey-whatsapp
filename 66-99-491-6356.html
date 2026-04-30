@@ -15,6 +15,64 @@
   --text: #111b21;
   --muted: #667781;
 }
+
+/* ===== i18n bilingual spans (CSS toggles which lang is visible) ===== */
+.i18n { display: inline; }
+.i18n > [data-l] { display: inline; }
+.i18n > [data-l="th"] { display: none; }
+body[data-lang="th"] .i18n > [data-l="ru"] { display: none; }
+body[data-lang="th"] .i18n > [data-l="th"] { display: inline; }
+
+/* ===== Language switcher pills ===== */
+.lang-switch {
+  display: inline-flex;
+  background: rgba(255,255,255,0.18);
+  border-radius: 8px;
+  padding: 2px;
+  flex: 0 0 auto;
+}
+.lang-switch .lang-btn {
+  background: transparent; color: #fff;
+  border: 0; padding: 5px 10px;
+  font-size: 12.5px; font-weight: 600;
+  font-family: inherit; cursor: pointer;
+  border-radius: 6px;
+  letter-spacing: 0.3px;
+  min-height: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+.lang-switch .lang-btn:hover { background: rgba(255,255,255,0.18); }
+.lang-switch .lang-btn.active {
+  background: #fff; color: var(--header);
+}
+.lang-switch-drawer {
+  background: #f0f2f5;
+}
+.lang-switch-drawer .lang-btn { color: var(--muted); }
+.lang-switch-drawer .lang-btn:hover { background: rgba(0,0,0,0.04); }
+.lang-switch-drawer .lang-btn.active {
+  background: var(--header);
+  color: #fff;
+}
+.drawer-footer {
+  margin-top: auto;
+  padding: 14px 18px 18px;
+  border-top: 1px solid #eee;
+  display: flex; align-items: center; gap: 12px;
+  justify-content: space-between;
+}
+.dl-label {
+  font-size: 12.5px; color: var(--muted);
+  font-weight: 600;
+}
+.hub-lang {
+  display: flex; justify-content: flex-end;
+  margin-bottom: 14px;
+}
+.hub-lang .lang-switch { background: #f0f2f5; }
+.hub-lang .lang-btn { color: var(--muted); }
+.hub-lang .lang-btn.active { background: var(--header); color: #fff; }
+
 * { box-sizing: border-box; }
 html, body {
   margin: 0; padding: 0; background: var(--bg); color: var(--text);
@@ -467,56 +525,59 @@ body[data-active-tab="docs"] .controls { display: none; }
 </head>
 
 <body data-active-tab="messages">
-<aside id="nav-drawer" hidden aria-label="Меню">
+<aside id="nav-drawer" hidden data-i18n-aria="menu" aria-label="Меню">
 <div class="drawer-h">
-<div class="drawer-title">WhatsApp архив</div>
-<button id="navClose" class="icon-btn" aria-label="Закрыть">✕</button>
+<div class="drawer-title"><span class="i18n"><span data-l="ru">WhatsApp архив</span><span data-l="th">คลัง WhatsApp</span></span></div>
+<button id="navClose" class="icon-btn" data-i18n-aria="close" aria-label="Закрыть">✕</button>
 </div>
-<a class="drawer-home" href="index.html"><span class="dh-icon">🏠</span><span>На главную</span></a>
-<div class="drawer-section">Все чаты</div>
+<a class="drawer-home" href="index.html"><span class="dh-icon">🏠</span><span class="i18n"><span data-l="ru">На главную</span><span data-l="th">หน้าแรก</span></span></a>
+<div class="drawer-section"><span class="i18n"><span data-l="ru">Все чаты</span><span data-l="th">แชททั้งหมด</span></span></div>
 <nav class="drawer-chats">
-<a href="66-91-824-1010.html" class="drawer-chat"><span class="dc-icon">👤</span><span class="dc-info"><span class="dc-name">+66 91 824 1010</span><span class="dc-meta">3458 сообщ. · 160 дн.</span></span></a>
-<a href="alisa-advokat.html" class="drawer-chat"><span class="dc-icon">👤</span><span class="dc-info"><span class="dc-name">Алиса адвокат</span><span class="dc-meta">2383 сообщ. · 35 дн.</span></span></a>
-<a href="toonii.html" class="drawer-chat"><span class="dc-icon">👤</span><span class="dc-info"><span class="dc-name">Toonii</span><span class="dc-meta">684 сообщ. · 20 дн.</span></span></a>
-<a href="tooni.html" class="drawer-chat"><span class="dc-icon">👤</span><span class="dc-info"><span class="dc-name">Tooni</span><span class="dc-meta">422 сообщ. · 39 дн.</span></span></a>
-<a href="andrey-freedom-beach-case.html" class="drawer-chat"><span class="dc-icon">👥</span><span class="dc-info"><span class="dc-name">Andrey Freedom  beach case</span><span class="dc-meta">340 сообщ. · 18 дн.</span></span></a>
-<a href="66-80-041-5533.html" class="drawer-chat"><span class="dc-icon">👤</span><span class="dc-info"><span class="dc-name">+66 80 041 5533</span><span class="dc-meta">110 сообщ. · 1 дн.</span></span></a>
-<a href="66-99-491-6356.html" class="drawer-chat active"><span class="dc-icon">👤</span><span class="dc-info"><span class="dc-name">+66 99 491 6356</span><span class="dc-meta">41 сообщ. · 2 дн.</span></span></a>
-</nav></aside>
+<a href="66-91-824-1010.html" class="drawer-chat"><span class="dc-icon">👤</span><span class="dc-info"><span class="dc-name">+66 91 824 1010</span><span class="dc-meta">3458 <span class="i18n"><span data-l="ru">сообщ.</span><span data-l="th">ข้อความ</span></span> · 160 <span class="i18n"><span data-l="ru">дн.</span><span data-l="th">วัน</span></span></span></span></a>
+<a href="alisa-advokat.html" class="drawer-chat"><span class="dc-icon">👤</span><span class="dc-info"><span class="dc-name">Алиса адвокат</span><span class="dc-meta">2383 <span class="i18n"><span data-l="ru">сообщ.</span><span data-l="th">ข้อความ</span></span> · 35 <span class="i18n"><span data-l="ru">дн.</span><span data-l="th">วัน</span></span></span></span></a>
+<a href="toonii.html" class="drawer-chat"><span class="dc-icon">👤</span><span class="dc-info"><span class="dc-name">Toonii</span><span class="dc-meta">684 <span class="i18n"><span data-l="ru">сообщ.</span><span data-l="th">ข้อความ</span></span> · 20 <span class="i18n"><span data-l="ru">дн.</span><span data-l="th">วัน</span></span></span></span></a>
+<a href="tooni.html" class="drawer-chat"><span class="dc-icon">👤</span><span class="dc-info"><span class="dc-name">Tooni</span><span class="dc-meta">422 <span class="i18n"><span data-l="ru">сообщ.</span><span data-l="th">ข้อความ</span></span> · 39 <span class="i18n"><span data-l="ru">дн.</span><span data-l="th">วัน</span></span></span></span></a>
+<a href="andrey-freedom-beach-case.html" class="drawer-chat"><span class="dc-icon">👥</span><span class="dc-info"><span class="dc-name">Andrey Freedom  beach case</span><span class="dc-meta">340 <span class="i18n"><span data-l="ru">сообщ.</span><span data-l="th">ข้อความ</span></span> · 18 <span class="i18n"><span data-l="ru">дн.</span><span data-l="th">วัน</span></span></span></span></a>
+<a href="66-80-041-5533.html" class="drawer-chat"><span class="dc-icon">👤</span><span class="dc-info"><span class="dc-name">+66 80 041 5533</span><span class="dc-meta">110 <span class="i18n"><span data-l="ru">сообщ.</span><span data-l="th">ข้อความ</span></span> · 1 <span class="i18n"><span data-l="ru">дн.</span><span data-l="th">วัน</span></span></span></span></a>
+<a href="66-99-491-6356.html" class="drawer-chat active"><span class="dc-icon">👤</span><span class="dc-info"><span class="dc-name">+66 99 491 6356</span><span class="dc-meta">41 <span class="i18n"><span data-l="ru">сообщ.</span><span data-l="th">ข้อความ</span></span> · 2 <span class="i18n"><span data-l="ru">дн.</span><span data-l="th">วัน</span></span></span></span></a>
+</nav>
+<div class="drawer-footer"><span class="dl-label"><span class="i18n"><span data-l="ru">Язык</span><span data-l="th">ภาษา</span></span></span><div class="lang-switch lang-switch-drawer" role="group" aria-label="Language"><button data-lang-set="ru" class="lang-btn">RU</button><button data-lang-set="th" class="lang-btn">TH</button></div></div>
+</aside>
 <div id="nav-backdrop" hidden></div>
 <header class="chat-header"><div class="header-row">
-<button id="navToggle" class="icon-btn menu-btn" aria-label="Открыть меню" title="Меню">☰</button>
+<button id="navToggle" class="icon-btn menu-btn" data-i18n-aria="open_menu" data-i18n-title="menu" aria-label="Открыть меню" title="Меню">☰</button>
 <div class="title-block">
-<a class="back-link" href="index.html">‹ Все чаты</a>
+<a class="back-link" href="index.html"><span class="i18n"><span data-l="ru">‹ Все чаты</span><span data-l="th">‹ แชททั้งหมด</span></span></a>
 <div class="title">+66 99 491 6356</div>
-<div class="sub">Личный чат · Payong · 41 сообщений · 2 дней</div>
+<div class="sub"><span class="i18n"><span data-l="ru">Личный чат</span><span data-l="th">แชทส่วนตัว</span></span> · Payong · 41 <span class="i18n"><span data-l="ru">сообщений</span><span data-l="th">ข้อความ</span></span> · 2 <span class="i18n"><span data-l="ru">дней</span><span data-l="th">วัน</span></span></div>
 </div>
 <div class="controls">
-<input type="date" id="datePicker" min="2025-10-18" max="2025-11-24" aria-label="Выбрать дату">
-<button id="togglePanel" class="icon-btn" aria-expanded="false" aria-controls="dates-panel" title="Все даты">📅</button>
-<button id="clearFilter" class="primary" hidden>Сброс</button>
+<div class="lang-switch" role="group" aria-label="Language"><button data-lang-set="ru" class="lang-btn">RU</button><button data-lang-set="th" class="lang-btn">TH</button></div>
+<input type="date" id="datePicker" min="2025-10-18" max="2025-11-24" data-i18n-aria="select_date" aria-label="Выбрать дату">
+<button id="togglePanel" class="icon-btn" aria-expanded="false" aria-controls="dates-panel" data-i18n-title="all_dates" title="Все даты">📅</button>
+<button id="clearFilter" class="primary" hidden><span class="i18n"><span data-l="ru">Сброс</span><span data-l="th">รีเซ็ต</span></span></button>
 </div></div></header>
 <div class="tabs" role="tablist">
-<button class="tab active" data-tab="messages" role="tab">Сообщения <span class="tab-count">41</span></button>
-<button class="tab" data-tab="media" role="tab">Медиа <span class="tab-count">4</span></button>
-<button class="tab" data-tab="docs" role="tab">Документы <span class="tab-count">0</span></button>
+<button class="tab active" data-tab="messages" role="tab"><span class="i18n"><span data-l="ru">Сообщения</span><span data-l="th">ข้อความ</span></span> <span class="tab-count">41</span></button>
+<button class="tab" data-tab="media" role="tab"><span class="i18n"><span data-l="ru">Медиа</span><span data-l="th">สื่อ</span></span> <span class="tab-count">4</span></button>
+<button class="tab" data-tab="docs" role="tab"><span class="i18n"><span data-l="ru">Документы</span><span data-l="th">เอกสาร</span></span> <span class="tab-count">0</span></button>
 </div>
 <div id="backdrop" hidden></div>
 <aside id="dates-panel" hidden aria-label="Список дат">
-<p class="panel-hint">Выберите день — остальные сообщения скроются.</p>
-<div class="month-block"><div class="month-title">Октябрь 2025</div>
+<p class="panel-hint"><span class="i18n"><span data-l="ru">Выберите день — остальные сообщения скроются.</span><span data-l="th">เลือกวัน — ข้อความที่เหลือจะถูกซ่อน</span></span></p>
+<div class="month-block"><div class="month-title"><span class="i18n"><span data-l="ru">Октябрь 2025</span><span data-l="th">ตุลาคม 2568</span></span></div>
 <div class="day-chips">
-<a href="#d-2025-10-18" class="day-chip" data-date="2025-10-18"><span>18 октября</span><span class="count">17</span></a>
+<a href="#d-2025-10-18" class="day-chip" data-date="2025-10-18"><span class="i18n"><span data-l="ru">18 октября</span><span data-l="th">18 ตุลาคม</span></span><span class="count">17</span></a>
 </div></div>
-<div class="month-block"><div class="month-title">Ноябрь 2025</div>
+<div class="month-block"><div class="month-title"><span class="i18n"><span data-l="ru">Ноябрь 2025</span><span data-l="th">พฤศจิกายน 2568</span></span></div>
 <div class="day-chips">
-<a href="#d-2025-11-24" class="day-chip" data-date="2025-11-24"><span>24 ноября</span><span class="count">23</span></a>
+<a href="#d-2025-11-24" class="day-chip" data-date="2025-11-24"><span class="i18n"><span data-l="ru">24 ноября</span><span data-l="th">24 พฤศจิกายน</span></span><span class="count">23</span></a>
 </div></div>
 </aside>
 <div data-tab-content="messages">
 <main class="chat">
-<div id="empty-state" class="empty-state" hidden>За выбранный день нет сообщений.</div>
-<div class="date-divider" id="d-2025-10-18" data-date="2025-10-18"><span>18 октября 2025</span></div>
+<div id="empty-state" class="empty-state" hidden><span class="i18n"><span data-l="ru">За выбранный день нет сообщений.</span><span data-l="th">ไม่มีข้อความในวันที่เลือก</span></span></div>
+<div class="date-divider" id="d-2025-10-18" data-date="2025-10-18"><span><span class="i18n"><span data-l="ru">18 октября 2025</span><span data-l="th">18 ตุลาคม 2568</span></span></span></div>
 <div class="system-msg" data-date="2025-10-18">Сообщения и звонки защищены сквозным шифрованием. Прочитать, прослушать или переслать их могут только участники этого чата.</div>
 <div class="msg msg-left" data-date="2025-10-18"><div class="bubble"><div class="sender" style="color:#1f7a8c">Payong</div><div class="text">Hi</div><div class="time">17:07</div></div></div>
 <div class="msg msg-left" data-date="2025-10-18"><div class="bubble"><div class="sender" style="color:#1f7a8c">Payong</div><div class="text">How are you</div><div class="time">17:07</div></div></div>
@@ -535,7 +596,7 @@ body[data-active-tab="docs"] .controls { display: none; }
 <div class="msg msg-right" data-date="2025-10-18"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">But first we&#x27;ll check with the lawyers when we can do it because we don&#x27;t have the right to go into the house without permission</div><div class="time">18:06</div></div></div>
 <div class="msg msg-right" data-date="2025-10-18"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">Вы удалили данное сообщение.</div><div class="time">18:07</div></div></div>
 <div class="msg msg-right" data-date="2025-10-18"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">Вы удалили данное сообщение.</div><div class="time">18:08</div></div></div>
-<div class="date-divider" id="d-2025-11-24" data-date="2025-11-24"><span>24 ноября 2025</span></div>
+<div class="date-divider" id="d-2025-11-24" data-date="2025-11-24"><span><span class="i18n"><span data-l="ru">24 ноября 2025</span><span data-l="th">24 พฤศจิกายน 2568</span></span></span></div>
 <div class="msg msg-right" data-date="2025-11-24"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">Payong Hello<br>This is Andrey, once we came to you with Vera and wrote an application, then rented a Toyota Forchuner car from you if you remember me</div><div class="time">15:17</div></div></div>
 <div class="msg msg-left" data-date="2025-11-24"><div class="bubble"><div class="sender" style="color:#1f7a8c">Payong</div><div class="text">Yes</div><div class="time">15:22</div></div></div>
 <div class="msg msg-left" data-date="2025-11-24"><div class="bubble"><div class="sender" style="color:#1f7a8c">Payong</div><div class="text">How are you</div><div class="time">15:22</div></div></div>
@@ -563,7 +624,7 @@ body[data-active-tab="docs"] .controls { display: none; }
 <div data-tab-content="media" hidden>
 <div class="media-wrap">
 <div class="media-day">
-<div class="media-day-title">24 ноября 2025 <span class="day-count-pill">4</span></div>
+<div class="media-day-title"><span class="i18n"><span data-l="ru">24 ноября 2025</span><span data-l="th">24 พฤศจิกายน 2568</span></span> <span class="day-count-pill">4</span></div>
 <div class="media-grid">
 <a class="media-thumb" href="WhatsApp%20Chat%20-%20%2B66%2099%20491%206356/00000029-PHOTO-2025-11-24-15-31-11.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20%2B66%2099%20491%206356/00000029-PHOTO-2025-11-24-15-31-11.jpg" alt=""></a>
 <a class="media-thumb" href="WhatsApp%20Chat%20-%20%2B66%2099%20491%206356/00000030-PHOTO-2025-11-24-15-31-11.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20%2B66%2099%20491%206356/00000030-PHOTO-2025-11-24-15-31-11.jpg" alt=""></a>
@@ -572,10 +633,40 @@ body[data-active-tab="docs"] .controls { display: none; }
 </div></div>
 </div></div>
 <div data-tab-content="docs" hidden>
-<div class="empty-state">В этом чате нет документов и аудио.</div>
+<div class="empty-state"><span class="i18n"><span data-l="ru">В этом чате нет документов и аудио.</span><span data-l="th">ไม่มีเอกสารหรือไฟล์เสียงในแชทนี้</span></span></div>
 </div>
 <script>
 (function() {
+  // ===== Language switching =====
+  const I18N = {"ru": {"menu": "Меню", "open_menu": "Открыть меню", "close": "Закрыть", "select_date": "Выбрать дату", "all_dates": "Все даты", "lang_label": "Язык"}, "th": {"menu": "เมนู", "open_menu": "เปิดเมนู", "close": "ปิด", "select_date": "เลือกวันที่", "all_dates": "วันที่ทั้งหมด", "lang_label": "ภาษา"}};
+  const LANGS = ['ru', 'th'];
+  function readLang() {
+    try {
+      const v = localStorage.getItem('archiveLang');
+      return LANGS.includes(v) ? v : 'ru';
+    } catch (e) { return 'ru'; }
+  }
+  function applyLang(lang) {
+    document.body.dataset.lang = lang;
+    document.documentElement.lang = lang;
+    try { localStorage.setItem('archiveLang', lang); } catch (e) {}
+    document.querySelectorAll('[data-lang-set]').forEach(b => {
+      b.classList.toggle('active', b.dataset.langSet === lang);
+    });
+    document.querySelectorAll('[data-i18n-aria]').forEach(el => {
+      const key = el.dataset.i18nAria;
+      if (I18N[lang] && I18N[lang][key]) el.setAttribute('aria-label', I18N[lang][key]);
+    });
+    document.querySelectorAll('[data-i18n-title]').forEach(el => {
+      const key = el.dataset.i18nTitle;
+      if (I18N[lang] && I18N[lang][key]) el.setAttribute('title', I18N[lang][key]);
+    });
+  }
+  document.querySelectorAll('[data-lang-set]').forEach(b => {
+    b.addEventListener('click', () => applyLang(b.dataset.langSet));
+  });
+  applyLang(readLang());
+
   // ===== Date filter (messages tab) =====
   const datePicker = document.getElementById('datePicker');
   const clearBtn   = document.getElementById('clearFilter');

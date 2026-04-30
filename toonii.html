@@ -15,6 +15,64 @@
   --text: #111b21;
   --muted: #667781;
 }
+
+/* ===== i18n bilingual spans (CSS toggles which lang is visible) ===== */
+.i18n { display: inline; }
+.i18n > [data-l] { display: inline; }
+.i18n > [data-l="th"] { display: none; }
+body[data-lang="th"] .i18n > [data-l="ru"] { display: none; }
+body[data-lang="th"] .i18n > [data-l="th"] { display: inline; }
+
+/* ===== Language switcher pills ===== */
+.lang-switch {
+  display: inline-flex;
+  background: rgba(255,255,255,0.18);
+  border-radius: 8px;
+  padding: 2px;
+  flex: 0 0 auto;
+}
+.lang-switch .lang-btn {
+  background: transparent; color: #fff;
+  border: 0; padding: 5px 10px;
+  font-size: 12.5px; font-weight: 600;
+  font-family: inherit; cursor: pointer;
+  border-radius: 6px;
+  letter-spacing: 0.3px;
+  min-height: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+.lang-switch .lang-btn:hover { background: rgba(255,255,255,0.18); }
+.lang-switch .lang-btn.active {
+  background: #fff; color: var(--header);
+}
+.lang-switch-drawer {
+  background: #f0f2f5;
+}
+.lang-switch-drawer .lang-btn { color: var(--muted); }
+.lang-switch-drawer .lang-btn:hover { background: rgba(0,0,0,0.04); }
+.lang-switch-drawer .lang-btn.active {
+  background: var(--header);
+  color: #fff;
+}
+.drawer-footer {
+  margin-top: auto;
+  padding: 14px 18px 18px;
+  border-top: 1px solid #eee;
+  display: flex; align-items: center; gap: 12px;
+  justify-content: space-between;
+}
+.dl-label {
+  font-size: 12.5px; color: var(--muted);
+  font-weight: 600;
+}
+.hub-lang {
+  display: flex; justify-content: flex-end;
+  margin-bottom: 14px;
+}
+.hub-lang .lang-switch { background: #f0f2f5; }
+.hub-lang .lang-btn { color: var(--muted); }
+.hub-lang .lang-btn.active { background: var(--header); color: #fff; }
+
 * { box-sizing: border-box; }
 html, body {
   margin: 0; padding: 0; background: var(--bg); color: var(--text);
@@ -467,74 +525,77 @@ body[data-active-tab="docs"] .controls { display: none; }
 </head>
 
 <body data-active-tab="messages">
-<aside id="nav-drawer" hidden aria-label="Меню">
+<aside id="nav-drawer" hidden data-i18n-aria="menu" aria-label="Меню">
 <div class="drawer-h">
-<div class="drawer-title">WhatsApp архив</div>
-<button id="navClose" class="icon-btn" aria-label="Закрыть">✕</button>
+<div class="drawer-title"><span class="i18n"><span data-l="ru">WhatsApp архив</span><span data-l="th">คลัง WhatsApp</span></span></div>
+<button id="navClose" class="icon-btn" data-i18n-aria="close" aria-label="Закрыть">✕</button>
 </div>
-<a class="drawer-home" href="index.html"><span class="dh-icon">🏠</span><span>На главную</span></a>
-<div class="drawer-section">Все чаты</div>
+<a class="drawer-home" href="index.html"><span class="dh-icon">🏠</span><span class="i18n"><span data-l="ru">На главную</span><span data-l="th">หน้าแรก</span></span></a>
+<div class="drawer-section"><span class="i18n"><span data-l="ru">Все чаты</span><span data-l="th">แชททั้งหมด</span></span></div>
 <nav class="drawer-chats">
-<a href="66-91-824-1010.html" class="drawer-chat"><span class="dc-icon">👤</span><span class="dc-info"><span class="dc-name">+66 91 824 1010</span><span class="dc-meta">3458 сообщ. · 160 дн.</span></span></a>
-<a href="alisa-advokat.html" class="drawer-chat"><span class="dc-icon">👤</span><span class="dc-info"><span class="dc-name">Алиса адвокат</span><span class="dc-meta">2383 сообщ. · 35 дн.</span></span></a>
-<a href="toonii.html" class="drawer-chat active"><span class="dc-icon">👤</span><span class="dc-info"><span class="dc-name">Toonii</span><span class="dc-meta">684 сообщ. · 20 дн.</span></span></a>
-<a href="tooni.html" class="drawer-chat"><span class="dc-icon">👤</span><span class="dc-info"><span class="dc-name">Tooni</span><span class="dc-meta">422 сообщ. · 39 дн.</span></span></a>
-<a href="andrey-freedom-beach-case.html" class="drawer-chat"><span class="dc-icon">👥</span><span class="dc-info"><span class="dc-name">Andrey Freedom  beach case</span><span class="dc-meta">340 сообщ. · 18 дн.</span></span></a>
-<a href="66-80-041-5533.html" class="drawer-chat"><span class="dc-icon">👤</span><span class="dc-info"><span class="dc-name">+66 80 041 5533</span><span class="dc-meta">110 сообщ. · 1 дн.</span></span></a>
-<a href="66-99-491-6356.html" class="drawer-chat"><span class="dc-icon">👤</span><span class="dc-info"><span class="dc-name">+66 99 491 6356</span><span class="dc-meta">41 сообщ. · 2 дн.</span></span></a>
-</nav></aside>
+<a href="66-91-824-1010.html" class="drawer-chat"><span class="dc-icon">👤</span><span class="dc-info"><span class="dc-name">+66 91 824 1010</span><span class="dc-meta">3458 <span class="i18n"><span data-l="ru">сообщ.</span><span data-l="th">ข้อความ</span></span> · 160 <span class="i18n"><span data-l="ru">дн.</span><span data-l="th">วัน</span></span></span></span></a>
+<a href="alisa-advokat.html" class="drawer-chat"><span class="dc-icon">👤</span><span class="dc-info"><span class="dc-name">Алиса адвокат</span><span class="dc-meta">2383 <span class="i18n"><span data-l="ru">сообщ.</span><span data-l="th">ข้อความ</span></span> · 35 <span class="i18n"><span data-l="ru">дн.</span><span data-l="th">วัน</span></span></span></span></a>
+<a href="toonii.html" class="drawer-chat active"><span class="dc-icon">👤</span><span class="dc-info"><span class="dc-name">Toonii</span><span class="dc-meta">684 <span class="i18n"><span data-l="ru">сообщ.</span><span data-l="th">ข้อความ</span></span> · 20 <span class="i18n"><span data-l="ru">дн.</span><span data-l="th">วัน</span></span></span></span></a>
+<a href="tooni.html" class="drawer-chat"><span class="dc-icon">👤</span><span class="dc-info"><span class="dc-name">Tooni</span><span class="dc-meta">422 <span class="i18n"><span data-l="ru">сообщ.</span><span data-l="th">ข้อความ</span></span> · 39 <span class="i18n"><span data-l="ru">дн.</span><span data-l="th">วัน</span></span></span></span></a>
+<a href="andrey-freedom-beach-case.html" class="drawer-chat"><span class="dc-icon">👥</span><span class="dc-info"><span class="dc-name">Andrey Freedom  beach case</span><span class="dc-meta">340 <span class="i18n"><span data-l="ru">сообщ.</span><span data-l="th">ข้อความ</span></span> · 18 <span class="i18n"><span data-l="ru">дн.</span><span data-l="th">วัน</span></span></span></span></a>
+<a href="66-80-041-5533.html" class="drawer-chat"><span class="dc-icon">👤</span><span class="dc-info"><span class="dc-name">+66 80 041 5533</span><span class="dc-meta">110 <span class="i18n"><span data-l="ru">сообщ.</span><span data-l="th">ข้อความ</span></span> · 1 <span class="i18n"><span data-l="ru">дн.</span><span data-l="th">วัน</span></span></span></span></a>
+<a href="66-99-491-6356.html" class="drawer-chat"><span class="dc-icon">👤</span><span class="dc-info"><span class="dc-name">+66 99 491 6356</span><span class="dc-meta">41 <span class="i18n"><span data-l="ru">сообщ.</span><span data-l="th">ข้อความ</span></span> · 2 <span class="i18n"><span data-l="ru">дн.</span><span data-l="th">วัน</span></span></span></span></a>
+</nav>
+<div class="drawer-footer"><span class="dl-label"><span class="i18n"><span data-l="ru">Язык</span><span data-l="th">ภาษา</span></span></span><div class="lang-switch lang-switch-drawer" role="group" aria-label="Language"><button data-lang-set="ru" class="lang-btn">RU</button><button data-lang-set="th" class="lang-btn">TH</button></div></div>
+</aside>
 <div id="nav-backdrop" hidden></div>
 <header class="chat-header"><div class="header-row">
-<button id="navToggle" class="icon-btn menu-btn" aria-label="Открыть меню" title="Меню">☰</button>
+<button id="navToggle" class="icon-btn menu-btn" data-i18n-aria="open_menu" data-i18n-title="menu" aria-label="Открыть меню" title="Меню">☰</button>
 <div class="title-block">
-<a class="back-link" href="index.html">‹ Все чаты</a>
+<a class="back-link" href="index.html"><span class="i18n"><span data-l="ru">‹ Все чаты</span><span data-l="th">‹ แชททั้งหมด</span></span></a>
 <div class="title">Toonii</div>
-<div class="sub">Личный чат · 684 сообщений · 20 дней</div>
+<div class="sub"><span class="i18n"><span data-l="ru">Личный чат</span><span data-l="th">แชทส่วนตัว</span></span> · 684 <span class="i18n"><span data-l="ru">сообщений</span><span data-l="th">ข้อความ</span></span> · 20 <span class="i18n"><span data-l="ru">дней</span><span data-l="th">วัน</span></span></div>
 </div>
 <div class="controls">
-<input type="date" id="datePicker" min="2025-10-03" max="2025-11-28" aria-label="Выбрать дату">
-<button id="togglePanel" class="icon-btn" aria-expanded="false" aria-controls="dates-panel" title="Все даты">📅</button>
-<button id="clearFilter" class="primary" hidden>Сброс</button>
+<div class="lang-switch" role="group" aria-label="Language"><button data-lang-set="ru" class="lang-btn">RU</button><button data-lang-set="th" class="lang-btn">TH</button></div>
+<input type="date" id="datePicker" min="2025-10-03" max="2025-11-28" data-i18n-aria="select_date" aria-label="Выбрать дату">
+<button id="togglePanel" class="icon-btn" aria-expanded="false" aria-controls="dates-panel" data-i18n-title="all_dates" title="Все даты">📅</button>
+<button id="clearFilter" class="primary" hidden><span class="i18n"><span data-l="ru">Сброс</span><span data-l="th">รีเซ็ต</span></span></button>
 </div></div></header>
 <div class="tabs" role="tablist">
-<button class="tab active" data-tab="messages" role="tab">Сообщения <span class="tab-count">684</span></button>
-<button class="tab" data-tab="media" role="tab">Медиа <span class="tab-count">256</span></button>
-<button class="tab" data-tab="docs" role="tab">Документы <span class="tab-count">5</span></button>
+<button class="tab active" data-tab="messages" role="tab"><span class="i18n"><span data-l="ru">Сообщения</span><span data-l="th">ข้อความ</span></span> <span class="tab-count">684</span></button>
+<button class="tab" data-tab="media" role="tab"><span class="i18n"><span data-l="ru">Медиа</span><span data-l="th">สื่อ</span></span> <span class="tab-count">256</span></button>
+<button class="tab" data-tab="docs" role="tab"><span class="i18n"><span data-l="ru">Документы</span><span data-l="th">เอกสาร</span></span> <span class="tab-count">5</span></button>
 </div>
 <div id="backdrop" hidden></div>
 <aside id="dates-panel" hidden aria-label="Список дат">
-<p class="panel-hint">Выберите день — остальные сообщения скроются.</p>
-<div class="month-block"><div class="month-title">Октябрь 2025</div>
+<p class="panel-hint"><span class="i18n"><span data-l="ru">Выберите день — остальные сообщения скроются.</span><span data-l="th">เลือกวัน — ข้อความที่เหลือจะถูกซ่อน</span></span></p>
+<div class="month-block"><div class="month-title"><span class="i18n"><span data-l="ru">Октябрь 2025</span><span data-l="th">ตุลาคม 2568</span></span></div>
 <div class="day-chips">
-<a href="#d-2025-10-03" class="day-chip" data-date="2025-10-03"><span>3 октября</span><span class="count">62</span></a>
-<a href="#d-2025-10-04" class="day-chip" data-date="2025-10-04"><span>4 октября</span><span class="count">162</span></a>
-<a href="#d-2025-10-05" class="day-chip" data-date="2025-10-05"><span>5 октября</span><span class="count">6</span></a>
-<a href="#d-2025-10-06" class="day-chip" data-date="2025-10-06"><span>6 октября</span><span class="count">50</span></a>
-<a href="#d-2025-10-07" class="day-chip" data-date="2025-10-07"><span>7 октября</span><span class="count">94</span></a>
-<a href="#d-2025-10-08" class="day-chip" data-date="2025-10-08"><span>8 октября</span><span class="count">2</span></a>
-<a href="#d-2025-10-09" class="day-chip" data-date="2025-10-09"><span>9 октября</span><span class="count">29</span></a>
-<a href="#d-2025-10-16" class="day-chip" data-date="2025-10-16"><span>16 октября</span><span class="count">33</span></a>
-<a href="#d-2025-10-17" class="day-chip" data-date="2025-10-17"><span>17 октября</span><span class="count">2</span></a>
-<a href="#d-2025-10-19" class="day-chip" data-date="2025-10-19"><span>19 октября</span><span class="count">34</span></a>
-<a href="#d-2025-10-20" class="day-chip" data-date="2025-10-20"><span>20 октября</span><span class="count">42</span></a>
-<a href="#d-2025-10-28" class="day-chip" data-date="2025-10-28"><span>28 октября</span><span class="count">6</span></a>
-<a href="#d-2025-10-31" class="day-chip" data-date="2025-10-31"><span>31 октября</span><span class="count">38</span></a>
+<a href="#d-2025-10-03" class="day-chip" data-date="2025-10-03"><span class="i18n"><span data-l="ru">3 октября</span><span data-l="th">3 ตุลาคม</span></span><span class="count">62</span></a>
+<a href="#d-2025-10-04" class="day-chip" data-date="2025-10-04"><span class="i18n"><span data-l="ru">4 октября</span><span data-l="th">4 ตุลาคม</span></span><span class="count">162</span></a>
+<a href="#d-2025-10-05" class="day-chip" data-date="2025-10-05"><span class="i18n"><span data-l="ru">5 октября</span><span data-l="th">5 ตุลาคม</span></span><span class="count">6</span></a>
+<a href="#d-2025-10-06" class="day-chip" data-date="2025-10-06"><span class="i18n"><span data-l="ru">6 октября</span><span data-l="th">6 ตุลาคม</span></span><span class="count">50</span></a>
+<a href="#d-2025-10-07" class="day-chip" data-date="2025-10-07"><span class="i18n"><span data-l="ru">7 октября</span><span data-l="th">7 ตุลาคม</span></span><span class="count">94</span></a>
+<a href="#d-2025-10-08" class="day-chip" data-date="2025-10-08"><span class="i18n"><span data-l="ru">8 октября</span><span data-l="th">8 ตุลาคม</span></span><span class="count">2</span></a>
+<a href="#d-2025-10-09" class="day-chip" data-date="2025-10-09"><span class="i18n"><span data-l="ru">9 октября</span><span data-l="th">9 ตุลาคม</span></span><span class="count">29</span></a>
+<a href="#d-2025-10-16" class="day-chip" data-date="2025-10-16"><span class="i18n"><span data-l="ru">16 октября</span><span data-l="th">16 ตุลาคม</span></span><span class="count">33</span></a>
+<a href="#d-2025-10-17" class="day-chip" data-date="2025-10-17"><span class="i18n"><span data-l="ru">17 октября</span><span data-l="th">17 ตุลาคม</span></span><span class="count">2</span></a>
+<a href="#d-2025-10-19" class="day-chip" data-date="2025-10-19"><span class="i18n"><span data-l="ru">19 октября</span><span data-l="th">19 ตุลาคม</span></span><span class="count">34</span></a>
+<a href="#d-2025-10-20" class="day-chip" data-date="2025-10-20"><span class="i18n"><span data-l="ru">20 октября</span><span data-l="th">20 ตุลาคม</span></span><span class="count">42</span></a>
+<a href="#d-2025-10-28" class="day-chip" data-date="2025-10-28"><span class="i18n"><span data-l="ru">28 октября</span><span data-l="th">28 ตุลาคม</span></span><span class="count">6</span></a>
+<a href="#d-2025-10-31" class="day-chip" data-date="2025-10-31"><span class="i18n"><span data-l="ru">31 октября</span><span data-l="th">31 ตุลาคม</span></span><span class="count">38</span></a>
 </div></div>
-<div class="month-block"><div class="month-title">Ноябрь 2025</div>
+<div class="month-block"><div class="month-title"><span class="i18n"><span data-l="ru">Ноябрь 2025</span><span data-l="th">พฤศจิกายน 2568</span></span></div>
 <div class="day-chips">
-<a href="#d-2025-11-02" class="day-chip" data-date="2025-11-02"><span>2 ноября</span><span class="count">1</span></a>
-<a href="#d-2025-11-22" class="day-chip" data-date="2025-11-22"><span>22 ноября</span><span class="count">26</span></a>
-<a href="#d-2025-11-23" class="day-chip" data-date="2025-11-23"><span>23 ноября</span><span class="count">24</span></a>
-<a href="#d-2025-11-24" class="day-chip" data-date="2025-11-24"><span>24 ноября</span><span class="count">6</span></a>
-<a href="#d-2025-11-26" class="day-chip" data-date="2025-11-26"><span>26 ноября</span><span class="count">8</span></a>
-<a href="#d-2025-11-27" class="day-chip" data-date="2025-11-27"><span>27 ноября</span><span class="count">30</span></a>
-<a href="#d-2025-11-28" class="day-chip" data-date="2025-11-28"><span>28 ноября</span><span class="count">28</span></a>
+<a href="#d-2025-11-02" class="day-chip" data-date="2025-11-02"><span class="i18n"><span data-l="ru">2 ноября</span><span data-l="th">2 พฤศจิกายน</span></span><span class="count">1</span></a>
+<a href="#d-2025-11-22" class="day-chip" data-date="2025-11-22"><span class="i18n"><span data-l="ru">22 ноября</span><span data-l="th">22 พฤศจิกายน</span></span><span class="count">26</span></a>
+<a href="#d-2025-11-23" class="day-chip" data-date="2025-11-23"><span class="i18n"><span data-l="ru">23 ноября</span><span data-l="th">23 พฤศจิกายน</span></span><span class="count">24</span></a>
+<a href="#d-2025-11-24" class="day-chip" data-date="2025-11-24"><span class="i18n"><span data-l="ru">24 ноября</span><span data-l="th">24 พฤศจิกายน</span></span><span class="count">6</span></a>
+<a href="#d-2025-11-26" class="day-chip" data-date="2025-11-26"><span class="i18n"><span data-l="ru">26 ноября</span><span data-l="th">26 พฤศจิกายน</span></span><span class="count">8</span></a>
+<a href="#d-2025-11-27" class="day-chip" data-date="2025-11-27"><span class="i18n"><span data-l="ru">27 ноября</span><span data-l="th">27 พฤศจิกายน</span></span><span class="count">30</span></a>
+<a href="#d-2025-11-28" class="day-chip" data-date="2025-11-28"><span class="i18n"><span data-l="ru">28 ноября</span><span data-l="th">28 พฤศจิกายน</span></span><span class="count">28</span></a>
 </div></div>
 </aside>
 <div data-tab-content="messages">
 <main class="chat">
-<div id="empty-state" class="empty-state" hidden>За выбранный день нет сообщений.</div>
-<div class="date-divider" id="d-2025-10-03" data-date="2025-10-03"><span>3 октября 2025</span></div>
+<div id="empty-state" class="empty-state" hidden><span class="i18n"><span data-l="ru">За выбранный день нет сообщений.</span><span data-l="th">ไม่มีข้อความในวันที่เลือก</span></span></div>
+<div class="date-divider" id="d-2025-10-03" data-date="2025-10-03"><span><span class="i18n"><span data-l="ru">3 октября 2025</span><span data-l="th">3 ตุลาคม 2568</span></span></span></div>
 <div class="system-msg" data-date="2025-10-03">Сообщения и звонки защищены сквозным шифрованием. Прочитать, прослушать или переслать их могут только участники этого чата.</div>
 <div class="msg msg-right" data-date="2025-10-03"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">Toonii good evening</div><div class="time">17:21</div></div></div>
 <div class="msg msg-right" data-date="2025-10-03"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="attachment"><a class="img-link" href="WhatsApp%20Chat%20-%20Toonii/00000003-PHOTO-2025-10-03-17-21-42.jpg" target="_blank"><img class="photo" loading="lazy" src="WhatsApp%20Chat%20-%20Toonii/00000003-PHOTO-2025-10-03-17-21-42.jpg" alt=""></a></div><div class="time">17:21</div></div></div>
@@ -598,7 +659,7 @@ body[data-active-tab="docs"] .controls { display: none; }
 <div class="msg msg-right" data-date="2025-10-03"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">Now I&#x27;m going home to calmly start making a planned schedule of how it happened, it will take a little time, so I ask you to give me one day to calmly make it up</div><div class="time">18:10</div></div></div>
 <div class="msg msg-left" data-date="2025-10-03"><div class="bubble"><div class="sender" style="color:#1f7a8c">Toonii</div><div class="text">Ok, no problem.</div><div class="time">18:11</div></div></div>
 <div class="msg msg-right" data-date="2025-10-03"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">Thank you &lt;Сообщение изменено&gt;</div><div class="time">18:11</div></div></div>
-<div class="date-divider" id="d-2025-10-04" data-date="2025-10-04"><span>4 октября 2025</span></div>
+<div class="date-divider" id="d-2025-10-04" data-date="2025-10-04"><span><span class="i18n"><span data-l="ru">4 октября 2025</span><span data-l="th">4 ตุลาคม 2568</span></span></span></div>
 <div class="msg msg-right" data-date="2025-10-04"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">Доброе утро!</div><div class="time">05:04</div></div></div>
 <div class="msg msg-right" data-date="2025-10-04"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">Нашел некоторые фотографии в интернете</div><div class="time">05:05</div></div></div>
 <div class="msg msg-right" data-date="2025-10-04"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">Посмотрите пожалуйста</div><div class="time">05:05</div></div></div>
@@ -761,14 +822,14 @@ body[data-active-tab="docs"] .controls { display: none; }
 <div class="msg msg-right" data-date="2025-10-04"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="attachment"><a class="img-link" href="WhatsApp%20Chat%20-%20Toonii/00000223-PHOTO-2025-10-04-23-56-35.jpg" target="_blank"><img class="photo" loading="lazy" src="WhatsApp%20Chat%20-%20Toonii/00000223-PHOTO-2025-10-04-23-56-35.jpg" alt=""></a></div><div class="time">23:56</div></div></div>
 <div class="msg msg-right" data-date="2025-10-04"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="attachment"><a class="img-link" href="WhatsApp%20Chat%20-%20Toonii/00000224-PHOTO-2025-10-04-23-56-45.jpg" target="_blank"><img class="photo" loading="lazy" src="WhatsApp%20Chat%20-%20Toonii/00000224-PHOTO-2025-10-04-23-56-45.jpg" alt=""></a></div><div class="time">23:56</div></div></div>
 <div class="msg msg-right" data-date="2025-10-04"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="attachment"><a class="img-link" href="WhatsApp%20Chat%20-%20Toonii/00000225-PHOTO-2025-10-04-23-56-54.jpg" target="_blank"><img class="photo" loading="lazy" src="WhatsApp%20Chat%20-%20Toonii/00000225-PHOTO-2025-10-04-23-56-54.jpg" alt=""></a></div><div class="time">23:56</div></div></div>
-<div class="date-divider" id="d-2025-10-05" data-date="2025-10-05"><span>5 октября 2025</span></div>
+<div class="date-divider" id="d-2025-10-05" data-date="2025-10-05"><span><span class="i18n"><span data-l="ru">5 октября 2025</span><span data-l="th">5 ตุลาคม 2568</span></span></span></div>
 <div class="msg msg-left" data-date="2025-10-05"><div class="bubble"><div class="sender" style="color:#1f7a8c">Toonii</div><div class="text">Ok, I&#x27;ll check these evidences.</div><div class="time">05:32</div></div></div>
 <div class="msg msg-right" data-date="2025-10-05"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="attachment"><a class="img-link" href="WhatsApp%20Chat%20-%20Toonii/00000227-PHOTO-2025-10-05-05-43-00.jpg" target="_blank"><img class="photo" loading="lazy" src="WhatsApp%20Chat%20-%20Toonii/00000227-PHOTO-2025-10-05-05-43-00.jpg" alt=""></a></div><div class="text">То что ниже синей строки он прислал мне сегодня ночью</div><div class="time">05:42</div></div></div>
 <div class="msg msg-right" data-date="2025-10-05"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="attachment"><a class="img-link" href="WhatsApp%20Chat%20-%20Toonii/00000228-PHOTO-2025-10-05-05-43-56.jpg" target="_blank"><img class="photo" loading="lazy" src="WhatsApp%20Chat%20-%20Toonii/00000228-PHOTO-2025-10-05-05-43-56.jpg" alt=""></a></div><div class="time">05:43</div></div></div>
 <div class="msg msg-right" data-date="2025-10-05"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">Видеозвонок, Нет ответа</div><div class="time">05:44</div></div></div>
 <div class="msg msg-right" data-date="2025-10-05"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">Извините случайно нажал на видео звонок</div><div class="time">05:44</div></div></div>
 <div class="msg msg-left" data-date="2025-10-05"><div class="bubble"><div class="sender" style="color:#1f7a8c">Toonii</div><div class="text">No problem.</div><div class="time">05:59</div></div></div>
-<div class="date-divider" id="d-2025-10-06" data-date="2025-10-06"><span>6 октября 2025</span></div>
+<div class="date-divider" id="d-2025-10-06" data-date="2025-10-06"><span><span class="i18n"><span data-l="ru">6 октября 2025</span><span data-l="th">6 ตุลาคม 2568</span></span></span></div>
 <div class="msg msg-right" data-date="2025-10-06"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">Tommy, good morning, tell me what time I can come to your office</div><div class="time">05:23</div></div></div>
 <div class="msg msg-left" data-date="2025-10-06"><div class="bubble"><div class="sender" style="color:#1f7a8c">Toonii</div><div class="text">Hello</div><div class="time">06:39</div></div></div>
 <div class="msg msg-left" data-date="2025-10-06"><div class="bubble"><div class="sender" style="color:#1f7a8c">Toonii</div><div class="text">Postponed to tomorrow, is it convenient for you around 1 pm?</div><div class="time">06:39</div></div></div>
@@ -819,7 +880,7 @@ body[data-active-tab="docs"] .controls { display: none; }
 <div class="msg msg-right" data-date="2025-10-06"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">Thank you</div><div class="time">18:32</div></div></div>
 <div class="msg msg-left" data-date="2025-10-06"><div class="bubble"><div class="sender" style="color:#1f7a8c">Toonii</div><div class="text">Ohh</div><div class="time">18:33</div></div></div>
 <div class="msg msg-left" data-date="2025-10-06"><div class="bubble"><div class="sender" style="color:#1f7a8c">Toonii</div><div class="text">Thank you very much</div><div class="time">18:33</div></div></div>
-<div class="date-divider" id="d-2025-10-07" data-date="2025-10-07"><span>7 октября 2025</span></div>
+<div class="date-divider" id="d-2025-10-07" data-date="2025-10-07"><span><span class="i18n"><span data-l="ru">7 октября 2025</span><span data-l="th">7 ตุลาคม 2568</span></span></span></div>
 <div class="msg msg-right" data-date="2025-10-07"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">Toonii, доброе утро!</div><div class="time">06:28</div></div></div>
 <div class="msg msg-right" data-date="2025-10-07"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="attachment"><a class="img-link" href="WhatsApp%20Chat%20-%20Toonii/00000283-PHOTO-2025-10-07-06-28-36.jpg" target="_blank"><img class="photo" loading="lazy" src="WhatsApp%20Chat%20-%20Toonii/00000283-PHOTO-2025-10-07-06-28-36.jpg" alt=""></a></div><div class="time">06:28</div></div></div>
 <div class="msg msg-right" data-date="2025-10-07"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">Человек у которого я покупал тойоту прислал мне блюбук старый со старыми номерами</div><div class="time">06:29</div></div></div>
@@ -914,10 +975,10 @@ body[data-active-tab="docs"] .controls { display: none; }
 <div class="msg msg-left" data-date="2025-10-07"><div class="bubble"><div class="sender" style="color:#1f7a8c">Toonii</div><div class="text">Tomorrow 2 pm</div><div class="time">15:24</div></div></div>
 <div class="msg msg-left" data-date="2025-10-07"><div class="bubble"><div class="sender" style="color:#1f7a8c">Toonii</div><div class="text">Promise that he brought it, right?</div><div class="time">15:25</div></div></div>
 <div class="msg msg-right" data-date="2025-10-07"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">Yes</div><div class="time">15:26</div></div></div>
-<div class="date-divider" id="d-2025-10-08" data-date="2025-10-08"><span>8 октября 2025</span></div>
+<div class="date-divider" id="d-2025-10-08" data-date="2025-10-08"><span><span class="i18n"><span data-l="ru">8 октября 2025</span><span data-l="th">8 ตุลาคม 2568</span></span></span></div>
 <div class="msg msg-right" data-date="2025-10-08"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="attachment"><a class="img-link" href="WhatsApp%20Chat%20-%20Toonii/00000376-PHOTO-2025-10-08-09-49-02.jpg" target="_blank"><img class="photo" loading="lazy" src="WhatsApp%20Chat%20-%20Toonii/00000376-PHOTO-2025-10-08-09-49-02.jpg" alt=""></a></div><div class="time">09:49</div></div></div>
 <div class="msg msg-right" data-date="2025-10-08"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="attachment"><a class="img-link" href="WhatsApp%20Chat%20-%20Toonii/00000377-PHOTO-2025-10-08-11-16-18.jpg" target="_blank"><img class="photo" loading="lazy" src="WhatsApp%20Chat%20-%20Toonii/00000377-PHOTO-2025-10-08-11-16-18.jpg" alt=""></a></div><div class="time">11:16</div></div></div>
-<div class="date-divider" id="d-2025-10-09" data-date="2025-10-09"><span>9 октября 2025</span></div>
+<div class="date-divider" id="d-2025-10-09" data-date="2025-10-09"><span><span class="i18n"><span data-l="ru">9 октября 2025</span><span data-l="th">9 ตุลาคม 2568</span></span></span></div>
 <div class="msg msg-right" data-date="2025-10-09"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">Toonii,  доброе утро! Я нашел у себя в заметках те предложения, которые я озвучивал, как выяснилось мошеннику по имени Паринтон . они записаны у меня в заметках и там указаны даты этих моих предложений они соответствуют тем SMS, которые я когда-то отправлял ему поэтому. его обвинения в мой адрес клевета. пожалуйста, выучите мои предложения на предмет законности это были мои идеи которые я озвучил изначально но этот человек не исполнил ни одной из этих идей мои помысли были искренними чистыми в самый день первого дня</div><div class="time">07:48</div></div></div>
 <div class="msg msg-right" data-date="2025-10-09"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">Good morning, Tommy! I found in my notes those offers that I voiced, as it turned out to a scammer named Parinton. They are recorded in my notes and there are the dates of these offers of mine, they correspond to the SMS that I once sent him therefore. His accusations against me are slander. Please study my proposals for the subject of legality, these were my ideas that I voiced initially, but this person did not fulfill any of these ideas, my thoughts were sincere clean on the very day of the first day</div><div class="time">07:48</div></div></div>
 <div class="msg msg-right" data-date="2025-10-09"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="attachment"><a class="img-link" href="WhatsApp%20Chat%20-%20Toonii/00000380-PHOTO-2025-10-09-07-50-34.jpg" target="_blank"><img class="photo" loading="lazy" src="WhatsApp%20Chat%20-%20Toonii/00000380-PHOTO-2025-10-09-07-50-34.jpg" alt=""></a></div><div class="time">07:50</div></div></div>
@@ -947,7 +1008,7 @@ body[data-active-tab="docs"] .controls { display: none; }
 <div class="msg msg-right" data-date="2025-10-09"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">This man broke into the house without my knowledge. He provided housing for my family to live during the construction of the house, for which I paid him 3,800,000 Baht. I did not allow him to break into the house without my permission, but he broke in. And after that he started blackmailing me. It hurts my honor and self-esteem.</div><div class="time">15:38</div></div></div>
 <div class="msg msg-left" data-date="2025-10-09"><div class="bubble"><div class="sender" style="color:#1f7a8c">Toonii</div><div class="text">Ok</div><div class="time">16:30</div></div></div>
 <div class="msg msg-right" data-date="2025-10-09"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">Хочу пояснить я не имею ничего против людей которые сейчас защищают меня. Не имею ничего против людей выражающих своё мнение и истинно понимают ситуацию. Я говорю лишь о том что чувствую. Говорю о том что меня обманул мошенник. И прошу компетентной консультации</div><div class="time">19:44</div></div></div>
-<div class="date-divider" id="d-2025-10-16" data-date="2025-10-16"><span>16 октября 2025</span></div>
+<div class="date-divider" id="d-2025-10-16" data-date="2025-10-16"><span><span class="i18n"><span data-l="ru">16 октября 2025</span><span data-l="th">16 ตุลาคม 2568</span></span></span></div>
 <div class="msg msg-right" data-date="2025-10-16"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">Toonii hello, are you my lawyer?</div><div class="time">13:15</div></div></div>
 <div class="msg msg-left" data-date="2025-10-16"><div class="bubble"><div class="sender" style="color:#1f7a8c">Toonii</div><div class="text">Hello</div><div class="time">13:16</div></div></div>
 <div class="msg msg-left" data-date="2025-10-16"><div class="bubble"><div class="sender" style="color:#1f7a8c">Toonii</div><div class="text">Yes</div><div class="time">13:16</div></div></div>
@@ -981,10 +1042,10 @@ body[data-active-tab="docs"] .controls { display: none; }
 <div class="msg msg-left" data-date="2025-10-16"><div class="bubble"><div class="sender" style="color:#1f7a8c">Toonii</div><div class="text">We are preparing a plan for bad people to be punished.</div><div class="time">14:39</div></div></div>
 <div class="msg msg-right" data-date="2025-10-16"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">Thank you for your support, it&#x27;s morally hard to be alone when you&#x27;re interrogated by several investigators, when I don&#x27;t know what&#x27;s going on when I haven&#x27;t slept for a few nights, but now I feel good, I feel so confident so that I just feel good, I&#x27;m ready to come to the police station at any moment at any second and talk directly and I&#x27;m sure that justice will prevail because gangsters can&#x27;t deceive ordinary simple gullible people</div><div class="time">14:55</div></div></div>
 <div class="msg msg-right" data-date="2025-10-16"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="attachment"><video class="video" controls preload="none" src="WhatsApp%20Chat%20-%20Toonii/00000439-VIDEO-2025-10-16-16-31-29.mp4"></video></div><div class="time">16:31</div></div></div>
-<div class="date-divider" id="d-2025-10-17" data-date="2025-10-17"><span>17 октября 2025</span></div>
+<div class="date-divider" id="d-2025-10-17" data-date="2025-10-17"><span><span class="i18n"><span data-l="ru">17 октября 2025</span><span data-l="th">17 ตุลาคม 2568</span></span></span></div>
 <div class="msg msg-right" data-date="2025-10-17"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">Вы удалили данное сообщение.</div><div class="time">00:05</div></div></div>
 <div class="msg msg-right" data-date="2025-10-17"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">Вы удалили данное сообщение.</div><div class="time">00:05</div></div></div>
-<div class="date-divider" id="d-2025-10-19" data-date="2025-10-19"><span>19 октября 2025</span></div>
+<div class="date-divider" id="d-2025-10-19" data-date="2025-10-19"><span><span class="i18n"><span data-l="ru">19 октября 2025</span><span data-l="th">19 ตุลาคม 2568</span></span></span></div>
 <div class="msg msg-right" data-date="2025-10-19"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">Toonii, good morning!</div><div class="time">06:45</div></div></div>
 <div class="msg msg-right" data-date="2025-10-19"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="attachment"><a class="file vcf" href="WhatsApp%20Chat%20-%20Toonii/00000443-Yong%20%D0%A2%D1%83%D1%80%D0%B8%D1%81%D1%82%20%D0%9F%D0%BE%D0%BB%D0%B8%D1%86%D0%B5%D0%B8%CC%86%D1%81%D0%BA%D0%B8%D0%B8%CC%86.vcf" target="_blank"><span class="file-icon">👤</span><span class="file-name">Yong Турист Полицейский.vcf</span></a></div><div class="time">06:46</div></div></div>
 <div class="msg msg-right" data-date="2025-10-19"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">At first, when we wrote a statement that we were deceived and did not return 200,000 baht, we met a policeman in the tourist police Yang</div><div class="time">06:46</div></div></div>
@@ -1019,7 +1080,7 @@ body[data-active-tab="docs"] .controls { display: none; }
 <div class="msg msg-right" data-date="2025-10-19"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">I want to save the original Documents so that it is reliable and safe</div><div class="time">13:14</div></div></div>
 <div class="msg msg-right" data-date="2025-10-19"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">I think this translation is also not quite correct, the main point is that I want to get the original Documents</div><div class="time">13:29</div></div></div>
 <div class="msg msg-right" data-date="2025-10-19"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">I apologize for the incorrect translation because I don&#x27;t know Thai and English, I use a translator, but it doesn&#x27;t translate correctly, sorry</div><div class="time">13:29</div></div></div>
-<div class="date-divider" id="d-2025-10-20" data-date="2025-10-20"><span>20 октября 2025</span></div>
+<div class="date-divider" id="d-2025-10-20" data-date="2025-10-20"><span><span class="i18n"><span data-l="ru">20 октября 2025</span><span data-l="th">20 ตุลาคม 2568</span></span></span></div>
 <div class="msg msg-right" data-date="2025-10-20"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">Good morning, I&#x27;m in a hopeless situation, I have money, I have good money, and I&#x27;m ready to hire all the number of lawyers that I need Ton, tell me, will you help me or not? I want to see a clear position of defense of me and my interests, I want to understand what is happening in a criminal case, I&#x27;m powerless, I don&#x27;t sleep at night</div><div class="time">08:34</div></div></div>
 <div class="msg msg-left" data-date="2025-10-20"><div class="bubble"><div class="sender" style="color:#1f7a8c">Toonii</div><div class="text">Hello</div><div class="time">08:36</div></div></div>
 <div class="msg msg-right" data-date="2025-10-20"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">If you help me personally, I will thank you. The whole team does not react and no one does anything. I ask for your help to take the lines of defense of my interests. I ask you to acquaint me with the case materials, and I ask you to start some actions. I respect you, you impress me and as a person I am exhausted. My wife left me. Because I wanted to build a house and a business. She needs Guchi and Versace. But a businessman. I&#x27;m a hard worker.</div><div class="time">08:37</div></div></div>
@@ -1062,14 +1123,14 @@ body[data-active-tab="docs"] .controls { display: none; }
 <div class="msg msg-left" data-date="2025-10-20"><div class="bubble"><div class="sender" style="color:#1f7a8c">Toonii</div><div class="text">Okay, we will advise you what to do when we meet in this matter.</div><div class="time">09:22</div></div></div>
 <div class="msg msg-right" data-date="2025-10-20"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">Thank you</div><div class="time">09:23</div></div></div>
 <div class="msg msg-right" data-date="2025-10-20"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">I&#x27;m not Farang, I love Thailand, it&#x27;s my second home🙏🙏🙏 &lt;Сообщение изменено&gt;</div><div class="time">11:45</div></div></div>
-<div class="date-divider" id="d-2025-10-28" data-date="2025-10-28"><span>28 октября 2025</span></div>
+<div class="date-divider" id="d-2025-10-28" data-date="2025-10-28"><span><span class="i18n"><span data-l="ru">28 октября 2025</span><span data-l="th">28 ตุลาคม 2568</span></span></span></div>
 <div class="msg msg-left" data-date="2025-10-28"><div class="bubble"><div class="sender" style="color:#1f7a8c">Toonii</div><div class="text">Good morning</div><div class="time">06:31</div></div></div>
 <div class="msg msg-left" data-date="2025-10-28"><div class="bubble"><div class="sender" style="color:#1f7a8c">Toonii</div><div class="text">Today, the police asked to postpone it to 2 pm.</div><div class="time">06:31</div></div></div>
 <div class="msg msg-left" data-date="2025-10-28"><div class="bubble"><div class="sender" style="color:#1f7a8c">Toonii</div><div class="text">14:00</div><div class="time">06:31</div></div></div>
 <div class="msg msg-right" data-date="2025-10-28"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">We on police now</div><div class="time">09:54</div></div></div>
 <div class="msg msg-right" data-date="2025-10-28"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">Good day</div><div class="time">09:54</div></div></div>
 <div class="msg msg-left" data-date="2025-10-28"><div class="bubble"><div class="sender" style="color:#1f7a8c">Toonii</div><div class="text">The translator has arrived.</div><div class="time">10:57</div></div></div>
-<div class="date-divider" id="d-2025-10-31" data-date="2025-10-31"><span>31 октября 2025</span></div>
+<div class="date-divider" id="d-2025-10-31" data-date="2025-10-31"><span><span class="i18n"><span data-l="ru">31 октября 2025</span><span data-l="th">31 ตุลาคม 2568</span></span></span></div>
 <div class="msg msg-right" data-date="2025-10-31"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">Tooni Hello, I had things to do, so I couldn&#x27;t see you because we agreed</div><div class="time">13:55</div></div></div>
 <div class="msg msg-right" data-date="2025-10-31"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">Please tell me in what status I pass on the case</div><div class="time">13:56</div></div></div>
 <div class="msg msg-right" data-date="2025-10-31"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">Why was there another translator and is he a translator who is this person please tell me who is the man who was wearing a brown shirt and why he tried to confuse me in my testimony I do not agree with the testimony that was given by me in a state that was bad for me I felt bad</div><div class="time">13:57</div></div></div>
@@ -1108,9 +1169,9 @@ body[data-active-tab="docs"] .controls { display: none; }
 <div class="msg msg-left" data-date="2025-10-31"><div class="bubble"><div class="sender" style="color:#1f7a8c">Toonii</div><div class="text">I understand how you feel.</div><div class="time">14:29</div></div></div>
 <div class="msg msg-right" data-date="2025-10-31"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">I propose to do then as follows provide me with full information of what is happening if the accusations against me what has been done to stop the actions of scammers who cheated me for a lot of money what are they trying to do against me I want to know if you have such information we will schedule a new meeting and continue constructive negotiations because the last time &lt;Сообщение изменено&gt;</div><div class="time">14:32</div></div></div>
 <div class="msg msg-left" data-date="2025-10-31"><div class="bubble"><div class="sender" style="color:#1f7a8c">Toonii</div><div class="text">Ok sure</div><div class="time">20:18</div></div></div>
-<div class="date-divider" id="d-2025-11-02" data-date="2025-11-02"><span>2 ноября 2025</span></div>
+<div class="date-divider" id="d-2025-11-02" data-date="2025-11-02"><span><span class="i18n"><span data-l="ru">2 ноября 2025</span><span data-l="th">2 พฤศจิกายน 2568</span></span></span></div>
 <div class="msg msg-right" data-date="2025-11-02"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="attachment"><a class="file vcf" href="WhatsApp%20Chat%20-%20Toonii/00000562-Toonii%20%20%D0%90%D0%B4%D0%B2%D0%BE%D0%BA%D0%B0%D1%82.vcf" target="_blank"><span class="file-icon">👤</span><span class="file-name">Toonii  Адвокат.vcf</span></a></div><div class="time">17:57</div></div></div>
-<div class="date-divider" id="d-2025-11-22" data-date="2025-11-22"><span>22 ноября 2025</span></div>
+<div class="date-divider" id="d-2025-11-22" data-date="2025-11-22"><span><span class="i18n"><span data-l="ru">22 ноября 2025</span><span data-l="th">22 พฤศจิกายน 2568</span></span></span></div>
 <div class="msg msg-right" data-date="2025-11-22"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">Toonii<br>Hello, please tell me how do you think it is possible to resolve the issue peacefully and whether it is possible for no one to come to suffer, I really want it, I suffered a lot from this situation, I lost my family, I lost all my money and I just want peace, I want peace to come, I don&#x27;t want there to be no evil, if you think that peace is possible, please help me in any way to make peace come so that no one suffers, if possible, give me your answer</div><div class="time">12:22</div></div></div>
 <div class="msg msg-right" data-date="2025-11-22"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">I don&#x27;t want to demand anything from Mr. Parinton. I&#x27;ve already lost everything</div><div class="time">12:29</div></div></div>
 <div class="msg msg-right" data-date="2025-11-22"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">I just want peace to come and I want no one to get hurt, I ask you to do everything possible to make peace come</div><div class="time">12:30</div></div></div>
@@ -1137,7 +1198,7 @@ body[data-active-tab="docs"] .controls { display: none; }
 <div class="msg msg-left" data-date="2025-11-22"><div class="bubble"><div class="sender" style="color:#1f7a8c">Toonii</div><div class="text">I understand you everything, we will find a helpful approach for you.</div><div class="time">16:46</div></div></div>
 <div class="msg msg-right" data-date="2025-11-22"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">🙏🙏🙏</div><div class="time">16:47</div></div></div>
 <div class="msg msg-right" data-date="2025-11-22"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">Toonii <br>Thank you</div><div class="time">16:48</div></div></div>
-<div class="date-divider" id="d-2025-11-23" data-date="2025-11-23"><span>23 ноября 2025</span></div>
+<div class="date-divider" id="d-2025-11-23" data-date="2025-11-23"><span><span class="i18n"><span data-l="ru">23 ноября 2025</span><span data-l="th">23 พฤศจิกายน 2568</span></span></span></div>
 <div class="msg msg-right" data-date="2025-11-23"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">Toonii, hello<br>Sorry for writing to you on a day off</div><div class="time">13:31</div></div></div>
 <div class="msg msg-right" data-date="2025-11-23"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">I&#x27;m in a deep depression and since I understand that I lost a huge amount of money, lost my family and I understand that I was robbed not to give money in order not to return it, I understand that now the system is set up to eliminate me</div><div class="time">13:31</div></div></div>
 <div class="msg msg-right" data-date="2025-11-23"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">If you can legalize at least some plots of land or at least something for which I was robbed, I will sincerely share with you very conscientiously, I am an honest person and I want peace to come, sorry for writing to you about this again, but I have a deep depression, I lost everything and I have a high temperature now</div><div class="time">13:32</div></div></div>
@@ -1162,14 +1223,14 @@ body[data-active-tab="docs"] .controls { display: none; }
 <div class="msg msg-right" data-date="2025-11-23"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">Вы удалили данное сообщение.</div><div class="time">14:19</div></div></div>
 <div class="msg msg-right" data-date="2025-11-23"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">You can make it so that I can testify online? &lt;Сообщение изменено&gt;</div><div class="time">14:41</div></div></div>
 <div class="msg msg-right" data-date="2025-11-23"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="attachment"><a class="file pdf" href="WhatsApp%20Chat%20-%20Toonii/00000612-gu-Unknown.pdf" target="_blank"><span class="file-icon">📄</span><span class="file-name">gu-Unknown.pdf</span></a></div><div class="text">gu-Unknown.pdf • 2 страницы</div><div class="time">14:56</div></div></div>
-<div class="date-divider" id="d-2025-11-24" data-date="2025-11-24"><span>24 ноября 2025</span></div>
+<div class="date-divider" id="d-2025-11-24" data-date="2025-11-24"><span><span class="i18n"><span data-l="ru">24 ноября 2025</span><span data-l="th">24 พฤศจิกายน 2568</span></span></span></div>
 <div class="msg msg-right" data-date="2025-11-24"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">Toonii<br>Good afternoon, listen to what he&#x27;s saying</div><div class="time">09:45</div></div></div>
 <div class="msg msg-right" data-date="2025-11-24"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text"><a href="https://vt.tiktok.com/ZSfSbxVpa/" target="_blank" rel="noopener">https://vt.tiktok.com/ZSfSbxVpa/</a></div><div class="time">09:45</div></div></div>
 <div class="msg msg-right" data-date="2025-11-24"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="attachment"><a class="img-link" href="WhatsApp%20Chat%20-%20Toonii/00000615-PHOTO-2025-11-24-09-48-08.jpg" target="_blank"><img class="photo" loading="lazy" src="WhatsApp%20Chat%20-%20Toonii/00000615-PHOTO-2025-11-24-09-48-08.jpg" alt=""></a></div><div class="time">09:48</div></div></div>
 <div class="msg msg-right" data-date="2025-11-24"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">He is not shy and openly calls himself a real gangster</div><div class="time">09:51</div></div></div>
 <div class="msg msg-right" data-date="2025-11-24"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">Only after I wrote a statement to the police, I started collecting information about this person and saw a lot of videos and publications about where he calls himself a real gangster, it says that he has great connections in the government and great connections with the police, so I consider myself completely unprotected in Thailand</div><div class="time">09:57</div></div></div>
 <div class="msg msg-right" data-date="2025-11-24"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">It became obvious that he deceived a lot of people, but he is still free and no one has done anything to him, he works according to a proven scheme and continues to do it further &lt;Сообщение изменено&gt;</div><div class="time">09:58</div></div></div>
-<div class="date-divider" id="d-2025-11-26" data-date="2025-11-26"><span>26 ноября 2025</span></div>
+<div class="date-divider" id="d-2025-11-26" data-date="2025-11-26"><span><span class="i18n"><span data-l="ru">26 ноября 2025</span><span data-l="th">26 พฤศจิกายน 2568</span></span></span></div>
 <div class="msg msg-right" data-date="2025-11-26"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">Tuni<br><br>Good morning<br><br>We are having a hard time right now, my wife has to work to pay for the house. I am undergoing treatment in Russia. My business is damaged, and therefore we have a difficult financial situation. If you can help in the administrative case, which is that this person Parinton borrowed 200,000 baht from Vera and me and 50,000 baht from us for a work permit. But they didn&#x27;t return this money. If you can help him get this money back, it will help us pay for the house and school &lt;Сообщение изменено&gt;</div><div class="time">05:47</div></div></div>
 <div class="msg msg-right" data-date="2025-11-26"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="attachment"><a class="img-link" href="WhatsApp%20Chat%20-%20Toonii/00000620-PHOTO-2025-11-26-05-49-27.jpg" target="_blank"><img class="photo" loading="lazy" src="WhatsApp%20Chat%20-%20Toonii/00000620-PHOTO-2025-11-26-05-49-27.jpg" alt=""></a></div><div class="time">05:49</div></div></div>
 <div class="msg msg-left" data-date="2025-11-26"><div class="bubble"><div class="sender" style="color:#1f7a8c">Toonii</div><div class="text">Good morning</div><div class="time">05:58</div></div></div>
@@ -1178,7 +1239,7 @@ body[data-active-tab="docs"] .controls { display: none; }
 <div class="msg msg-right" data-date="2025-11-26"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">Thank you</div><div class="time">05:58</div></div></div>
 <div class="msg msg-right" data-date="2025-11-26"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">I invested all the money because he offered me to build a house for sale for 5,500,000 baht, I invested 4,000,000 baht there, he said that it would be enough to build a house for sale, there is a contract in which it is indicated that I will get this money back plus profit, so I went all-in and invested all the money in the hope of making a profit, but in the end he did not return a penny and therefore now my family is in a difficult financial situation</div><div class="time">06:00</div></div></div>
 <div class="msg msg-right" data-date="2025-11-26"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">I understand that we were cheated in order not to return the money, we were just deceived, so I don&#x27;t know what will happen and it&#x27;s very hard to survive the loss of a huge amount of money and the fact that now my family is suffering</div><div class="time">06:02</div></div></div>
-<div class="date-divider" id="d-2025-11-27" data-date="2025-11-27"><span>27 ноября 2025</span></div>
+<div class="date-divider" id="d-2025-11-27" data-date="2025-11-27"><span><span class="i18n"><span data-l="ru">27 ноября 2025</span><span data-l="th">27 พฤศจิกายน 2568</span></span></span></div>
 <div class="msg msg-right" data-date="2025-11-27"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">Toonii<br>Good morning, please allow me to ask you if you will deal with the issue of fraud against me and whether Toyota Camry will be searched, whether my issues on the investment house will be resolved, which money he took 4,000,000 and whether any of my questions will be resolved at all or not, or the issue of only the black box will be resolved, please tell me in what way to help me and what I can calculate, or only the question is in the black box and only in it, but I want to know at least something has passed for almost two months, I do not have any information about what is happening</div><div class="time">11:26</div></div></div>
 <div class="msg msg-right" data-date="2025-11-27"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">?</div><div class="time">11:27</div></div></div>
 <div class="msg msg-left" data-date="2025-11-27"><div class="bubble"><div class="sender" style="color:#1f7a8c">Toonii</div><div class="text">“I have received your question. In response, I would like to confirm that we have already held a meeting and are proceeding to resolve the issue you have experienced. We intend to file a police report to initiate the mediation process so that you may receive the refund and the mentioned deduction returned. At this moment, I am awaiting your return, as I am uncertain whether you will be coming back.<br><br>We have coordinated with the police to arrange a negotiation and mediation session with Parintorn and Prinnawat. We are taking these steps in your best interest.<br><br>Kindly let me know whether you are planning to travel to Thailand again. If so, please advise your expected date of arrival.”</div><div class="time">12:41</div></div></div>
@@ -1209,7 +1270,7 @@ body[data-active-tab="docs"] .controls { display: none; }
 <div class="msg msg-right" data-date="2025-11-27"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">❤️🙏🙏🙏</div><div class="time">13:07</div></div></div>
 <div class="msg msg-right" data-date="2025-11-27"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">🤝</div><div class="time">13:07</div></div></div>
 <div class="msg msg-right" data-date="2025-11-27"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">Thank you very much</div><div class="time">13:08</div></div></div>
-<div class="date-divider" id="d-2025-11-28" data-date="2025-11-28"><span>28 ноября 2025</span></div>
+<div class="date-divider" id="d-2025-11-28" data-date="2025-11-28"><span><span class="i18n"><span data-l="ru">28 ноября 2025</span><span data-l="th">28 พฤศจิกายน 2568</span></span></span></div>
 <div class="msg msg-right" data-date="2025-11-28"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="text">Toonii hello <br>Today I saw a text message, I&#x27;m sending a screenshot</div><div class="time">10:05</div></div></div>
 <div class="msg msg-right" data-date="2025-11-28"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="attachment"><a class="img-link" href="WhatsApp%20Chat%20-%20Toonii/00000659-PHOTO-2025-11-28-10-06-01.jpg" target="_blank"><img class="photo" loading="lazy" src="WhatsApp%20Chat%20-%20Toonii/00000659-PHOTO-2025-11-28-10-06-01.jpg" alt=""></a></div><div class="time">10:06</div></div></div>
 <div class="msg msg-right" data-date="2025-11-28"><div class="bubble"><div class="sender" style="color:#06796b">🌏</div><div class="attachment"><a class="img-link" href="WhatsApp%20Chat%20-%20Toonii/00000660-PHOTO-2025-11-28-10-06-01.jpg" target="_blank"><img class="photo" loading="lazy" src="WhatsApp%20Chat%20-%20Toonii/00000660-PHOTO-2025-11-28-10-06-01.jpg" alt=""></a></div><div class="time">10:06</div></div></div>
@@ -1242,7 +1303,7 @@ body[data-active-tab="docs"] .controls { display: none; }
 <div data-tab-content="media" hidden>
 <div class="media-wrap">
 <div class="media-day">
-<div class="media-day-title">3 октября 2025 <span class="day-count-pill">41</span></div>
+<div class="media-day-title"><span class="i18n"><span data-l="ru">3 октября 2025</span><span data-l="th">3 ตุลาคม 2568</span></span> <span class="day-count-pill">41</span></div>
 <div class="media-grid">
 <a class="media-thumb" href="WhatsApp%20Chat%20-%20Toonii/00000003-PHOTO-2025-10-03-17-21-42.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Toonii/00000003-PHOTO-2025-10-03-17-21-42.jpg" alt=""></a>
 <a class="media-thumb video" href="WhatsApp%20Chat%20-%20Toonii/00000004-VIDEO-2025-10-03-17-22-02.mp4" target="_blank"><video preload="metadata" muted playsinline src="WhatsApp%20Chat%20-%20Toonii/00000004-VIDEO-2025-10-03-17-22-02.mp4#t=0.5"></video><span class="play-icon">▶</span></a>
@@ -1287,7 +1348,7 @@ body[data-active-tab="docs"] .controls { display: none; }
 <a class="media-thumb video" href="WhatsApp%20Chat%20-%20Toonii/00000056-VIDEO-2025-10-03-17-37-51.mp4" target="_blank"><video preload="metadata" muted playsinline src="WhatsApp%20Chat%20-%20Toonii/00000056-VIDEO-2025-10-03-17-37-51.mp4#t=0.5"></video><span class="play-icon">▶</span></a>
 </div></div>
 <div class="media-day">
-<div class="media-day-title">4 октября 2025 <span class="day-count-pill">138</span></div>
+<div class="media-day-title"><span class="i18n"><span data-l="ru">4 октября 2025</span><span data-l="th">4 ตุลาคม 2568</span></span> <span class="day-count-pill">138</span></div>
 <div class="media-grid">
 <a class="media-thumb" href="WhatsApp%20Chat%20-%20Toonii/00000068-PHOTO-2025-10-04-05-06-51.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Toonii/00000068-PHOTO-2025-10-04-05-06-51.jpg" alt=""></a>
 <a class="media-thumb" href="WhatsApp%20Chat%20-%20Toonii/00000071-PHOTO-2025-10-04-05-08-48.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Toonii/00000071-PHOTO-2025-10-04-05-08-48.jpg" alt=""></a>
@@ -1429,13 +1490,13 @@ body[data-active-tab="docs"] .controls { display: none; }
 <a class="media-thumb" href="WhatsApp%20Chat%20-%20Toonii/00000225-PHOTO-2025-10-04-23-56-54.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Toonii/00000225-PHOTO-2025-10-04-23-56-54.jpg" alt=""></a>
 </div></div>
 <div class="media-day">
-<div class="media-day-title">5 октября 2025 <span class="day-count-pill">2</span></div>
+<div class="media-day-title"><span class="i18n"><span data-l="ru">5 октября 2025</span><span data-l="th">5 ตุลาคม 2568</span></span> <span class="day-count-pill">2</span></div>
 <div class="media-grid">
 <a class="media-thumb" href="WhatsApp%20Chat%20-%20Toonii/00000227-PHOTO-2025-10-05-05-43-00.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Toonii/00000227-PHOTO-2025-10-05-05-43-00.jpg" alt=""></a>
 <a class="media-thumb" href="WhatsApp%20Chat%20-%20Toonii/00000228-PHOTO-2025-10-05-05-43-56.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Toonii/00000228-PHOTO-2025-10-05-05-43-56.jpg" alt=""></a>
 </div></div>
 <div class="media-day">
-<div class="media-day-title">6 октября 2025 <span class="day-count-pill">5</span></div>
+<div class="media-day-title"><span class="i18n"><span data-l="ru">6 октября 2025</span><span data-l="th">6 ตุลาคม 2568</span></span> <span class="day-count-pill">5</span></div>
 <div class="media-grid">
 <a class="media-thumb" href="WhatsApp%20Chat%20-%20Toonii/00000243-PHOTO-2025-10-06-06-50-07.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Toonii/00000243-PHOTO-2025-10-06-06-50-07.jpg" alt=""></a>
 <a class="media-thumb" href="WhatsApp%20Chat%20-%20Toonii/00000247-PHOTO-2025-10-06-07-25-55.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Toonii/00000247-PHOTO-2025-10-06-07-25-55.jpg" alt=""></a>
@@ -1444,7 +1505,7 @@ body[data-active-tab="docs"] .controls { display: none; }
 <a class="media-thumb" href="WhatsApp%20Chat%20-%20Toonii/00000251-PHOTO-2025-10-06-07-37-14.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Toonii/00000251-PHOTO-2025-10-06-07-37-14.jpg" alt=""></a>
 </div></div>
 <div class="media-day">
-<div class="media-day-title">7 октября 2025 <span class="day-count-pill">37</span></div>
+<div class="media-day-title"><span class="i18n"><span data-l="ru">7 октября 2025</span><span data-l="th">7 ตุลาคม 2568</span></span> <span class="day-count-pill">37</span></div>
 <div class="media-grid">
 <a class="media-thumb" href="WhatsApp%20Chat%20-%20Toonii/00000283-PHOTO-2025-10-07-06-28-36.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Toonii/00000283-PHOTO-2025-10-07-06-28-36.jpg" alt=""></a>
 <a class="media-thumb" href="WhatsApp%20Chat%20-%20Toonii/00000286-PHOTO-2025-10-07-06-30-57.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Toonii/00000286-PHOTO-2025-10-07-06-30-57.jpg" alt=""></a>
@@ -1485,13 +1546,13 @@ body[data-active-tab="docs"] .controls { display: none; }
 <a class="media-thumb" href="WhatsApp%20Chat%20-%20Toonii/00000359-PHOTO-2025-10-07-14-37-04.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Toonii/00000359-PHOTO-2025-10-07-14-37-04.jpg" alt=""></a>
 </div></div>
 <div class="media-day">
-<div class="media-day-title">8 октября 2025 <span class="day-count-pill">2</span></div>
+<div class="media-day-title"><span class="i18n"><span data-l="ru">8 октября 2025</span><span data-l="th">8 ตุลาคม 2568</span></span> <span class="day-count-pill">2</span></div>
 <div class="media-grid">
 <a class="media-thumb" href="WhatsApp%20Chat%20-%20Toonii/00000376-PHOTO-2025-10-08-09-49-02.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Toonii/00000376-PHOTO-2025-10-08-09-49-02.jpg" alt=""></a>
 <a class="media-thumb" href="WhatsApp%20Chat%20-%20Toonii/00000377-PHOTO-2025-10-08-11-16-18.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Toonii/00000377-PHOTO-2025-10-08-11-16-18.jpg" alt=""></a>
 </div></div>
 <div class="media-day">
-<div class="media-day-title">9 октября 2025 <span class="day-count-pill">14</span></div>
+<div class="media-day-title"><span class="i18n"><span data-l="ru">9 октября 2025</span><span data-l="th">9 ตุลาคม 2568</span></span> <span class="day-count-pill">14</span></div>
 <div class="media-grid">
 <a class="media-thumb" href="WhatsApp%20Chat%20-%20Toonii/00000380-PHOTO-2025-10-09-07-50-34.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Toonii/00000380-PHOTO-2025-10-09-07-50-34.jpg" alt=""></a>
 <a class="media-thumb" href="WhatsApp%20Chat%20-%20Toonii/00000383-PHOTO-2025-10-09-07-52-17.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Toonii/00000383-PHOTO-2025-10-09-07-52-17.jpg" alt=""></a>
@@ -1509,12 +1570,12 @@ body[data-active-tab="docs"] .controls { display: none; }
 <a class="media-thumb" href="WhatsApp%20Chat%20-%20Toonii/00000400-PHOTO-2025-10-09-15-28-16.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Toonii/00000400-PHOTO-2025-10-09-15-28-16.jpg" alt=""></a>
 </div></div>
 <div class="media-day">
-<div class="media-day-title">16 октября 2025 <span class="day-count-pill">1</span></div>
+<div class="media-day-title"><span class="i18n"><span data-l="ru">16 октября 2025</span><span data-l="th">16 ตุลาคม 2568</span></span> <span class="day-count-pill">1</span></div>
 <div class="media-grid">
 <a class="media-thumb video" href="WhatsApp%20Chat%20-%20Toonii/00000439-VIDEO-2025-10-16-16-31-29.mp4" target="_blank"><video preload="metadata" muted playsinline src="WhatsApp%20Chat%20-%20Toonii/00000439-VIDEO-2025-10-16-16-31-29.mp4#t=0.5"></video><span class="play-icon">▶</span></a>
 </div></div>
 <div class="media-day">
-<div class="media-day-title">19 октября 2025 <span class="day-count-pill">4</span></div>
+<div class="media-day-title"><span class="i18n"><span data-l="ru">19 октября 2025</span><span data-l="th">19 ตุลาคม 2568</span></span> <span class="day-count-pill">4</span></div>
 <div class="media-grid">
 <a class="media-thumb" href="WhatsApp%20Chat%20-%20Toonii/00000446-PHOTO-2025-10-19-06-47-40.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Toonii/00000446-PHOTO-2025-10-19-06-47-40.jpg" alt=""></a>
 <a class="media-thumb" href="WhatsApp%20Chat%20-%20Toonii/00000447-PHOTO-2025-10-19-06-48-06.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Toonii/00000447-PHOTO-2025-10-19-06-48-06.jpg" alt=""></a>
@@ -1522,35 +1583,35 @@ body[data-active-tab="docs"] .controls { display: none; }
 <a class="media-thumb video" href="WhatsApp%20Chat%20-%20Toonii/00000453-VIDEO-2025-10-19-06-51-36.mp4" target="_blank"><video preload="metadata" muted playsinline src="WhatsApp%20Chat%20-%20Toonii/00000453-VIDEO-2025-10-19-06-51-36.mp4#t=0.5"></video><span class="play-icon">▶</span></a>
 </div></div>
 <div class="media-day">
-<div class="media-day-title">20 октября 2025 <span class="day-count-pill">1</span></div>
+<div class="media-day-title"><span class="i18n"><span data-l="ru">20 октября 2025</span><span data-l="th">20 ตุลาคม 2568</span></span> <span class="day-count-pill">1</span></div>
 <div class="media-grid">
 <a class="media-thumb video" href="WhatsApp%20Chat%20-%20Toonii/00000494-VIDEO-2025-10-20-08-51-53.mp4" target="_blank"><video preload="metadata" muted playsinline src="WhatsApp%20Chat%20-%20Toonii/00000494-VIDEO-2025-10-20-08-51-53.mp4#t=0.5"></video><span class="play-icon">▶</span></a>
 </div></div>
 <div class="media-day">
-<div class="media-day-title">22 ноября 2025 <span class="day-count-pill">2</span></div>
+<div class="media-day-title"><span class="i18n"><span data-l="ru">22 ноября 2025</span><span data-l="th">22 พฤศจิกายน 2568</span></span> <span class="day-count-pill">2</span></div>
 <div class="media-grid">
 <a class="media-thumb" href="WhatsApp%20Chat%20-%20Toonii/00000576-PHOTO-2025-11-22-15-24-23.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Toonii/00000576-PHOTO-2025-11-22-15-24-23.jpg" alt=""></a>
 <a class="media-thumb" href="WhatsApp%20Chat%20-%20Toonii/00000577-PHOTO-2025-11-22-15-24-41.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Toonii/00000577-PHOTO-2025-11-22-15-24-41.jpg" alt=""></a>
 </div></div>
 <div class="media-day">
-<div class="media-day-title">23 ноября 2025 <span class="day-count-pill">3</span></div>
+<div class="media-day-title"><span class="i18n"><span data-l="ru">23 ноября 2025</span><span data-l="th">23 พฤศจิกายน 2568</span></span> <span class="day-count-pill">3</span></div>
 <div class="media-grid">
 <a class="media-thumb" href="WhatsApp%20Chat%20-%20Toonii/00000605-PHOTO-2025-11-23-14-07-15.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Toonii/00000605-PHOTO-2025-11-23-14-07-15.jpg" alt=""></a>
 <a class="media-thumb" href="WhatsApp%20Chat%20-%20Toonii/00000606-PHOTO-2025-11-23-14-07-15.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Toonii/00000606-PHOTO-2025-11-23-14-07-15.jpg" alt=""></a>
 <a class="media-thumb" href="WhatsApp%20Chat%20-%20Toonii/00000609-PHOTO-2025-11-23-14-12-58.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Toonii/00000609-PHOTO-2025-11-23-14-12-58.jpg" alt=""></a>
 </div></div>
 <div class="media-day">
-<div class="media-day-title">24 ноября 2025 <span class="day-count-pill">1</span></div>
+<div class="media-day-title"><span class="i18n"><span data-l="ru">24 ноября 2025</span><span data-l="th">24 พฤศจิกายน 2568</span></span> <span class="day-count-pill">1</span></div>
 <div class="media-grid">
 <a class="media-thumb" href="WhatsApp%20Chat%20-%20Toonii/00000615-PHOTO-2025-11-24-09-48-08.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Toonii/00000615-PHOTO-2025-11-24-09-48-08.jpg" alt=""></a>
 </div></div>
 <div class="media-day">
-<div class="media-day-title">26 ноября 2025 <span class="day-count-pill">1</span></div>
+<div class="media-day-title"><span class="i18n"><span data-l="ru">26 ноября 2025</span><span data-l="th">26 พฤศจิกายน 2568</span></span> <span class="day-count-pill">1</span></div>
 <div class="media-grid">
 <a class="media-thumb" href="WhatsApp%20Chat%20-%20Toonii/00000620-PHOTO-2025-11-26-05-49-27.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Toonii/00000620-PHOTO-2025-11-26-05-49-27.jpg" alt=""></a>
 </div></div>
 <div class="media-day">
-<div class="media-day-title">28 ноября 2025 <span class="day-count-pill">4</span></div>
+<div class="media-day-title"><span class="i18n"><span data-l="ru">28 ноября 2025</span><span data-l="th">28 พฤศจิกายน 2568</span></span> <span class="day-count-pill">4</span></div>
 <div class="media-grid">
 <a class="media-thumb" href="WhatsApp%20Chat%20-%20Toonii/00000659-PHOTO-2025-11-28-10-06-01.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Toonii/00000659-PHOTO-2025-11-28-10-06-01.jpg" alt=""></a>
 <a class="media-thumb" href="WhatsApp%20Chat%20-%20Toonii/00000660-PHOTO-2025-11-28-10-06-01.jpg" target="_blank"><img loading="lazy" src="WhatsApp%20Chat%20-%20Toonii/00000660-PHOTO-2025-11-28-10-06-01.jpg" alt=""></a>
@@ -1561,29 +1622,59 @@ body[data-active-tab="docs"] .controls { display: none; }
 <div data-tab-content="docs" hidden>
 <div class="docs-wrap">
 <div class="docs-day">
-<div class="docs-day-title">7 октября 2025</div>
+<div class="docs-day-title"><span class="i18n"><span data-l="ru">7 октября 2025</span><span data-l="th">7 ตุลาคม 2568</span></span></div>
 <div class="docs-list">
 <a class="doc-item" href="WhatsApp%20Chat%20-%20Toonii/00000311-%D0%9A%D0%BE%D0%BD%D1%81%D1%82%D0%B0%D0%BD%D1%82%D0%B8%D0%BD%20%D0%9A%D0%B0%D0%BC%D1%80%D0%B8%20%D0%9F%D1%85%D1%83%D0%BA%D0%B5%D1%82.vcf" target="_blank"><div class="doc-icon">👤</div><div class="doc-meta"><div class="doc-name">Константин Камри Пхукет.vcf</div><div class="doc-info">🌏 · 06:41</div></div></a>
 <a class="doc-item" href="WhatsApp%20Chat%20-%20Toonii/00000360-%D0%9A%D0%BE%D0%BD%D1%81%D1%82%D0%B0%D0%BD%D1%82%D0%B8%D0%BD%20%D0%9A%D0%B0%D0%BC%D1%80%D0%B8%20%D0%9F%D1%85%D1%83%D0%BA%D0%B5%D1%82.vcf" target="_blank"><div class="doc-icon">👤</div><div class="doc-meta"><div class="doc-name">Константин Камри Пхукет.vcf</div><div class="doc-info">🌏 · 14:38</div></div></a>
 </div></div>
 <div class="docs-day">
-<div class="docs-day-title">19 октября 2025</div>
+<div class="docs-day-title"><span class="i18n"><span data-l="ru">19 октября 2025</span><span data-l="th">19 ตุลาคม 2568</span></span></div>
 <div class="docs-list">
 <a class="doc-item" href="WhatsApp%20Chat%20-%20Toonii/00000443-Yong%20%D0%A2%D1%83%D1%80%D0%B8%D1%81%D1%82%20%D0%9F%D0%BE%D0%BB%D0%B8%D1%86%D0%B5%D0%B8%CC%86%D1%81%D0%BA%D0%B8%D0%B8%CC%86.vcf" target="_blank"><div class="doc-icon">👤</div><div class="doc-meta"><div class="doc-name">Yong Турист Полицейский.vcf</div><div class="doc-info">🌏 · 06:46</div></div></a>
 </div></div>
 <div class="docs-day">
-<div class="docs-day-title">2 ноября 2025</div>
+<div class="docs-day-title"><span class="i18n"><span data-l="ru">2 ноября 2025</span><span data-l="th">2 พฤศจิกายน 2568</span></span></div>
 <div class="docs-list">
 <a class="doc-item" href="WhatsApp%20Chat%20-%20Toonii/00000562-Toonii%20%20%D0%90%D0%B4%D0%B2%D0%BE%D0%BA%D0%B0%D1%82.vcf" target="_blank"><div class="doc-icon">👤</div><div class="doc-meta"><div class="doc-name">Toonii  Адвокат.vcf</div><div class="doc-info">🌏 · 17:57</div></div></a>
 </div></div>
 <div class="docs-day">
-<div class="docs-day-title">23 ноября 2025</div>
+<div class="docs-day-title"><span class="i18n"><span data-l="ru">23 ноября 2025</span><span data-l="th">23 พฤศจิกายน 2568</span></span></div>
 <div class="docs-list">
 <a class="doc-item" href="WhatsApp%20Chat%20-%20Toonii/00000612-gu-Unknown.pdf" target="_blank"><div class="doc-icon">📄</div><div class="doc-meta"><div class="doc-name">gu-Unknown.pdf</div><div class="doc-info">🌏 · 14:56</div></div></a>
 </div></div>
 </div></div>
 <script>
 (function() {
+  // ===== Language switching =====
+  const I18N = {"ru": {"menu": "Меню", "open_menu": "Открыть меню", "close": "Закрыть", "select_date": "Выбрать дату", "all_dates": "Все даты", "lang_label": "Язык"}, "th": {"menu": "เมนู", "open_menu": "เปิดเมนู", "close": "ปิด", "select_date": "เลือกวันที่", "all_dates": "วันที่ทั้งหมด", "lang_label": "ภาษา"}};
+  const LANGS = ['ru', 'th'];
+  function readLang() {
+    try {
+      const v = localStorage.getItem('archiveLang');
+      return LANGS.includes(v) ? v : 'ru';
+    } catch (e) { return 'ru'; }
+  }
+  function applyLang(lang) {
+    document.body.dataset.lang = lang;
+    document.documentElement.lang = lang;
+    try { localStorage.setItem('archiveLang', lang); } catch (e) {}
+    document.querySelectorAll('[data-lang-set]').forEach(b => {
+      b.classList.toggle('active', b.dataset.langSet === lang);
+    });
+    document.querySelectorAll('[data-i18n-aria]').forEach(el => {
+      const key = el.dataset.i18nAria;
+      if (I18N[lang] && I18N[lang][key]) el.setAttribute('aria-label', I18N[lang][key]);
+    });
+    document.querySelectorAll('[data-i18n-title]').forEach(el => {
+      const key = el.dataset.i18nTitle;
+      if (I18N[lang] && I18N[lang][key]) el.setAttribute('title', I18N[lang][key]);
+    });
+  }
+  document.querySelectorAll('[data-lang-set]').forEach(b => {
+    b.addEventListener('click', () => applyLang(b.dataset.langSet));
+  });
+  applyLang(readLang());
+
   // ===== Date filter (messages tab) =====
   const datePicker = document.getElementById('datePicker');
   const clearBtn   = document.getElementById('clearFilter');

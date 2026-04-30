@@ -37,6 +37,88 @@ MONTHS_RU_GEN = ["января", "февраля", "марта", "апреля",
                  "июля", "августа", "сентября", "октября", "ноября", "декабря"]
 MONTHS_RU_NOM = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь",
                  "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"]
+MONTHS_TH = ["มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน",
+             "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"]
+BUDDHIST_OFFSET = 543
+
+I18N_RU = {
+    "archive_title": "WhatsApp архив",
+    "all_chats": "Все чаты",
+    "back_all": "‹ Все чаты",
+    "home": "На главную",
+    "menu": "Меню",
+    "open_menu": "Открыть меню",
+    "close": "Закрыть",
+    "tab_messages": "Сообщения",
+    "tab_media": "Медиа",
+    "tab_docs": "Документы",
+    "lbl_messages": "сообщений",
+    "lbl_days": "дней",
+    "lbl_media": "медиа",
+    "lbl_chats": "чатов",
+    "lbl_messages_short": "сообщ.",
+    "lbl_days_short": "дн.",
+    "personal_chat": "Личный чат",
+    "group": "Группа",
+    "filter_hint": "Выберите день — остальные сообщения скроются.",
+    "no_messages_day": "За выбранный день нет сообщений.",
+    "no_media": "В этом чате нет фото и видео.",
+    "no_docs": "В этом чате нет документов и аудио.",
+    "select_date": "Выбрать дату",
+    "all_dates": "Все даты",
+    "reset": "Сброс",
+    "select_chat_hint": "Выберите чат для просмотра",
+    "lang_label": "Язык",
+    "more": "ещё",
+}
+
+I18N_TH = {
+    "archive_title": "คลัง WhatsApp",
+    "all_chats": "แชททั้งหมด",
+    "back_all": "‹ แชททั้งหมด",
+    "home": "หน้าแรก",
+    "menu": "เมนู",
+    "open_menu": "เปิดเมนู",
+    "close": "ปิด",
+    "tab_messages": "ข้อความ",
+    "tab_media": "สื่อ",
+    "tab_docs": "เอกสาร",
+    "lbl_messages": "ข้อความ",
+    "lbl_days": "วัน",
+    "lbl_media": "สื่อ",
+    "lbl_chats": "แชท",
+    "lbl_messages_short": "ข้อความ",
+    "lbl_days_short": "วัน",
+    "personal_chat": "แชทส่วนตัว",
+    "group": "กลุ่ม",
+    "filter_hint": "เลือกวัน — ข้อความที่เหลือจะถูกซ่อน",
+    "no_messages_day": "ไม่มีข้อความในวันที่เลือก",
+    "no_media": "ไม่มีรูปภาพหรือวิดีโอในแชทนี้",
+    "no_docs": "ไม่มีเอกสารหรือไฟล์เสียงในแชทนี้",
+    "select_date": "เลือกวันที่",
+    "all_dates": "วันที่ทั้งหมด",
+    "reset": "รีเซ็ต",
+    "select_chat_hint": "เลือกแชทเพื่อดู",
+    "lang_label": "ภาษา",
+    "more": "อีก",
+}
+
+
+def i18n(key: str) -> str:
+    """Render a static UI string in both languages (CSS toggles which is shown)."""
+    ru = html.escape(I18N_RU[key])
+    th = html.escape(I18N_TH[key])
+    return (f'<span class="i18n">'
+            f'<span data-l="ru">{ru}</span>'
+            f'<span data-l="th">{th}</span>'
+            f'</span>')
+
+
+def i18n_text(ru: str, th: str) -> str:
+    return (f'<span class="i18n">'
+            f'<span data-l="ru">{html.escape(ru)}</span>'
+            f'<span data-l="th">{html.escape(th)}</span>'
+            f'</span>')
 
 SYSTEM_PATTERNS = (
     "сквозным шифрованием",
@@ -219,11 +301,41 @@ def date_key(msg) -> str:
 
 
 def fmt_date(msg) -> str:
-    return f"{msg['d']} {MONTHS_RU_GEN[msg['m'] - 1]} {msg['y']}"
+    """Bilingual full date — '9 марта 2025' / '9 มีนาคม 2568'."""
+    ru = f"{msg['d']} {MONTHS_RU_GEN[msg['m'] - 1]} {msg['y']}"
+    th = f"{msg['d']} {MONTHS_TH[msg['m'] - 1]} {msg['y'] + BUDDHIST_OFFSET}"
+    return i18n_text(ru, th)
+
+
+def fmt_iso_date(iso: str) -> str:
+    y, m, d = iso.split("-")
+    ru = f"{int(d)} {MONTHS_RU_GEN[int(m) - 1]} {y}"
+    th = f"{int(d)} {MONTHS_TH[int(m) - 1]} {int(y) + BUDDHIST_OFFSET}"
+    return i18n_text(ru, th)
+
+
+def fmt_day_month(iso: str) -> str:
+    """Day + month (no year) for date chips."""
+    y, m, d = iso.split("-")
+    ru = f"{int(d)} {MONTHS_RU_GEN[int(m) - 1]}"
+    th = f"{int(d)} {MONTHS_TH[int(m) - 1]}"
+    return i18n_text(ru, th)
+
+
+def fmt_month_year(ym: str) -> str:
+    y, m = ym.split("-")
+    ru = f"{MONTHS_RU_NOM[int(m) - 1]} {y}"
+    th = f"{MONTHS_TH[int(m) - 1]} {int(y) + BUDDHIST_OFFSET}"
+    return i18n_text(ru, th)
 
 
 def fmt_time(msg) -> str:
     return f"{msg['hh']:02d}:{msg['mm']:02d}"
+
+
+def count_label(n: int, key: str) -> str:
+    """Render count + i18n word, e.g. '3458 сообщений' / '3458 ข้อความ'."""
+    return f'{n} {i18n(key)}'
 
 
 def is_group_system(text: str, attachments) -> bool:
@@ -279,27 +391,35 @@ def make_chat_config(folder: Path, msgs: list, fmt: str) -> dict:
         names_str = ", ".join(other[:3])
         if len(other) > 3:
             names_str += f" +{len(other) - 3}"
-        subtitle = f"Группа · {names_str}"
+        subtitle_other = names_str
+        subtitle_kind = "group"
         system_sender = system_candidate
     else:
         icon = "👤"
         system_sender = None
-        if other:
-            subtitle = f"Личный чат · {other[0]}"
-        else:
-            subtitle = "Личный чат"
+        subtitle_kind = "personal"
+        subtitle_other = other[0] if other else None
 
     return {
         "dir": folder.name,
         "out": f"{slug}.html",
         "title": name,
-        "subtitle": subtitle,
+        "subtitle_kind": subtitle_kind,
+        "subtitle_other": subtitle_other,
         "icon": icon,
         "system_sender": system_sender,
         "is_group": is_group,
         "fmt": fmt,
         "msgs": msgs,
     }
+
+
+def render_subtitle(chat: dict) -> str:
+    prefix = i18n("personal_chat" if chat["subtitle_kind"] == "personal" else "group")
+    other = chat["subtitle_other"]
+    if other:
+        return f'{prefix} · {html.escape(other)}'
+    return prefix
 
 
 DOC_KINDS = {"pdf", "vcf", "office", "archive", "audio", "file"}
@@ -380,14 +500,15 @@ def collect_data(chat: dict) -> dict:
 
 
 def render_drawer(current_chat: dict, all_chats: list) -> str:
-    parts = ['<aside id="nav-drawer" hidden aria-label="Меню">']
+    parts = ['<aside id="nav-drawer" hidden data-i18n-aria="menu" aria-label="Меню">']
     parts.append('<div class="drawer-h">')
-    parts.append('<div class="drawer-title">WhatsApp архив</div>')
-    parts.append('<button id="navClose" class="icon-btn" aria-label="Закрыть">✕</button>')
+    parts.append(f'<div class="drawer-title">{i18n("archive_title")}</div>')
+    parts.append('<button id="navClose" class="icon-btn" '
+                 'data-i18n-aria="close" aria-label="Закрыть">✕</button>')
     parts.append('</div>')
     parts.append('<a class="drawer-home" href="index.html">'
-                 '<span class="dh-icon">🏠</span><span>На главную</span></a>')
-    parts.append('<div class="drawer-section">Все чаты</div>')
+                 f'<span class="dh-icon">🏠</span>{i18n("home")}</a>')
+    parts.append(f'<div class="drawer-section">{i18n("all_chats")}</div>')
     parts.append('<nav class="drawer-chats">')
     for c in all_chats:
         is_active = c is current_chat
@@ -396,18 +517,41 @@ def render_drawer(current_chat: dict, all_chats: list) -> str:
         msg_count = c["data"]["msg_count"]
         days = len(c["data"]["sorted_days"])
         active_cls = " active" if is_active else ""
+        meta = (f'{msg_count} {i18n("lbl_messages_short")} · '
+                f'{days} {i18n("lbl_days_short")}')
         parts.append(
             f'<a href="{href}" class="drawer-chat{active_cls}">'
             f'<span class="dc-icon">{c["icon"]}</span>'
             f'<span class="dc-info">'
             f'<span class="dc-name">{title}</span>'
-            f'<span class="dc-meta">{msg_count} сообщ. · {days} дн.</span>'
+            f'<span class="dc-meta">{meta}</span>'
             f'</span>'
             f'</a>'
         )
-    parts.append('</nav></aside>')
+    parts.append('</nav>')
+    parts.append(render_lang_switch_drawer())
+    parts.append('</aside>')
     parts.append('<div id="nav-backdrop" hidden></div>')
     return "\n".join(parts)
+
+
+def render_lang_switch(in_drawer: bool = False) -> str:
+    cls = "lang-switch" + (" lang-switch-drawer" if in_drawer else "")
+    return (
+        f'<div class="{cls}" role="group" aria-label="Language">'
+        '<button data-lang-set="ru" class="lang-btn">RU</button>'
+        '<button data-lang-set="th" class="lang-btn">TH</button>'
+        '</div>'
+    )
+
+
+def render_lang_switch_drawer() -> str:
+    return (
+        '<div class="drawer-footer">'
+        f'<span class="dl-label">{i18n("lang_label")}</span>'
+        f'{render_lang_switch(in_drawer=True)}'
+        '</div>'
+    )
 
 
 def render_messages_section(chat: dict, data: dict) -> str:
@@ -415,8 +559,8 @@ def render_messages_section(chat: dict, data: dict) -> str:
     sender_color = data["sender_color"]
     out = ['<div data-tab-content="messages">']
     out.append('<main class="chat">')
-    out.append('<div id="empty-state" class="empty-state" hidden>'
-               'За выбранный день нет сообщений.</div>')
+    out.append(f'<div id="empty-state" class="empty-state" hidden>'
+               f'{i18n("no_messages_day")}</div>')
 
     last_date = None
     for m, attachments, text_only, is_sys in data["rendered_msgs"]:
@@ -465,20 +609,20 @@ def render_media_section(chat: dict, data: dict) -> str:
     items = data["media_items"]
     out = ['<div data-tab-content="media" hidden>']
     if not items:
-        out.append('<div class="empty-state">В этом чате нет фото и видео.</div>')
+        out.append(f'<div class="empty-state">{i18n("no_media")}</div>')
         out.append('</div>')
         return "\n".join(out)
 
     by_day = OrderedDict()
     for item in items:
         if item["date"] not in by_day:
-            by_day[item["date"]] = {"label": item["date_label"], "items": []}
+            by_day[item["date"]] = {"date": item["date"], "items": []}
         by_day[item["date"]]["items"].append(item)
 
     out.append('<div class="media-wrap">')
     for dkey, group in by_day.items():
         out.append('<div class="media-day">')
-        out.append(f'<div class="media-day-title">{group["label"]} '
+        out.append(f'<div class="media-day-title">{fmt_iso_date(group["date"])} '
                    f'<span class="day-count-pill">{len(group["items"])}</span></div>')
         out.append('<div class="media-grid">')
         for item in group["items"]:
@@ -509,20 +653,20 @@ def render_docs_section(chat: dict, data: dict) -> str:
     items = data["doc_items"]
     out = ['<div data-tab-content="docs" hidden>']
     if not items:
-        out.append('<div class="empty-state">В этом чате нет документов и аудио.</div>')
+        out.append(f'<div class="empty-state">{i18n("no_docs")}</div>')
         out.append('</div>')
         return "\n".join(out)
 
     by_day = OrderedDict()
     for item in items:
         if item["date"] not in by_day:
-            by_day[item["date"]] = {"label": item["date_label"], "items": []}
+            by_day[item["date"]] = {"date": item["date"], "items": []}
         by_day[item["date"]]["items"].append(item)
 
     out.append('<div class="docs-wrap">')
     for dkey, group in by_day.items():
         out.append('<div class="docs-day">')
-        out.append(f'<div class="docs-day-title">{group["label"]}</div>')
+        out.append(f'<div class="docs-day-title">{fmt_iso_date(group["date"])}</div>')
         out.append('<div class="docs-list">')
         for item in group["items"]:
             href = quote(f"{chat_dir_name}/{item['fname']}")
@@ -558,7 +702,6 @@ def render_chat_page(chat: dict, all_chats: list):
     out_path = ROOT / chat["out"]
     data = chat["data"]
     title = chat["title"]
-    subtitle = chat["subtitle"]
     msg_count = data["msg_count"]
     days = len(data["sorted_days"])
     media_count = len(data["media_items"])
@@ -575,48 +718,49 @@ def render_chat_page(chat: dict, all_chats: list):
 
     out.append('<header class="chat-header"><div class="header-row">')
     out.append('<button id="navToggle" class="icon-btn menu-btn" '
+               'data-i18n-aria="open_menu" data-i18n-title="menu" '
                'aria-label="Открыть меню" title="Меню">☰</button>')
     out.append('<div class="title-block">')
-    out.append('<a class="back-link" href="index.html">‹ Все чаты</a>')
+    out.append(f'<a class="back-link" href="index.html">{i18n("back_all")}</a>')
     out.append(f'<div class="title">{html.escape(title)}</div>')
     out.append(
-        f'<div class="sub">{html.escape(subtitle)} · '
-        f'{msg_count} сообщений · {days} дней</div>'
+        f'<div class="sub">{render_subtitle(chat)} · '
+        f'{msg_count} {i18n("lbl_messages")} · '
+        f'{days} {i18n("lbl_days")}</div>'
     )
     out.append('</div>')
     out.append('<div class="controls">')
+    out.append(render_lang_switch())
     out.append(
         f'<input type="date" id="datePicker" min="{data["min_date"]}" '
-        f'max="{data["max_date"]}" aria-label="Выбрать дату">'
+        f'max="{data["max_date"]}" '
+        f'data-i18n-aria="select_date" aria-label="Выбрать дату">'
     )
     out.append('<button id="togglePanel" class="icon-btn" aria-expanded="false" '
-               'aria-controls="dates-panel" title="Все даты">📅</button>')
-    out.append('<button id="clearFilter" class="primary" hidden>Сброс</button>')
+               'aria-controls="dates-panel" '
+               'data-i18n-title="all_dates" title="Все даты">📅</button>')
+    out.append(f'<button id="clearFilter" class="primary" hidden>{i18n("reset")}</button>')
     out.append('</div></div></header>')
 
     out.append('<div class="tabs" role="tablist">')
     out.append('<button class="tab active" data-tab="messages" role="tab">'
-               f'Сообщения <span class="tab-count">{msg_count}</span></button>')
+               f'{i18n("tab_messages")} <span class="tab-count">{msg_count}</span></button>')
     out.append('<button class="tab" data-tab="media" role="tab">'
-               f'Медиа <span class="tab-count">{media_count}</span></button>')
+               f'{i18n("tab_media")} <span class="tab-count">{media_count}</span></button>')
     out.append('<button class="tab" data-tab="docs" role="tab">'
-               f'Документы <span class="tab-count">{doc_count}</span></button>')
+               f'{i18n("tab_docs")} <span class="tab-count">{doc_count}</span></button>')
     out.append('</div>')
 
     out.append('<div id="backdrop" hidden></div>')
     out.append('<aside id="dates-panel" hidden aria-label="Список дат">')
-    out.append('<p class="panel-hint">Выберите день — остальные сообщения скроются.</p>')
+    out.append(f'<p class="panel-hint">{i18n("filter_hint")}</p>')
     for ym, keys in months.items():
-        y, mo = ym.split("-")
-        m_title = f"{MONTHS_RU_NOM[int(mo) - 1]} {y}"
-        out.append(f'<div class="month-block"><div class="month-title">{m_title}</div>')
+        out.append(f'<div class="month-block"><div class="month-title">{fmt_month_year(ym)}</div>')
         out.append('<div class="day-chips">')
         for k in keys:
-            _, _, dd = k.split("-")
-            label = f"{int(dd)} {MONTHS_RU_GEN[int(mo) - 1]}"
             out.append(
                 f'<a href="#d-{k}" class="day-chip" data-date="{k}">'
-                f'<span>{label}</span><span class="count">{data["day_count"][k]}</span></a>'
+                f'{fmt_day_month(k)}<span class="count">{data["day_count"][k]}</span></a>'
             )
         out.append('</div></div>')
     out.append('</aside>')
@@ -625,28 +769,28 @@ def render_chat_page(chat: dict, all_chats: list):
     out.append(render_media_section(chat, data))
     out.append(render_docs_section(chat, data))
 
-    out.append(CHAT_SCRIPT_FOOT)
+    out.append(chat_script_foot())
     out_path.write_text("\n".join(out), encoding="utf-8")
 
 
 def build_index(chats):
     out = [build_head("WhatsApp архив")]
-    out.append('<body>')
+    out.append('<body data-page="hub">')
     out.append('<div class="hub">')
     out.append('<header class="hub-header">')
-    out.append('<h1>WhatsApp архив</h1>')
-    out.append(f'<p>{len(chats)} чатов</p>')
+    out.append(f'<div class="hub-lang">{render_lang_switch()}</div>')
+    out.append(f'<h1>{i18n("archive_title")}</h1>')
+    out.append(f'<p>{len(chats)} {i18n("lbl_chats")}</p>')
     out.append('</header>')
     out.append('<div class="chat-cards">')
     for chat in chats:
         d = chat["data"]
         href = quote(chat["out"])
         title = html.escape(chat["title"])
-        subtitle = html.escape(chat["subtitle"])
         icon = chat["icon"]
         if d["min_date"]:
-            range_label = (f"{format_iso_date(d['min_date'])} — "
-                           f"{format_iso_date(d['max_date'])}")
+            range_label = (f"{fmt_iso_date(d['min_date'])} — "
+                           f"{fmt_iso_date(d['max_date'])}")
         else:
             range_label = "—"
         out.append(
@@ -654,11 +798,11 @@ def build_index(chats):
             f'<div class="card-icon">{icon}</div>'
             f'<div class="card-body">'
             f'<div class="card-title">{title}</div>'
-            f'<div class="card-sub">{subtitle}</div>'
+            f'<div class="card-sub">{render_subtitle(chat)}</div>'
             f'<div class="card-meta">'
-            f'<span>{d["msg_count"]} сообщений</span><span>·</span>'
-            f'<span>{len(d["sorted_days"])} дней</span><span>·</span>'
-            f'<span>{len(d["media_items"])} медиа</span>'
+            f'<span>{d["msg_count"]} {i18n("lbl_messages")}</span><span>·</span>'
+            f'<span>{len(d["sorted_days"])} {i18n("lbl_days")}</span><span>·</span>'
+            f'<span>{len(d["media_items"])} {i18n("lbl_media")}</span>'
             f'</div>'
             f'<div class="card-range">{range_label}</div>'
             f'</div>'
@@ -666,13 +810,8 @@ def build_index(chats):
             f'</a>'
         )
     out.append('</div></div>')
-    out.append('</body></html>')
+    out.append(hub_script_foot())
     (ROOT / "index.html").write_text("\n".join(out), encoding="utf-8")
-
-
-def format_iso_date(iso: str) -> str:
-    y, m, d = iso.split("-")
-    return f"{int(d)} {MONTHS_RU_GEN[int(m) - 1]} {y}"
 
 
 def build_head(title: str) -> str:
@@ -689,6 +828,53 @@ def build_head(title: str) -> str:
 """
 
 
+def i18n_js_payload() -> str:
+    """JSON of i18n strings used for aria-label/title swaps in JS."""
+    import json
+    keys = ["menu", "open_menu", "close", "select_date", "all_dates", "lang_label"]
+    payload = {
+        "ru": {k: I18N_RU[k] for k in keys},
+        "th": {k: I18N_TH[k] for k in keys},
+    }
+    return json.dumps(payload, ensure_ascii=False)
+
+
+def chat_script_foot() -> str:
+    return CHAT_SCRIPT_FOOT.replace("__I18N_JSON__", i18n_js_payload())
+
+
+HUB_SCRIPT_FOOT = """<script>
+(function() {
+  const I18N = __I18N_JSON__;
+  const LANGS = ['ru', 'th'];
+  function readLang() {
+    try {
+      const v = localStorage.getItem('archiveLang');
+      return LANGS.includes(v) ? v : 'ru';
+    } catch (e) { return 'ru'; }
+  }
+  function applyLang(lang) {
+    document.body.dataset.lang = lang;
+    document.documentElement.lang = lang;
+    try { localStorage.setItem('archiveLang', lang); } catch (e) {}
+    document.querySelectorAll('[data-lang-set]').forEach(b => {
+      b.classList.toggle('active', b.dataset.langSet === lang);
+    });
+  }
+  document.querySelectorAll('[data-lang-set]').forEach(b => {
+    b.addEventListener('click', () => applyLang(b.dataset.langSet));
+  });
+  applyLang(readLang());
+})();
+</script>
+</body></html>
+"""
+
+
+def hub_script_foot() -> str:
+    return HUB_SCRIPT_FOOT.replace("__I18N_JSON__", i18n_js_payload())
+
+
 CSS = """
 :root {
   --bg: #efeae2;
@@ -699,6 +885,64 @@ CSS = """
   --text: #111b21;
   --muted: #667781;
 }
+
+/* ===== i18n bilingual spans (CSS toggles which lang is visible) ===== */
+.i18n { display: inline; }
+.i18n > [data-l] { display: inline; }
+.i18n > [data-l="th"] { display: none; }
+body[data-lang="th"] .i18n > [data-l="ru"] { display: none; }
+body[data-lang="th"] .i18n > [data-l="th"] { display: inline; }
+
+/* ===== Language switcher pills ===== */
+.lang-switch {
+  display: inline-flex;
+  background: rgba(255,255,255,0.18);
+  border-radius: 8px;
+  padding: 2px;
+  flex: 0 0 auto;
+}
+.lang-switch .lang-btn {
+  background: transparent; color: #fff;
+  border: 0; padding: 5px 10px;
+  font-size: 12.5px; font-weight: 600;
+  font-family: inherit; cursor: pointer;
+  border-radius: 6px;
+  letter-spacing: 0.3px;
+  min-height: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+.lang-switch .lang-btn:hover { background: rgba(255,255,255,0.18); }
+.lang-switch .lang-btn.active {
+  background: #fff; color: var(--header);
+}
+.lang-switch-drawer {
+  background: #f0f2f5;
+}
+.lang-switch-drawer .lang-btn { color: var(--muted); }
+.lang-switch-drawer .lang-btn:hover { background: rgba(0,0,0,0.04); }
+.lang-switch-drawer .lang-btn.active {
+  background: var(--header);
+  color: #fff;
+}
+.drawer-footer {
+  margin-top: auto;
+  padding: 14px 18px 18px;
+  border-top: 1px solid #eee;
+  display: flex; align-items: center; gap: 12px;
+  justify-content: space-between;
+}
+.dl-label {
+  font-size: 12.5px; color: var(--muted);
+  font-weight: 600;
+}
+.hub-lang {
+  display: flex; justify-content: flex-end;
+  margin-bottom: 14px;
+}
+.hub-lang .lang-switch { background: #f0f2f5; }
+.hub-lang .lang-btn { color: var(--muted); }
+.hub-lang .lang-btn.active { background: var(--header); color: #fff; }
+
 * { box-sizing: border-box; }
 html, body {
   margin: 0; padding: 0; background: var(--bg); color: var(--text);
@@ -1151,6 +1395,36 @@ body[data-active-tab="docs"] .controls { display: none; }
 
 CHAT_SCRIPT_FOOT = """<script>
 (function() {
+  // ===== Language switching =====
+  const I18N = __I18N_JSON__;
+  const LANGS = ['ru', 'th'];
+  function readLang() {
+    try {
+      const v = localStorage.getItem('archiveLang');
+      return LANGS.includes(v) ? v : 'ru';
+    } catch (e) { return 'ru'; }
+  }
+  function applyLang(lang) {
+    document.body.dataset.lang = lang;
+    document.documentElement.lang = lang;
+    try { localStorage.setItem('archiveLang', lang); } catch (e) {}
+    document.querySelectorAll('[data-lang-set]').forEach(b => {
+      b.classList.toggle('active', b.dataset.langSet === lang);
+    });
+    document.querySelectorAll('[data-i18n-aria]').forEach(el => {
+      const key = el.dataset.i18nAria;
+      if (I18N[lang] && I18N[lang][key]) el.setAttribute('aria-label', I18N[lang][key]);
+    });
+    document.querySelectorAll('[data-i18n-title]').forEach(el => {
+      const key = el.dataset.i18nTitle;
+      if (I18N[lang] && I18N[lang][key]) el.setAttribute('title', I18N[lang][key]);
+    });
+  }
+  document.querySelectorAll('[data-lang-set]').forEach(b => {
+    b.addEventListener('click', () => applyLang(b.dataset.langSet));
+  });
+  applyLang(readLang());
+
   // ===== Date filter (messages tab) =====
   const datePicker = document.getElementById('datePicker');
   const clearBtn   = document.getElementById('clearFilter');

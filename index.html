@@ -15,6 +15,64 @@
   --text: #111b21;
   --muted: #667781;
 }
+
+/* ===== i18n bilingual spans (CSS toggles which lang is visible) ===== */
+.i18n { display: inline; }
+.i18n > [data-l] { display: inline; }
+.i18n > [data-l="th"] { display: none; }
+body[data-lang="th"] .i18n > [data-l="ru"] { display: none; }
+body[data-lang="th"] .i18n > [data-l="th"] { display: inline; }
+
+/* ===== Language switcher pills ===== */
+.lang-switch {
+  display: inline-flex;
+  background: rgba(255,255,255,0.18);
+  border-radius: 8px;
+  padding: 2px;
+  flex: 0 0 auto;
+}
+.lang-switch .lang-btn {
+  background: transparent; color: #fff;
+  border: 0; padding: 5px 10px;
+  font-size: 12.5px; font-weight: 600;
+  font-family: inherit; cursor: pointer;
+  border-radius: 6px;
+  letter-spacing: 0.3px;
+  min-height: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+.lang-switch .lang-btn:hover { background: rgba(255,255,255,0.18); }
+.lang-switch .lang-btn.active {
+  background: #fff; color: var(--header);
+}
+.lang-switch-drawer {
+  background: #f0f2f5;
+}
+.lang-switch-drawer .lang-btn { color: var(--muted); }
+.lang-switch-drawer .lang-btn:hover { background: rgba(0,0,0,0.04); }
+.lang-switch-drawer .lang-btn.active {
+  background: var(--header);
+  color: #fff;
+}
+.drawer-footer {
+  margin-top: auto;
+  padding: 14px 18px 18px;
+  border-top: 1px solid #eee;
+  display: flex; align-items: center; gap: 12px;
+  justify-content: space-between;
+}
+.dl-label {
+  font-size: 12.5px; color: var(--muted);
+  font-weight: 600;
+}
+.hub-lang {
+  display: flex; justify-content: flex-end;
+  margin-bottom: 14px;
+}
+.hub-lang .lang-switch { background: #f0f2f5; }
+.hub-lang .lang-btn { color: var(--muted); }
+.hub-lang .lang-btn.active { background: var(--header); color: #fff; }
+
 * { box-sizing: border-box; }
 html, body {
   margin: 0; padding: 0; background: var(--bg); color: var(--text);
@@ -466,19 +524,44 @@ body[data-active-tab="docs"] .controls { display: none; }
 </style>
 </head>
 
-<body>
+<body data-page="hub">
 <div class="hub">
 <header class="hub-header">
-<h1>WhatsApp архив</h1>
-<p>7 чатов</p>
+<div class="hub-lang"><div class="lang-switch" role="group" aria-label="Language"><button data-lang-set="ru" class="lang-btn">RU</button><button data-lang-set="th" class="lang-btn">TH</button></div></div>
+<h1><span class="i18n"><span data-l="ru">WhatsApp архив</span><span data-l="th">คลัง WhatsApp</span></span></h1>
+<p>7 <span class="i18n"><span data-l="ru">чатов</span><span data-l="th">แชท</span></span></p>
 </header>
 <div class="chat-cards">
-<a class="chat-card" href="66-91-824-1010.html"><div class="card-icon">👤</div><div class="card-body"><div class="card-title">+66 91 824 1010</div><div class="card-sub">Личный чат · PARINTON</div><div class="card-meta"><span>3458 сообщений</span><span>·</span><span>160 дней</span><span>·</span><span>1492 медиа</span></div><div class="card-range">9 марта 2025 — 26 апреля 2026</div></div><div class="card-arrow">→</div></a>
-<a class="chat-card" href="alisa-advokat.html"><div class="card-icon">👤</div><div class="card-body"><div class="card-title">Алиса адвокат</div><div class="card-sub">Личный чат</div><div class="card-meta"><span>2383 сообщений</span><span>·</span><span>35 дней</span><span>·</span><span>535 медиа</span></div><div class="card-range">1 октября 2025 — 27 марта 2026</div></div><div class="card-arrow">→</div></a>
-<a class="chat-card" href="toonii.html"><div class="card-icon">👤</div><div class="card-body"><div class="card-title">Toonii</div><div class="card-sub">Личный чат</div><div class="card-meta"><span>684 сообщений</span><span>·</span><span>20 дней</span><span>·</span><span>256 медиа</span></div><div class="card-range">3 октября 2025 — 28 ноября 2025</div></div><div class="card-arrow">→</div></a>
-<a class="chat-card" href="tooni.html"><div class="card-icon">👤</div><div class="card-body"><div class="card-title">Tooni</div><div class="card-sub">Личный чат</div><div class="card-meta"><span>422 сообщений</span><span>·</span><span>39 дней</span><span>·</span><span>105 медиа</span></div><div class="card-range">24 декабря 2025 — 25 марта 2026</div></div><div class="card-arrow">→</div></a>
-<a class="chat-card" href="andrey-freedom-beach-case.html"><div class="card-icon">👥</div><div class="card-body"><div class="card-title">Andrey Freedom  beach case</div><div class="card-sub">Группа · Алиса адвокат, NikitaBKK, МeМii ~ +1</div><div class="card-meta"><span>340 сообщений</span><span>·</span><span>18 дней</span><span>·</span><span>132 медиа</span></div><div class="card-range">8 октября 2025 — 27 марта 2026</div></div><div class="card-arrow">→</div></a>
-<a class="chat-card" href="66-80-041-5533.html"><div class="card-icon">👤</div><div class="card-body"><div class="card-title">+66 80 041 5533</div><div class="card-sub">Личный чат · Anna Frank</div><div class="card-meta"><span>110 сообщений</span><span>·</span><span>1 дней</span><span>·</span><span>83 медиа</span></div><div class="card-range">1 октября 2025 — 1 октября 2025</div></div><div class="card-arrow">→</div></a>
-<a class="chat-card" href="66-99-491-6356.html"><div class="card-icon">👤</div><div class="card-body"><div class="card-title">+66 99 491 6356</div><div class="card-sub">Личный чат · Payong</div><div class="card-meta"><span>41 сообщений</span><span>·</span><span>2 дней</span><span>·</span><span>4 медиа</span></div><div class="card-range">18 октября 2025 — 24 ноября 2025</div></div><div class="card-arrow">→</div></a>
+<a class="chat-card" href="66-91-824-1010.html"><div class="card-icon">👤</div><div class="card-body"><div class="card-title">+66 91 824 1010</div><div class="card-sub"><span class="i18n"><span data-l="ru">Личный чат</span><span data-l="th">แชทส่วนตัว</span></span> · PARINTON</div><div class="card-meta"><span>3458 <span class="i18n"><span data-l="ru">сообщений</span><span data-l="th">ข้อความ</span></span></span><span>·</span><span>160 <span class="i18n"><span data-l="ru">дней</span><span data-l="th">วัน</span></span></span><span>·</span><span>1492 <span class="i18n"><span data-l="ru">медиа</span><span data-l="th">สื่อ</span></span></span></div><div class="card-range"><span class="i18n"><span data-l="ru">9 марта 2025</span><span data-l="th">9 มีนาคม 2568</span></span> — <span class="i18n"><span data-l="ru">26 апреля 2026</span><span data-l="th">26 เมษายน 2569</span></span></div></div><div class="card-arrow">→</div></a>
+<a class="chat-card" href="alisa-advokat.html"><div class="card-icon">👤</div><div class="card-body"><div class="card-title">Алиса адвокат</div><div class="card-sub"><span class="i18n"><span data-l="ru">Личный чат</span><span data-l="th">แชทส่วนตัว</span></span></div><div class="card-meta"><span>2383 <span class="i18n"><span data-l="ru">сообщений</span><span data-l="th">ข้อความ</span></span></span><span>·</span><span>35 <span class="i18n"><span data-l="ru">дней</span><span data-l="th">วัน</span></span></span><span>·</span><span>535 <span class="i18n"><span data-l="ru">медиа</span><span data-l="th">สื่อ</span></span></span></div><div class="card-range"><span class="i18n"><span data-l="ru">1 октября 2025</span><span data-l="th">1 ตุลาคม 2568</span></span> — <span class="i18n"><span data-l="ru">27 марта 2026</span><span data-l="th">27 มีนาคม 2569</span></span></div></div><div class="card-arrow">→</div></a>
+<a class="chat-card" href="toonii.html"><div class="card-icon">👤</div><div class="card-body"><div class="card-title">Toonii</div><div class="card-sub"><span class="i18n"><span data-l="ru">Личный чат</span><span data-l="th">แชทส่วนตัว</span></span></div><div class="card-meta"><span>684 <span class="i18n"><span data-l="ru">сообщений</span><span data-l="th">ข้อความ</span></span></span><span>·</span><span>20 <span class="i18n"><span data-l="ru">дней</span><span data-l="th">วัน</span></span></span><span>·</span><span>256 <span class="i18n"><span data-l="ru">медиа</span><span data-l="th">สื่อ</span></span></span></div><div class="card-range"><span class="i18n"><span data-l="ru">3 октября 2025</span><span data-l="th">3 ตุลาคม 2568</span></span> — <span class="i18n"><span data-l="ru">28 ноября 2025</span><span data-l="th">28 พฤศจิกายน 2568</span></span></div></div><div class="card-arrow">→</div></a>
+<a class="chat-card" href="tooni.html"><div class="card-icon">👤</div><div class="card-body"><div class="card-title">Tooni</div><div class="card-sub"><span class="i18n"><span data-l="ru">Личный чат</span><span data-l="th">แชทส่วนตัว</span></span></div><div class="card-meta"><span>422 <span class="i18n"><span data-l="ru">сообщений</span><span data-l="th">ข้อความ</span></span></span><span>·</span><span>39 <span class="i18n"><span data-l="ru">дней</span><span data-l="th">วัน</span></span></span><span>·</span><span>105 <span class="i18n"><span data-l="ru">медиа</span><span data-l="th">สื่อ</span></span></span></div><div class="card-range"><span class="i18n"><span data-l="ru">24 декабря 2025</span><span data-l="th">24 ธันวาคม 2568</span></span> — <span class="i18n"><span data-l="ru">25 марта 2026</span><span data-l="th">25 มีนาคม 2569</span></span></div></div><div class="card-arrow">→</div></a>
+<a class="chat-card" href="andrey-freedom-beach-case.html"><div class="card-icon">👥</div><div class="card-body"><div class="card-title">Andrey Freedom  beach case</div><div class="card-sub"><span class="i18n"><span data-l="ru">Группа</span><span data-l="th">กลุ่ม</span></span> · Алиса адвокат, NikitaBKK, МeМii ~ +1</div><div class="card-meta"><span>340 <span class="i18n"><span data-l="ru">сообщений</span><span data-l="th">ข้อความ</span></span></span><span>·</span><span>18 <span class="i18n"><span data-l="ru">дней</span><span data-l="th">วัน</span></span></span><span>·</span><span>132 <span class="i18n"><span data-l="ru">медиа</span><span data-l="th">สื่อ</span></span></span></div><div class="card-range"><span class="i18n"><span data-l="ru">8 октября 2025</span><span data-l="th">8 ตุลาคม 2568</span></span> — <span class="i18n"><span data-l="ru">27 марта 2026</span><span data-l="th">27 มีนาคม 2569</span></span></div></div><div class="card-arrow">→</div></a>
+<a class="chat-card" href="66-80-041-5533.html"><div class="card-icon">👤</div><div class="card-body"><div class="card-title">+66 80 041 5533</div><div class="card-sub"><span class="i18n"><span data-l="ru">Личный чат</span><span data-l="th">แชทส่วนตัว</span></span> · Anna Frank</div><div class="card-meta"><span>110 <span class="i18n"><span data-l="ru">сообщений</span><span data-l="th">ข้อความ</span></span></span><span>·</span><span>1 <span class="i18n"><span data-l="ru">дней</span><span data-l="th">วัน</span></span></span><span>·</span><span>83 <span class="i18n"><span data-l="ru">медиа</span><span data-l="th">สื่อ</span></span></span></div><div class="card-range"><span class="i18n"><span data-l="ru">1 октября 2025</span><span data-l="th">1 ตุลาคม 2568</span></span> — <span class="i18n"><span data-l="ru">1 октября 2025</span><span data-l="th">1 ตุลาคม 2568</span></span></div></div><div class="card-arrow">→</div></a>
+<a class="chat-card" href="66-99-491-6356.html"><div class="card-icon">👤</div><div class="card-body"><div class="card-title">+66 99 491 6356</div><div class="card-sub"><span class="i18n"><span data-l="ru">Личный чат</span><span data-l="th">แชทส่วนตัว</span></span> · Payong</div><div class="card-meta"><span>41 <span class="i18n"><span data-l="ru">сообщений</span><span data-l="th">ข้อความ</span></span></span><span>·</span><span>2 <span class="i18n"><span data-l="ru">дней</span><span data-l="th">วัน</span></span></span><span>·</span><span>4 <span class="i18n"><span data-l="ru">медиа</span><span data-l="th">สื่อ</span></span></span></div><div class="card-range"><span class="i18n"><span data-l="ru">18 октября 2025</span><span data-l="th">18 ตุลาคม 2568</span></span> — <span class="i18n"><span data-l="ru">24 ноября 2025</span><span data-l="th">24 พฤศจิกายน 2568</span></span></div></div><div class="card-arrow">→</div></a>
 </div></div>
+<script>
+(function() {
+  const I18N = {"ru": {"menu": "Меню", "open_menu": "Открыть меню", "close": "Закрыть", "select_date": "Выбрать дату", "all_dates": "Все даты", "lang_label": "Язык"}, "th": {"menu": "เมนู", "open_menu": "เปิดเมนู", "close": "ปิด", "select_date": "เลือกวันที่", "all_dates": "วันที่ทั้งหมด", "lang_label": "ภาษา"}};
+  const LANGS = ['ru', 'th'];
+  function readLang() {
+    try {
+      const v = localStorage.getItem('archiveLang');
+      return LANGS.includes(v) ? v : 'ru';
+    } catch (e) { return 'ru'; }
+  }
+  function applyLang(lang) {
+    document.body.dataset.lang = lang;
+    document.documentElement.lang = lang;
+    try { localStorage.setItem('archiveLang', lang); } catch (e) {}
+    document.querySelectorAll('[data-lang-set]').forEach(b => {
+      b.classList.toggle('active', b.dataset.langSet === lang);
+    });
+  }
+  document.querySelectorAll('[data-lang-set]').forEach(b => {
+    b.addEventListener('click', () => applyLang(b.dataset.langSet));
+  });
+  applyLang(readLang());
+})();
+</script>
 </body></html>
